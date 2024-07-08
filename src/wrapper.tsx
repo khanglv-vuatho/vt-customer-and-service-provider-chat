@@ -2,6 +2,7 @@ import { useCallback, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { TranslationProvider } from './context/translationProvider'
+import { ActionTypes } from './store'
 
 const Wrapper = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate()
@@ -14,12 +15,8 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => {
   const checkSession = useCallback(async () => {
     if (token) {
       dispatch({
-        type: 'token',
+        type: ActionTypes.TOKEN,
         payload: token
-      })
-      dispatch({
-        type: 'lang',
-        payload: lang
       })
     } else {
       navigate('/invalid')
