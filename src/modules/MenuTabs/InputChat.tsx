@@ -1,20 +1,18 @@
-import { motion } from 'framer-motion'
 import { Button, Textarea } from '@nextui-org/react'
 import { Send2 } from 'iconsax-react'
-import { ChangeEvent, memo, useEffect, useRef, useState } from 'react'
+import { ChangeEvent, forwardRef, memo, RefObject, useEffect, useMemo, useRef, useState } from 'react'
 
 type InputChatType = {
   handleChangeValue: (value: ChangeEvent<HTMLInputElement>) => void
   handleSendMessage: () => void
+  message: string
 }
 
-const InputChat: React.FC<InputChatType> = ({ handleSendMessage }) => {
-  const [message, setMessage] = useState('')
-
+const InputChat = forwardRef<HTMLTextAreaElement, InputChatType>(({ handleSendMessage, handleChangeValue, message }, ref) => {
   const sendRef: any = useRef<HTMLButtonElement>(null)
-  const inputRef = useRef<HTMLTextAreaElement>(null)
-
-  const isHasMessage = message.length > 0
+  const isHasMessage = useMemo(() => {
+    return message.length > 0
+  }, [message])
 
   const handleSend = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (!isHasMessage) return
@@ -22,16 +20,12 @@ const InputChat: React.FC<InputChatType> = ({ handleSendMessage }) => {
     handleSendMessage()
   }
 
-  const handleChangeValue: (value: ChangeEvent<HTMLInputElement>) => void = (e) => {
-    setMessage(e.target.value)
-  }
-
   useEffect(() => {
-    const inputEl: any = inputRef.current
+    const inputEl: any = (ref as RefObject<HTMLTextAreaElement>)?.current
 
     const handleBlur = (e: any) => {
       if (!sendRef?.current.contains(e.relatedTarget)) {
-        inputRef?.current?.blur()
+        inputEl?.blur()
       } else {
         inputEl.focus() // Focus lại vào input nếu không phải click vào sendRef
       }
@@ -42,7 +36,7 @@ const InputChat: React.FC<InputChatType> = ({ handleSendMessage }) => {
     return () => {
       inputEl?.removeEventListener('blur', handleBlur)
     }
-  }, [sendRef, inputRef])
+  }, [sendRef, ref])
 
   return (
     <div className='flex items-end gap-2'>
@@ -50,7 +44,7 @@ const InputChat: React.FC<InputChatType> = ({ handleSendMessage }) => {
         minRows={1}
         maxRows={3}
         autoFocus
-        ref={inputRef}
+        ref={ref}
         value={message}
         onChange={handleChangeValue}
         radius='none'
@@ -70,6 +64,6 @@ const InputChat: React.FC<InputChatType> = ({ handleSendMessage }) => {
       />
     </div>
   )
-}
+})
 
 export default memo(InputChat)
