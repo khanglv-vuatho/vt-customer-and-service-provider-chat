@@ -10,10 +10,17 @@ export type Message = {
   id: string
   message: string
   time: number
+  type: string
 }
 
 export type GroupedMessage = {
   id: string
-  messages: string[]
+  messages: MessageDetail[]
   time: number
+  type: string
+}
+
+export type MessageDetail = {
+  message: string
+  type: string // 'text' or 'image'
 }

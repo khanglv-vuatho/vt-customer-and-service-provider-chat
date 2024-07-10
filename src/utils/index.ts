@@ -88,14 +88,24 @@ const groupMessages = (messages: Message[]): GroupedMessage[] => {
   if (messages.length === 0) return []
 
   const groupedMessages: GroupedMessage[] = []
-  let currentGroup: GroupedMessage = { id: messages[0].id, messages: [], time: messages[0].time }
+  let currentGroup: GroupedMessage = {
+    id: messages[0].id,
+    messages: [],
+    time: messages[0].time,
+    type: messages[0].type
+  }
 
   messages.forEach((msg, index) => {
     if (msg.id === currentGroup.id) {
-      currentGroup.messages.push(msg.message)
+      currentGroup.messages.push({ message: msg.message, type: msg.type })
     } else {
       groupedMessages.push({ ...currentGroup })
-      currentGroup = { id: msg.id, messages: [msg.message], time: msg.time }
+      currentGroup = {
+        id: msg.id,
+        messages: [{ message: msg.message, type: msg.type }],
+        time: msg.time,
+        type: msg.type
+      }
     }
 
     if (index === messages.length - 1) {
