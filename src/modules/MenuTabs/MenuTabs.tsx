@@ -1,7 +1,9 @@
-import { Tab, Tabs } from '@nextui-org/react'
-import RatingTab from './RatingTab'
-import { memo } from 'react'
-import ChatTab from './ChatTab'
+import { CircularProgress, Tab, Tabs } from '@nextui-org/react'
+
+import { lazy, memo, Suspense } from 'react'
+
+const ChatTab = lazy(() => import('./ChatTab'))
+const RatingTab = lazy(() => import('./RatingTab'))
 
 const MenuTabs = () => {
   const menuList = [
@@ -31,7 +33,17 @@ const MenuTabs = () => {
       >
         {menuList.map((item, index) => (
           <Tab title={item.title} key={index}>
-            {item.body}
+            <Suspense
+              fallback={
+                <CircularProgress
+                  classNames={{
+                    svg: 'h-8 w-8 text-primary-blue'
+                  }}
+                />
+              }
+            >
+              {item.body}
+            </Suspense>
           </Tab>
         ))}
       </Tabs>

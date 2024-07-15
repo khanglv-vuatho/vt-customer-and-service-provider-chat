@@ -64,7 +64,7 @@ const InputChat = forwardRef<HTMLTextAreaElement, InputChatType>(({ handleSendMe
           radius='none'
           placeholder='Bắt đầu trò chuyện'
           endContent={
-            <Button ref={sendRef} isIconOnly radius='full' className='flex items-center justify-center bg-transparent' onClick={handleSend}>
+            <Button ref={sendRef} isIconOnly radius='full' className='flex items-center justify-center bg-primary-light-blue' onClick={handleSend}>
               <Send2 variant='Bold' className={`${isHasMessage ? 'text-primary-blue' : 'text-primary-gray'} rotate-45 transition`} />
             </Button>
           }

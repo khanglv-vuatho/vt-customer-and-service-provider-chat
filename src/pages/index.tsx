@@ -1,6 +1,6 @@
 import { PrimaryButton } from '@/components/Buttons'
-import { Star } from '@/components/Icons'
 import Header from '@/modules/Header/Header'
+
 import ListStar from '@/modules/ListStar/ListStar'
 import MenuTabs from '@/modules/MenuTabs/MenuTabs'
 import Tag from '@/modules/Tag/Tag'

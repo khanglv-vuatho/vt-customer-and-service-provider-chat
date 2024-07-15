@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { memo, useState } from 'react'
 import RatingItem from './RatingItem'
 import { RatingTabType } from '@/types'
 
@@ -47,4 +47,4 @@ const RatingTab = () => {
   )
 }
 
-export default RatingTab
+export default memo(RatingTab)

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { io } from 'socket.io-client'
 
-const socket = io('192.168.1.19:3000')
+const socket = io('192.168.1.25:3000')
 
 function App() {
   const [message, setMessage] = useState('')

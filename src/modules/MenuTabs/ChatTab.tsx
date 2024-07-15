@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { ChangeEvent, memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import InputChat from './InputChat'
 import { Avatar } from '@nextui-org/react'
 import { groupMessages } from '@/utils'
@@ -7,7 +7,7 @@ import { useLocation } from 'react-router-dom'
 import { io } from 'socket.io-client'
 import ChatMessage from './ChatMessage'
 
-const socket = io('192.168.1.21:3000')
+const socket = io('192.168.1.25:3000')
 
 type TMessages = {
   id: string
@@ -19,7 +19,7 @@ type TMessages = {
 const ChatTab = () => {
   const [conversation, setConversation] = useState<TMessages[]>([])
   const [message, setMessage] = useState('')
-  const [file, setFile] = useState<any>(null)
+  const [file, setFile] = useState<any>('')
   const [infoTyping, setInfoTyping] = useState<{ isTyping: boolean; username: string }>({
     isTyping: false,
     username: ''
@@ -43,9 +43,9 @@ const ChatTab = () => {
 
   const handleChangeUpload = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e?.target?.files?.[0] as any
-    console.log({ ...info, message: URL.createObjectURL(file), type: 'image' })
     if (file) {
       console.log(URL.createObjectURL(file))
+      setFile(file)
       socket.emit('message', { ...info, message: URL.createObjectURL(file), type: 'image' })
     }
 
@@ -54,22 +54,20 @@ const ChatTab = () => {
 
   const handleChangeValue = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
+    setMessage(value)
     if (value.trim() === '') {
       socket.emit('typing', { ...info, message: '' })
-    }
-    setMessage(value)
-    socket.emit('typing', { ...info, message: value })
-    if (!conversation.some((item) => item.id === 'typing')) {
-      setConversation((prevConversation) => [...prevConversation, { id: 'typing', message: '', time: Date.now(), type: 'typing' }])
+    } else {
+      socket.emit('typing', { ...info, message: value })
     }
   }
 
   const handleSendMessage = useCallback(() => {
     if (message.trim() === '') return
-    socket.emit('message', { ...info, message, type: 'text' })
+    socket.emit('message', { ...info, message: message.trim(), type: 'text' })
     socket.emit('typing', { ...info, message: '' })
+
     setMessage('')
-    // setConversation((prevConversation) => prevConversation.filter((item) => item.id !== 'typing'))
     inputRef?.current?.focus()
   }, [message])
 
@@ -78,7 +76,7 @@ const ChatTab = () => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight
     }
-  }, [conversation])
+  }, [conversation, infoTyping])
 
   useEffect(() => {
     if (!room) return
@@ -86,8 +84,7 @@ const ChatTab = () => {
 
     socket.on('message', (msg) => {
       setConversation((prevConversation) => {
-        const newConversation = [...prevConversation].filter((item) => item.id !== 'typing')
-        return [...newConversation, msg]
+        return [...prevConversation, msg]
       })
     })
 
@@ -108,8 +105,17 @@ const ChatTab = () => {
           if (item.type === 'typing') return
           return (
             <div key={index} className={`flex flex-col gap-1`}>
-              {item.messages.map((msg, index) => (
-                <ChatMessage infoTyping={infoTyping} username={username} id={item.id} messageLength={item?.messages?.length} index={index} key={index} msg={msg} />
+              {item.messages.map((msg, indexMsg) => (
+                <ChatMessage
+                  isLassItemInGroup={index === grouped?.length - 1}
+                  infoTyping={infoTyping}
+                  username={username}
+                  id={item.id}
+                  messageLength={item?.messages?.length}
+                  indexMsg={indexMsg}
+                  key={indexMsg}
+                  msg={msg}
+                />
               ))}
             </div>
           )
@@ -121,4 +127,4 @@ const ChatTab = () => {
   )
 }
 
-export default ChatTab
+export default memo(ChatTab)

@@ -1,8 +1,11 @@
 import { Route, Routes } from 'react-router-dom'
 
-import HomePage from '@/pages/index'
-import InvalidPage from './pages/invalid'
-import TestPage from './pages/test'
+import { lazy, Suspense } from 'react'
+import { CircularProgress } from '@nextui-org/react'
+
+const HomePage = lazy(() => import('./pages/index'))
+const TestPage = lazy(() => import('./pages/test'))
+const InvalidPage = lazy(() => import('./pages/invalid'))
 
 const routes = [
   { path: '/', element: <HomePage /> },
@@ -12,11 +15,23 @@ const routes = [
 
 function App() {
   return (
-    <Routes>
-      {routes.map(({ path, element }, index) => (
-        <Route key={index} path={path} element={element} />
-      ))}
-    </Routes>
+    <Suspense
+      fallback={
+        <div className='flex h-dvh w-full items-center justify-center'>
+          <CircularProgress
+            classNames={{
+              svg: 'h-8 w-8 text-primary-blue'
+            }}
+          />
+        </div>
+      }
+    >
+      <Routes>
+        {routes.map(({ path, element }, index) => (
+          <Route key={index} path={path} element={element} />
+        ))}
+      </Routes>
+    </Suspense>
   )
 }
 

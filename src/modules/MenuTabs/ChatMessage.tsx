@@ -1,14 +1,15 @@
 import { motion } from 'framer-motion'
 
-import { Avatar } from '@nextui-org/react'
-import { memo, useEffect, useMemo } from 'react'
-import ImageFallback from '@/components/ImageFallback'
 import { MessageDetail } from '@/types'
+import { Avatar } from '@nextui-org/react'
+import { memo, useMemo } from 'react'
+import ImageMessage from './ImageMessage'
 
 type ChatMessageProps = {
   id: string
   msg: MessageDetail
-  index: number
+  indexMsg: number
+  isLassItemInGroup: boolean
   messageLength: number
   username: string
   infoTyping: {
@@ -17,64 +18,126 @@ type ChatMessageProps = {
   }
 }
 
-const ChatMessage = ({ msg, index, id, messageLength, username, infoTyping }: ChatMessageProps) => {
+const ChatMessage = ({ msg, indexMsg, id, messageLength, username, infoTyping, isLassItemInGroup }: ChatMessageProps) => {
   const isCurrentUser = id === username
 
-  useEffect(() => {
-    if (id === 'typing') console.log(id)
-  }, [id])
+  const isTyping = infoTyping.isTyping
 
-  const isTyping = infoTyping.isTyping && !isCurrentUser && infoTyping.username === id
-  if (!msg) return null
+  const isLastMessage = indexMsg === messageLength - 1
 
-  const isLastMessage = index === messageLength - 1
+  const isAnotherUserTyping = isTyping && isLassItemInGroup && isLastMessage
 
-  const messageAnimation = {
-    initial: { opacity: 0, x: isCurrentUser ? -100 : 0, y: isCurrentUser ? 10 : 0 },
-    animate: {
-      opacity: 1,
-      x: 0,
-      y: 0,
-      transition:
-        id === username
-          ? {
-              x: {
-                delay: 0.1,
-                type: 'tween',
-                stiffness: 100
-              },
+  const messageAnimation = useMemo(() => {
+    return {
+      initial: { x: isCurrentUser ? -80 : 0, y: 10 },
+      animate: {
+        x: 0,
+        y: 0,
+        transition:
+          id === username
+            ? {
+                x: {
+                  delay: 0.1,
+                  type: 'tween',
+                  stiffness: 100
+                },
 
-              y: {
+                y: {
+                  duration: 0.1
+                }
+              }
+            : {
                 duration: 0.1
               }
-            }
-          : {
-              duration: 0.1
-            }
+      }
     }
-  }
+  }, [isCurrentUser])
+
+  // if (!msg) return null
 
   return (
-    <div className={`flex items-end gap-1 ${isCurrentUser ? 'justify-end' : 'justify-start'}`}>
-      {!isCurrentUser && <Avatar name='K' size='sm' className={`shrink-0 ${isLastMessage ? 'block' : 'opacity-0'}`} />}
-      {msg.type === 'text' ? (
-        <motion.div
-          variants={messageAnimation}
-          initial='initial'
-          animate='animate'
-          transition={{ duration: 0.3 }}
-          viewport={{ once: true }}
-          className={`max-w-[80%] break-words rounded-lg p-2 px-3 ${isCurrentUser ? 'bg-green-100' : 'relative bg-blue-100'}`}
-        >
-          {msg.message}
-        </motion.div>
-      ) : (
-        <motion.div variants={messageAnimation} initial='initial' animate='animate' transition={{ duration: 0.3 }} viewport={{ once: true }} className={`max-w-[80%]`}>
-          <ImageFallback src={msg.message} alt={msg.message} className='h-auto w-[200px] rounded-lg' />
-        </motion.div>
+    <>
+      <div className={`flex items-end gap-1 ${isCurrentUser ? 'justify-end' : 'justify-start'}`}>
+        {!isCurrentUser && (
+          <motion.div
+            initial={{
+              y: isLastMessage ? 5 : 0
+            }}
+            animate={{
+              y: 0
+            }}
+            transition={{
+              duration: 0.1,
+              ease: 'easeInOut',
+              type: 'spring'
+            }}
+            viewport={{ once: true }}
+            className={`shrink-0 ${isLastMessage ? 'opacity-100' : 'opacity-0'}`}
+          >
+            <Avatar name='K' size='sm' className={`shrink-0 ${isAnotherUserTyping ? 'opacity-0' : 'opacity-100'}`} />
+          </motion.div>
+        )}
+        {msg.type === 'text' ? (
+          <motion.div
+            variants={messageAnimation}
+            initial='initial'
+            animate='animate'
+            transition={{ duration: 0.3 }}
+            viewport={{ once: true }}
+            className={`max-w-[80%] break-words rounded-lg p-2 px-3 ${isCurrentUser ? 'bg-green-100' : 'relative bg-blue-100'}`}
+          >
+            <pre className='font-inter break-words' style={{ whiteSpace: 'pre-wrap' }}>
+              {msg.message}
+            </pre>
+          </motion.div>
+        ) : (
+          <ImageMessage messageAnimation={messageAnimation} msg={msg} />
+        )}
+      </div>
+      {isAnotherUserTyping && (
+        <div className={`flex items-end ${!isCurrentUser ? 'justify-start' : ''} gap-1`}>
+          <div className='flex items-center gap-1'>
+            <motion.div
+              initial={{
+                y: isLastMessage ? 5 : 0
+              }}
+              animate={{
+                y: 0
+              }}
+              transition={{
+                duration: 0.1,
+                ease: 'easeInOut',
+                type: 'spring'
+              }}
+              viewport={{ once: true }}
+              className={`block shrink-0`}
+            >
+              <Avatar name='K' size='sm' className={`shrink-0`} />
+            </motion.div>
+          </div>
+          <motion.div className={`flex h-10 items-center gap-1 rounded-lg px-2 ${isCurrentUser ? 'bg-green-100' : 'bg-blue-100'}`}>
+            {Array(3)
+              .fill(0)
+              .map((_, index) => (
+                <motion.div
+                  key={index}
+                  className='h-1.5 w-1.5 rounded-full bg-primary-black'
+                  animate={{
+                    y: [0, -4, 0],
+                    transition: {
+                      delay: index * 0.1,
+                      duration: 0.3,
+                      ease: 'easeInOut',
+                      repeat: Infinity,
+                      repeatDelay: 1
+                    }
+                  }}
+                />
+              ))}
+          </motion.div>
+        </div>
       )}
-      {/* {isTyping && isLastMessage ? <div className='h-3 w-3 rounded-full bg-green-600' /> : null} */}
-    </div>
+    </>
   )
 }
 
