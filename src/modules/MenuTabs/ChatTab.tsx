@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { ChangeEvent, memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { ChangeEvent, memo, useCallback, useEffect, useRef, useState } from 'react'
 import InputChat from './InputChat'
 import { Avatar } from '@nextui-org/react'
 import { groupMessages } from '@/utils'
@@ -31,8 +31,8 @@ const ChatTab = () => {
 
   const location = useLocation()
   const queryParams = new URLSearchParams(location.search)
-  const room = queryParams.get('room')
-  const username = queryParams.get('username') || 'username'
+  const room = queryParams.get('room') || '123'
+  const username = queryParams.get('username') || 'username' + Date.now()
 
   const grouped = groupMessages(conversation)
 
