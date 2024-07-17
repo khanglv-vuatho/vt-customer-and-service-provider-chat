@@ -1,23 +1,17 @@
 import { motion } from 'framer-motion'
-import { ChangeEvent, memo, useCallback, useEffect, useRef, useState } from 'react'
+import { ChangeEvent, memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import InputChat from './InputChat'
 import { Avatar } from '@nextui-org/react'
 import { groupMessages } from '@/utils'
 import { useLocation } from 'react-router-dom'
 import { io } from 'socket.io-client'
 import ChatMessage from './ChatMessage'
+import { MessageDetail } from '@/types'
 
-const socket = io('192.168.1.25:3000')
-
-type TMessages = {
-  id: string
-  message: string
-  time: number
-  type: string
-}
+const socket = io('192.168.1.23:3000')
 
 const ChatTab = () => {
-  const [conversation, setConversation] = useState<TMessages[]>([])
+  const [conversation, setConversation] = useState<MessageDetail[]>([])
   const [message, setMessage] = useState('')
   const [file, setFile] = useState<any>('')
   const [infoTyping, setInfoTyping] = useState<{ isTyping: boolean; username: string }>({
@@ -31,10 +25,10 @@ const ChatTab = () => {
 
   const location = useLocation()
   const queryParams = new URLSearchParams(location.search)
-  const room = queryParams.get('room') || '123'
+  const room = queryParams.get('room')
   const username = queryParams.get('username') || 'username' + Date.now()
 
-  const grouped = groupMessages(conversation)
+  const grouped = useMemo(() => groupMessages(conversation), [conversation])
 
   const info = {
     room,
@@ -46,7 +40,7 @@ const ChatTab = () => {
     if (file) {
       console.log(URL.createObjectURL(file))
       setFile(file)
-      socket.emit('message', { ...info, message: URL.createObjectURL(file), type: 'image' })
+      socket.emit('message', { ...info, message: URL.createObjectURL(file), type: 'image', messageId: Date.now().toString() })
     }
 
     e.target.value = ''
@@ -64,7 +58,7 @@ const ChatTab = () => {
 
   const handleSendMessage = useCallback(() => {
     if (message.trim() === '') return
-    socket.emit('message', { ...info, message: message.trim(), type: 'text' })
+    socket.emit('message', { ...info, message: message.trim(), type: 'text', messageId: Date.now().toString() })
     socket.emit('typing', { ...info, message: '' })
 
     setMessage('')
@@ -72,7 +66,6 @@ const ChatTab = () => {
   }, [message])
 
   useEffect(() => {
-    // Scroll to bottom when new message is added
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight
     }
@@ -91,26 +84,48 @@ const ChatTab = () => {
     socket.on('typing', (data) => {
       setInfoTyping(data)
     })
+    socket.on('reactEmoji', (data) => {
+      console.log({ data })
+
+      setConversation((prevConversation) => {
+        const updatedConversation = prevConversation.map((item) => {
+          if (item.messageId === data.messageId) {
+            //exits emoji in message will toggle emoji
+            if (item.emoji === data.emoji)
+              return {
+                ...item,
+                emoji: ''
+              }
+            return {
+              ...item,
+              emoji: data?.emoji
+            }
+          }
+          return item
+        })
+        return updatedConversation
+      })
+    })
 
     return () => {
       socket.off('message')
       socket.off('typing')
+      socket.off('reactEmoji')
     }
   }, [])
 
   return (
     <div className='flex flex-1 flex-col overflow-hidden rounded-2xl bg-white'>
-      <div ref={chatContainerRef} className='flex h-[calc(100dvh-380px)] flex-col gap-4 overflow-y-auto p-4'>
+      <div ref={chatContainerRef} className='flex h-[calc(100dvh-400px)] flex-col gap-4 overflow-y-auto p-4'>
         {grouped.map((item, index) => {
-          if (item.type === 'typing') return
+          // if (item.type === 'typing') return
           return (
             <div key={index} className={`flex flex-col gap-1`}>
               {item.messages.map((msg, indexMsg) => (
                 <ChatMessage
                   isLassItemInGroup={index === grouped?.length - 1}
                   infoTyping={infoTyping}
-                  username={username}
-                  id={item.id}
+                  id={item.username}
                   messageLength={item?.messages?.length}
                   indexMsg={indexMsg}
                   key={indexMsg}

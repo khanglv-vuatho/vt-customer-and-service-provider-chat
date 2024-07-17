@@ -8,3 +8,8 @@ body {
 .font-inter {
   font-family: 'Inter', sans-serif;
 }
+
+/*  */
+button[aria-label='Show all Emojis'] {
+  display: none;
+}

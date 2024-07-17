@@ -6,21 +6,17 @@ export type IconSvgProps = SVGProps<SVGSVGElement> & {
 
 export type RatingTabType = { name: string; timeHour: string; timeDate: string; star: number; thumbnail: string; description: string }
 
-export type Message = {
-  id: string
-  message: string
-  time: number
-  type: string
-}
-
 export type GroupedMessage = {
-  id: string
+  username: string
   messages: MessageDetail[]
   time: number
-  type: string
 }
 
 export type MessageDetail = {
+  username: string
   message: string
-  type: string // 'text' or 'image'
+  time: number
+  type: string
+  emoji?: string
+  messageId?: string
 }

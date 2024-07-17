@@ -1,9 +1,15 @@
 import { motion } from 'framer-motion'
 
 import { MessageDetail } from '@/types'
-import { Avatar } from '@nextui-org/react'
-import { memo, useMemo } from 'react'
+import { Avatar, CircularProgress } from '@nextui-org/react'
+import { useClickAway, useLongPress } from '@uidotdev/usehooks'
+import { EmojiClickData } from 'emoji-picker-react'
+import { lazy, memo, Suspense, useMemo, useState } from 'react'
+import { io } from 'socket.io-client'
 import ImageMessage from './ImageMessage'
+const EmojiPicker = lazy(() => import('emoji-picker-react'))
+
+const socket = io('192.168.1.23:3000')
 
 type ChatMessageProps = {
   id: string
@@ -11,14 +17,18 @@ type ChatMessageProps = {
   indexMsg: number
   isLassItemInGroup: boolean
   messageLength: number
-  username: string
   infoTyping: {
     isTyping: boolean
     username: string
   }
 }
 
-const ChatMessage = ({ msg, indexMsg, id, messageLength, username, infoTyping, isLassItemInGroup }: ChatMessageProps) => {
+const ChatMessage = ({ msg, indexMsg, id, messageLength, infoTyping, isLassItemInGroup }: ChatMessageProps) => {
+  const queryParams = new URLSearchParams(location.search)
+  const room = queryParams.get('room')
+  const username = queryParams.get('username') || 'username' + Date.now()
+  console.log({ msg })
+
   const isCurrentUser = id === username
 
   const isTyping = infoTyping.isTyping
@@ -26,6 +36,22 @@ const ChatMessage = ({ msg, indexMsg, id, messageLength, username, infoTyping, i
   const isLastMessage = indexMsg === messageLength - 1
 
   const isAnotherUserTyping = isTyping && isLassItemInGroup && isLastMessage
+  const [isOpen, setIsOpen] = useState(false)
+  const attrs = useLongPress(
+    () => {
+      setIsOpen(true)
+    },
+    {
+      onFinish() {
+        setIsOpen(true)
+      },
+      threshold: 300
+    }
+  )
+
+  const ref = useClickAway(() => {
+    setIsOpen(false)
+  })
 
   const messageAnimation = useMemo(() => {
     return {
@@ -53,7 +79,10 @@ const ChatMessage = ({ msg, indexMsg, id, messageLength, username, infoTyping, i
     }
   }, [isCurrentUser])
 
-  // if (!msg) return null
+  const handleEmojiClick = (emojiData: EmojiClickData) => {
+    setIsOpen(false)
+    socket.emit('reactEmoji', { username, room, emoji: emojiData.emoji, messageId: msg.messageId })
+  }
 
   return (
     <>
@@ -79,16 +108,29 @@ const ChatMessage = ({ msg, indexMsg, id, messageLength, username, infoTyping, i
         )}
         {msg.type === 'text' ? (
           <motion.div
+            {...attrs}
             variants={messageAnimation}
             initial='initial'
             animate='animate'
             transition={{ duration: 0.3 }}
             viewport={{ once: true }}
-            className={`max-w-[80%] break-words rounded-lg p-2 px-3 ${isCurrentUser ? 'bg-green-100' : 'relative bg-blue-100'}`}
+            className={`relative max-w-[80%] break-words rounded-lg p-2 px-3 ${isCurrentUser ? 'bg-green-100' : 'bg-blue-100'}`}
           >
+            {msg.emoji && (
+              <div onClick={() => console.log('asdssss')} className='absolute bottom-0 right-1 z-40 flex translate-y-1/2 scale-80 items-center justify-center rounded-full bg-slate-200 p-1 text-sm'>
+                {msg.emoji}
+              </div>
+            )}
             <pre className='font-inter break-words' style={{ whiteSpace: 'pre-wrap' }}>
               {msg.message}
             </pre>
+            {isOpen && (
+              <div className={`absolute z-50 scale-75 ${isCurrentUser ? 'right-0' : 'left-0'}`} ref={ref as any}>
+                <Suspense fallback={<CircularProgress className='w-5' />}>
+                  <EmojiPicker onEmojiClick={handleEmojiClick} open={true} reactionsDefaultOpen={true} />
+                </Suspense>
+              </div>
+            )}
           </motion.div>
         ) : (
           <ImageMessage messageAnimation={messageAnimation} msg={msg} />
@@ -115,7 +157,7 @@ const ChatMessage = ({ msg, indexMsg, id, messageLength, username, infoTyping, i
               <Avatar name='K' size='sm' className={`shrink-0`} />
             </motion.div>
           </div>
-          <motion.div className={`flex h-10 items-center gap-1 rounded-lg px-2 ${isCurrentUser ? 'bg-green-100' : 'bg-blue-100'}`}>
+          <motion.div className={`flex h-10 items-center gap-1 rounded-lg px-2 ${isAnotherUserTyping ? 'bg-blue-100' : 'bg-green-100'}`}>
             {Array(3)
               .fill(0)
               .map((_, index) => (

@@ -1,5 +1,5 @@
 import ToastComponent from '@/components/ToastComponent'
-import { GroupedMessage, Message } from '@/types'
+import { GroupedMessage, MessageDetail } from '@/types'
 import moment from 'moment'
 import { useEffect, useRef, useState } from 'react'
 
@@ -84,27 +84,31 @@ const postMessageCustom = ({ message }: { message: string }) => {
   }
 }
 
-const groupMessages = (messages: Message[]): GroupedMessage[] => {
+const groupMessages = (messages: MessageDetail[]): GroupedMessage[] => {
   if (messages.length === 0) return []
 
   const groupedMessages: GroupedMessage[] = []
   let currentGroup: GroupedMessage = {
-    id: messages[0].id,
+    username: messages[0]?.username,
     messages: [],
-    time: messages[0].time,
-    type: messages[0].type
+    time: messages[0].time
   }
 
   messages.forEach((msg, index) => {
-    if (msg.id === currentGroup.id) {
-      currentGroup.messages.push({ message: msg.message, type: msg.type })
+    if (msg.username === currentGroup.username) {
+      currentGroup.messages.push({
+        ...msg
+      })
     } else {
       groupedMessages.push({ ...currentGroup })
       currentGroup = {
-        id: msg.id,
-        messages: [{ message: msg.message, type: msg.type }],
-        time: msg.time,
-        type: msg.type
+        username: msg.username,
+        messages: [
+          {
+            ...msg
+          }
+        ],
+        time: msg.time
       }
     }
 
@@ -125,4 +129,4 @@ const downloadImage = (url: string, filename: string) => {
   document.body.removeChild(link)
 }
 
-export { useUnfocusItem, capitalizeWords, useDebounce, handleAddLangInUrl, formatLocalTime, formatDDMMYYYY, postMessageCustom, groupMessages, downloadImage }
+export { capitalizeWords, downloadImage, formatDDMMYYYY, formatLocalTime, groupMessages, handleAddLangInUrl, postMessageCustom, useDebounce, useUnfocusItem }
