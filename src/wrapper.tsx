@@ -19,10 +19,10 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => {
         payload: token
       })
     } else {
+      if (import.meta.env.VITE_MODE === 'local') return
       navigate('/invalid')
     }
   }, [navigate])
-
   useEffect(() => {
     if (import.meta.env.MODE === 'development') return
 
@@ -35,6 +35,7 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => {
           if (isAppWebView) {
             checkSession()
           } else {
+            if (import.meta.env.VITE_MODE === 'local') return
             navigate('/invalid')
           }
         } catch (error) {
@@ -49,7 +50,7 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 600) return
-
+      if (import.meta.env.VITE_MODE === 'local') return
       navigate('/invalid')
     }
 
