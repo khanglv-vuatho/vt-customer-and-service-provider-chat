@@ -7,9 +7,10 @@ import { EmojiClickData } from 'emoji-picker-react'
 import { lazy, memo, Suspense, useMemo, useState } from 'react'
 import { io } from 'socket.io-client'
 import ImageMessage from './ImageMessage'
+import Drawer from '@/components/Drawer'
 const EmojiPicker = lazy(() => import('emoji-picker-react'))
 
-const socket = io('192.168.1.23:3000')
+const socket = io('172.17.14.163:3000')
 
 type ChatMessageProps = {
   id: string
@@ -21,13 +22,15 @@ type ChatMessageProps = {
     isTyping: boolean
     username: string
   }
+  setIsOpenDrawer: (isOpen: boolean) => void
 }
 
-const ChatMessage = ({ msg, indexMsg, id, messageLength, infoTyping, isLassItemInGroup }: ChatMessageProps) => {
+const ChatMessage = ({ msg, indexMsg, id, messageLength, infoTyping, isLassItemInGroup, setIsOpenDrawer }: ChatMessageProps) => {
   const queryParams = new URLSearchParams(location.search)
   const room = queryParams.get('room')
   const username = queryParams.get('username') || 'username' + Date.now()
-  console.log({ msg })
+
+  const [isOpenEmoji, setIsOpenEmoji] = useState(false)
 
   const isCurrentUser = id === username
 
@@ -36,21 +39,21 @@ const ChatMessage = ({ msg, indexMsg, id, messageLength, infoTyping, isLassItemI
   const isLastMessage = indexMsg === messageLength - 1
 
   const isAnotherUserTyping = isTyping && isLassItemInGroup && isLastMessage
-  const [isOpen, setIsOpen] = useState(false)
+
   const attrs = useLongPress(
     () => {
-      setIsOpen(true)
+      setIsOpenEmoji(true)
     },
     {
       onFinish() {
-        setIsOpen(true)
+        setIsOpenEmoji(true)
       },
       threshold: 300
     }
   )
 
   const ref = useClickAway(() => {
-    setIsOpen(false)
+    setIsOpenEmoji(false)
   })
 
   const messageAnimation = useMemo(() => {
@@ -80,7 +83,7 @@ const ChatMessage = ({ msg, indexMsg, id, messageLength, infoTyping, isLassItemI
   }, [isCurrentUser])
 
   const handleEmojiClick = (emojiData: EmojiClickData) => {
-    setIsOpen(false)
+    setIsOpenEmoji(false)
     socket.emit('reactEmoji', { username, room, emoji: emojiData.emoji, messageId: msg.messageId })
   }
 
@@ -117,14 +120,14 @@ const ChatMessage = ({ msg, indexMsg, id, messageLength, infoTyping, isLassItemI
             className={`relative max-w-[80%] break-words rounded-lg p-2 px-3 ${isCurrentUser ? 'bg-green-100' : 'bg-blue-100'}`}
           >
             {msg.emoji && (
-              <div onClick={() => console.log('asdssss')} className='absolute bottom-0 right-1 z-40 flex translate-y-1/2 scale-80 items-center justify-center rounded-full bg-slate-200 p-1 text-sm'>
+              <div onClick={() => setIsOpenDrawer(true)} className='absolute bottom-0 right-1 z-40 flex translate-y-1/2 scale-80 items-center justify-center rounded-full bg-slate-200 p-1 text-sm'>
                 {msg.emoji}
               </div>
             )}
             <pre className='font-inter break-words' style={{ whiteSpace: 'pre-wrap' }}>
               {msg.message}
             </pre>
-            {isOpen && (
+            {isOpenEmoji && (
               <div className={`absolute z-50 scale-75 ${isCurrentUser ? 'right-0' : 'left-0'}`} ref={ref as any}>
                 <Suspense fallback={<CircularProgress className='w-5' />}>
                   <EmojiPicker onEmojiClick={handleEmojiClick} open={true} reactionsDefaultOpen={true} />

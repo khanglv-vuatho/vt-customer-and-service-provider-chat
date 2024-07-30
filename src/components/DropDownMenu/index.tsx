@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { useEffect } from 'react'
+import { memo, useEffect } from 'react'
 import { twMerge } from 'tailwind-merge'
 
 type Props = {
@@ -46,4 +46,4 @@ const DropDownMenu: React.FC<Props> = ({ isOpen, children, className, direction 
   )
 }
 
-export default DropDownMenu
+export default memo(DropDownMenu)

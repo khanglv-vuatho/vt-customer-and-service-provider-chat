@@ -1,5 +1,6 @@
 import ToastComponent from '@/components/ToastComponent'
-import { GroupedMessage, MessageDetail } from '@/types'
+import { keyPossmessage } from '@/constants'
+import { GroupedMessage, MessageDetail, TPostMessage } from '@/types'
 import moment from 'moment'
 import { useEffect, useRef, useState } from 'react'
 
@@ -27,6 +28,14 @@ const useUnfocusItem = (callback: () => void, exclusionRef?: React.RefObject<HTM
   return itemRef
 }
 
+const downloadImage = (url: string, filename: string) => {
+  const link = document.createElement('a')
+  link.href = url
+  link.download = filename
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+}
 function capitalizeWords(string: string) {
   if (!string) return ''
   return string
@@ -34,6 +43,7 @@ function capitalizeWords(string: string) {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ')
 }
+
 const useDebounce = (value: string, delay: number) => {
   const [debouncedValue, setDebouncedValue] = useState(value)
   const handler: any = useRef(null)
@@ -74,16 +84,20 @@ const formatDDMMYYYY = (time: string) => {
   return moment(time).format('DD/MM/YYYY')
 }
 
-const postMessageCustom = ({ message }: { message: string }) => {
+const postMessageCustom = ({ message, data = {} }: TPostMessage) => {
   //@ts-ignore
   if (window?.vuatho) {
     //@ts-ignore
-    window?.vuatho?.postMessage(message)
+    window?.vuatho?.postMessage(
+      JSON.stringify({
+        message,
+        data
+      })
+    )
   } else {
     ToastComponent({ message: message || 'has bug here', type: 'error' })
   }
 }
-
 const groupMessages = (messages: MessageDetail[]): GroupedMessage[] => {
   if (messages.length === 0) return []
 
@@ -120,13 +134,8 @@ const groupMessages = (messages: MessageDetail[]): GroupedMessage[] => {
   return groupedMessages
 }
 
-const downloadImage = (url: string, filename: string) => {
-  const link = document.createElement('a')
-  link.href = url
-  link.download = filename
-  document.body.appendChild(link)
-  link.click()
-  document.body.removeChild(link)
+const handleToastNoNetwork = () => {
+  ToastComponent({ type: 'error', message: 'Không có kết nối mạng, vui lòng kiểm tra lại!' })
 }
 
-export { capitalizeWords, downloadImage, formatDDMMYYYY, formatLocalTime, groupMessages, handleAddLangInUrl, postMessageCustom, useDebounce, useUnfocusItem }
+export { useUnfocusItem, capitalizeWords, useDebounce, handleAddLangInUrl, formatLocalTime, formatDDMMYYYY, postMessageCustom, groupMessages, handleToastNoNetwork, downloadImage }

@@ -7,8 +7,9 @@ import { useLocation } from 'react-router-dom'
 import { io } from 'socket.io-client'
 import ChatMessage from './ChatMessage'
 import { MessageDetail } from '@/types'
+import Drawer from '@/components/Drawer'
 
-const socket = io('192.168.1.23:3000')
+const socket = io('172.17.14.163:3000')
 
 const ChatTab = () => {
   const [conversation, setConversation] = useState<MessageDetail[]>([])
@@ -18,6 +19,7 @@ const ChatTab = () => {
     isTyping: false,
     username: ''
   })
+  const [isOpenDrawer, setIsOpenDrawer] = useState(false)
 
   const chatContainerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
@@ -39,7 +41,6 @@ const ChatTab = () => {
     const file = e?.target?.files?.[0] as any
     if (file) {
       console.log(URL.createObjectURL(file))
-      setFile(file)
       socket.emit('message', { ...info, message: URL.createObjectURL(file), type: 'image', messageId: Date.now().toString() })
     }
 
@@ -85,8 +86,6 @@ const ChatTab = () => {
       setInfoTyping(data)
     })
     socket.on('reactEmoji', (data) => {
-      console.log({ data })
-
       setConversation((prevConversation) => {
         const updatedConversation = prevConversation.map((item) => {
           if (item.messageId === data.messageId) {
@@ -112,13 +111,14 @@ const ChatTab = () => {
       socket.off('typing')
       socket.off('reactEmoji')
     }
-  }, [])
-
+  }, [room])
+  const handleClose = () => {
+    setIsOpenDrawer(false)
+  }
   return (
     <div className='flex flex-1 flex-col overflow-hidden rounded-2xl bg-white'>
       <div ref={chatContainerRef} className='flex h-[calc(100dvh-400px)] flex-col gap-4 overflow-y-auto p-4'>
         {grouped.map((item, index) => {
-          // if (item.type === 'typing') return
           return (
             <div key={index} className={`flex flex-col gap-1`}>
               {item.messages.map((msg, indexMsg) => (
@@ -130,12 +130,16 @@ const ChatTab = () => {
                   indexMsg={indexMsg}
                   key={indexMsg}
                   msg={msg}
+                  setIsOpenDrawer={setIsOpenDrawer}
                 />
               ))}
             </div>
           )
         })}
         <div ref={bottomRef} className='hidden' />
+        <Drawer isOpen={isOpenDrawer} onClose={handleClose}>
+          asd
+        </Drawer>
       </div>
       <InputChat file={file} handleChangeUpload={handleChangeUpload} handleChangeValue={handleChangeValue} handleSendMessage={handleSendMessage} ref={inputRef} message={message} />
     </div>

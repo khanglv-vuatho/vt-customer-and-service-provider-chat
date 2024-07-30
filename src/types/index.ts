@@ -20,3 +20,5 @@ export type MessageDetail = {
   emoji?: string
   messageId?: string
 }
+
+export type TPostMessage = { message: string; data?: any }

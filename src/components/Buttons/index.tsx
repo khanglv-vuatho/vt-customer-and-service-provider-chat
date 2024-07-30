@@ -6,10 +6,12 @@ type Props = {
   className?: string
   isDisabled?: boolean
   isLoading?: boolean
-} & ButtonProps
+} & Omit<ButtonProps, 'onPress'>
 
-const handlePhoneVibration = () => {
-  postMessageCustom({ message: 'vibrate' })
+type Frequency = 'low' | 'medium' | 'high'
+
+const handlePhoneVibration = (frequency: Frequency = 'low') => {
+  postMessageCustom({ message: `vibrate-${frequency}` })
 }
 
 export function getRadiusClass(classString: string) {
@@ -23,17 +25,17 @@ export const PrimaryButton = ({ className, isLoading, isDisabled, children, ...p
   return (
     <div className='relative z-50 w-full'>
       <Button
+        {...props}
         className={twMerge(
           `data-[pressed=true]:scale-1 z-50 w-full select-none ${radiusClass} [focus-visible=true]:outline-offset-0 bg-primary-yellow font-bold text-white outline-none data-[pressed=true]:translate-y-1 data-[hover=true]:opacity-100 data-[focus-visible=true]:outline-none ${isLoading ? 'translate-y-1' : ''} ${isDisabled ? 'cursor-not-allowed' : ''}`,
           className
         )}
         isDisabled={isDisabled}
         isLoading={isLoading}
-        onPress={(e) => {
+        onClick={(e) => {
           handlePhoneVibration()
-          props?.onPress?.(e)
+          props?.onClick?.(e)
         }}
-        {...props}
       >
         {children}
       </Button>
@@ -47,17 +49,17 @@ export const PrimaryOutlineButton = ({ className, isDisabled, isLoading, childre
   return (
     <div className='relative z-50 w-full'>
       <Button
+        {...props}
         className={twMerge(
           `data-[pressed=true]:scale-1 [focus-visible=true]:outline-offset-0 z-50 w-full select-none outline-none data-[focus-visible=true]:outline-none ${radiusClass} border border-primary-yellow bg-white font-bold text-primary-yellow data-[pressed=true]:translate-y-1 data-[hover=true]:opacity-100 ${isLoading ? 'translate-y-1' : ''}`,
           className
         )}
         isDisabled={isDisabled}
         isLoading={isLoading}
-        onPress={(e) => {
+        onClick={(e) => {
           handlePhoneVibration()
-          props?.onPress?.(e)
+          props?.onClick?.(e)
         }}
-        {...props}
       >
         {children}
       </Button>
@@ -71,15 +73,31 @@ export const PrimaryLightButton = ({ className, children, ...props }: Props) => 
 
   return (
     <Button
-      onPress={(e) => {
+      {...props}
+      onClick={(e) => {
         handlePhoneVibration()
-        props?.onPress?.(e)
+        props?.onClick?.(e)
       }}
       className={twMerge(
         `${radiusClass} [focus-visible=true]:outline-offset-0 select-none bg-primary-light-blue font-bold text-primary-blue outline-none data-[focus-visible=true]:outline-none`,
         className
       )}
+    >
+      {children}
+    </Button>
+  )
+}
+
+export const ButtonOnlyIcon = ({ className, children, ...props }: Props) => {
+  return (
+    <Button
       {...props}
+      isIconOnly
+      onClick={(e) => {
+        handlePhoneVibration()
+        props?.onClick?.(e)
+      }}
+      className={twMerge('w-fit rounded-full bg-transparent outline-none data-[focus-visible=true]:outline-none data-[focus-visible=true]:outline-offset-0', className)}
     >
       {children}
     </Button>
