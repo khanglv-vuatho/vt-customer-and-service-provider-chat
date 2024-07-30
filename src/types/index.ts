@@ -21,4 +21,25 @@ export type MessageDetail = {
   messageId?: string
 }
 
+export type Avatar = {
+  url: string
+  storage: string
+}
+
+export type User = {
+  id: number
+  avatar: Avatar | null
+  full_name: string
+  profile_picture: string
+}
+
+export type Message = {
+  by: User
+  id: number
+  seen: any[]
+  type: number
+  content: string
+  created_at: number
+}
+
 export type TPostMessage = { message: string; data?: any }

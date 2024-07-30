@@ -84,6 +84,16 @@ const formatDDMMYYYY = (time: string) => {
   return moment(time).format('DD/MM/YYYY')
 }
 
+const formatLocalHoursTime = (time: number) => {
+  const utcDate = moment.utc(time)
+
+  // Convert the UTC date to local time
+  const localDate = utcDate.local()
+
+  // Format the local date to hh:mm format
+  return localDate.format('HH:mm')
+}
+
 const postMessageCustom = ({ message, data = {} }: TPostMessage) => {
   //@ts-ignore
   if (window?.vuatho) {
@@ -138,4 +148,16 @@ const handleToastNoNetwork = () => {
   ToastComponent({ type: 'error', message: 'Không có kết nối mạng, vui lòng kiểm tra lại!' })
 }
 
-export { useUnfocusItem, capitalizeWords, useDebounce, handleAddLangInUrl, formatLocalTime, formatDDMMYYYY, postMessageCustom, groupMessages, handleToastNoNetwork, downloadImage }
+export {
+  useUnfocusItem,
+  capitalizeWords,
+  useDebounce,
+  handleAddLangInUrl,
+  formatLocalTime,
+  formatDDMMYYYY,
+  postMessageCustom,
+  groupMessages,
+  handleToastNoNetwork,
+  downloadImage,
+  formatLocalHoursTime
+}
