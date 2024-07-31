@@ -6,9 +6,11 @@ import Header from '@/modules/Header/Header'
 import instance from '@/services/axiosConfig'
 import { Message, MessageProps } from '@/types'
 import { groupConsecutiveMessages, handleAddLangInUrl } from '@/utils'
+import { useLocation } from 'react-router-dom'
 
 const HomePage = () => {
   const queryParams = new URLSearchParams(location.search)
+
   const orderId = Number(queryParams.get('orderId'))
   const currentId: any = Number(queryParams.get('currentId'))
   const worker_id: any = Number(queryParams.get('worker_id'))
@@ -92,6 +94,7 @@ const HomePage = () => {
   return (
     <div className={`relative flex h-dvh flex-col`}>
       <Header />
+      {location.href}
       {onFetchingMessage ? <ConverstaionsSkeleton /> : <Conversation isAnimateChat={isAnimateChat} conversation={groupConsecutiveMessages(conversation)} />}
       <FooterInput handleSendMessage={handleSendMessage} />
     </div>
