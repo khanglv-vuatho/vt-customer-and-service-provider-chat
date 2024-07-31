@@ -23,6 +23,7 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => {
       navigate('/invalid')
     }
   }, [navigate])
+
   useEffect(() => {
     if (import.meta.env.MODE === 'development') return
 
@@ -46,21 +47,6 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => {
       }
     }
   }, [navigate])
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 600) return
-      if (import.meta.env.VITE_MODE === 'local') return
-      navigate('/invalid')
-    }
-
-    handleResize()
-
-    window.addEventListener('resize', handleResize)
-    return () => {
-      window.removeEventListener('resize', handleResize)
-    }
-  }, [])
 
   return <TranslationProvider lang={lang}>{children}</TranslationProvider>
 }

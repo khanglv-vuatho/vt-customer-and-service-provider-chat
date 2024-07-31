@@ -1,10 +1,14 @@
+import { MessageProps } from '@/types'
 import { Button, Textarea } from '@nextui-org/react'
 import { Send2 } from 'iconsax-react'
 import { useEffect, useRef } from 'react'
 import { useForm, Controller } from 'react-hook-form'
-type FooterInputProps = { message: string; setMessage: React.Dispatch<React.SetStateAction<string>> }
+import { motion } from 'framer-motion'
+type FooterInputProps = {
+  handleSendMessage: ({ message }: MessageProps) => void
+}
 
-const FooterInput: React.FC<FooterInputProps> = ({ message, setMessage }) => {
+const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage }) => {
   const sendRef: any = useRef<HTMLButtonElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
 
@@ -26,15 +30,15 @@ const FooterInput: React.FC<FooterInputProps> = ({ message, setMessage }) => {
       inputEl?.removeEventListener('blur', handleBlur)
     }
   }, [])
-  const { control, handleSubmit } = useForm({
+  const { control, handleSubmit, reset } = useForm({
     defaultValues: {
       message: ''
     }
   })
 
-  const onSubmit = (data: any) => {
-    console.log(data.message)
-    // handleSend function to be called here if needed
+  const handleSend = (data: any) => {
+    handleSendMessage({ message: data.message.trim() === '' ? '👍' : data.message })
+    reset({ message: '' })
   }
 
   return (
@@ -59,9 +63,19 @@ const FooterInput: React.FC<FooterInputProps> = ({ message, setMessage }) => {
                 spellCheck='false'
                 placeholder='Bắt đầu trò chuyện'
                 endContent={
-                  <Button ref={sendRef} isIconOnly radius='full' className='flex items-center justify-center bg-transparent text-primary-green' onClick={handleSubmit(onSubmit)}>
-                    <Send2 variant='Bold' className='rotate-45 transition' />
-                  </Button>
+                  field.value.trim() === '' ? (
+                    <motion.div>
+                      <Button ref={sendRef} isIconOnly radius='full' className='flex items-center justify-center bg-transparent text-primary-green transition' onClick={handleSubmit(handleSend)}>
+                        👍
+                      </Button>
+                    </motion.div>
+                  ) : (
+                    <motion.div>
+                      <Button ref={sendRef} isIconOnly radius='full' className='flex items-center justify-center bg-transparent text-primary-green transition' onClick={handleSubmit(handleSend)}>
+                        <Send2 variant='Bold' className='rotate-45 transition' />
+                      </Button>
+                    </motion.div>
+                  )
                 }
                 classNames={{
                   base: 'px-4 border-t-1 border-[#E4E4E4]',

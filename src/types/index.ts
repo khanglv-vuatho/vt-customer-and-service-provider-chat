@@ -40,6 +40,16 @@ export type Message = {
   type: number
   content: string
   created_at: number
+  first?: boolean // Added field
+  last?: boolean // Added field
+  status: string
 }
 
+export type MessageGroup = {
+  userId: number
+  messages: Message[]
+}
+export type MessageProps = {
+  message: string
+}
 export type TPostMessage = { message: string; data?: any }

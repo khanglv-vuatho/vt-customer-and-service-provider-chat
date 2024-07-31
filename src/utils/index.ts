@@ -1,6 +1,6 @@
 import ToastComponent from '@/components/ToastComponent'
 import { keyPossmessage } from '@/constants'
-import { GroupedMessage, MessageDetail, TPostMessage } from '@/types'
+import { GroupedMessage, Message, MessageDetail, MessageGroup, TPostMessage } from '@/types'
 import moment from 'moment'
 import { useEffect, useRef, useState } from 'react'
 
@@ -71,7 +71,7 @@ const useDebounce = (value: string, delay: number) => {
 }
 
 const handleAddLangInUrl = ({ mainUrl, lang, token }: { mainUrl: string; lang: string; token: string }) => {
-  return `${mainUrl}?lang=${lang}&token=${token}`
+  return `${mainUrl}&lang=${lang}&token=${token}`
 }
 
 const formatLocalTime = (time: string) => {
@@ -148,6 +148,38 @@ const handleToastNoNetwork = () => {
   ToastComponent({ type: 'error', message: 'Không có kết nối mạng, vui lòng kiểm tra lại!' })
 }
 
+const groupConsecutiveMessages = (messages: Message[]): MessageGroup[] => {
+  if (messages.length === 0) return []
+
+  const groupedMessages: MessageGroup[] = []
+  let currentGroup: Message[] = [messages[0]]
+  let currentUserId = messages[0].by.id
+
+  for (let i = 1; i < messages.length; i++) {
+    if (messages[i].by.id === currentUserId) {
+      currentGroup.push(messages[i])
+    } else {
+      // Mark first and last messages in the current group if there are 2 or more messages
+      if (currentGroup.length >= 2) {
+        currentGroup[0].first = true
+        currentGroup[currentGroup.length - 1].last = true
+      }
+      groupedMessages.push({ userId: currentUserId, messages: currentGroup })
+      currentGroup = [messages[i]]
+      currentUserId = messages[i].by.id
+    }
+  }
+
+  // Mark first and last messages in the last group if there are 2 or more messages
+  if (currentGroup.length >= 2) {
+    currentGroup[0].first = true
+    currentGroup[currentGroup.length - 1].last = true
+  }
+  groupedMessages.push({ userId: currentUserId, messages: currentGroup })
+
+  return groupedMessages
+}
+
 export {
   useUnfocusItem,
   capitalizeWords,
@@ -159,5 +191,6 @@ export {
   groupMessages,
   handleToastNoNetwork,
   downloadImage,
-  formatLocalHoursTime
+  formatLocalHoursTime,
+  groupConsecutiveMessages
 }

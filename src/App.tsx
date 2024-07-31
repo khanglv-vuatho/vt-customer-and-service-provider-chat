@@ -2,13 +2,15 @@ import { Route, Routes } from 'react-router-dom'
 
 import { lazy, Suspense } from 'react'
 import { CircularProgress } from '@nextui-org/react'
+import HomePage from './pages'
 
-const HomePage = lazy(() => import('./pages/index'))
+const Redirect = lazy(() => import('./pages/redirect'))
 const TestPage = lazy(() => import('./pages/test'))
 const InvalidPage = lazy(() => import('./pages/invalid'))
 
 const routes = [
-  { path: '/', element: <HomePage /> },
+  { path: '/', element: <Redirect /> },
+  { path: '/chat', element: <HomePage /> },
   { path: '/test', element: <TestPage /> },
   { path: '/invalid', element: <InvalidPage /> }
 ]

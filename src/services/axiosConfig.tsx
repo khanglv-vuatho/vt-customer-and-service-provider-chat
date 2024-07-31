@@ -21,14 +21,8 @@ const getLangFromUrl = () => {
 }
 
 const authorization = async () => {
-  let token
-  if (import.meta.env.MODE === 'development') {
-    token =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTcwLCJmdWxsX25hbWUiOiJsZWhhZ2lha2hvaSIsInByb2ZpbGVfcGljdHVyZSI6Imh0dHBzOi8vY2RuLXNhbmRib3gudnVhdGhvLmNvbS8zOGI2MTM1Yi0wY2ViLTQ4ZTEtYWE3Ny0xZjcwNWQ1ZmU0MzhfMTcyMDQyNDE0OTE1Mi5qcGciLCJyZWZfaWQiOm51bGwsImt5Y19zdGF0dXMiOjIsIndvcmtlcl9zdGF0dXMiOjIsInNlc3Npb25fbG9naW5zIjpbeyJJUCI6IjE5Mi4xNjguMC43NyIsImRldmljZSI6IjE3MjIzMjU4MzU1MjAiLCJ0aW1lIjoxNzIyMzI1ODM1NTIwfV0sImlhdCI6MTcyMjMyNTgzNX0._X3tn1J1flDRnZsVkVY9BMnFis3XU4avJR7RScPohAs'
-  } else {
-    const queryParams = new URLSearchParams(location.search)
-    token = queryParams?.get('token')
-  }
+  const queryParams = new URLSearchParams(location.search)
+  const token = queryParams?.get('token')
 
   const lang = getLangFromUrl()
 
