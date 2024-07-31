@@ -23,15 +23,8 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, isAnimateChat
         y: 0,
         transition: isMe
           ? {
-              x: {
-                delay: 0.1,
-                type: 'tween',
-                stiffness: 100
-              },
-
-              y: {
-                duration: 0.1
-              }
+              x: { delay: 0.1, type: 'tween', stiffness: 100, duration: 0.1 },
+              y: { duration: 0.1 }
             }
           : {
               duration: 0.1
