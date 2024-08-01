@@ -41,9 +41,6 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage }) => {
   })
 
   const handleSend = (data: any) => {
-    if (!network.online) {
-      return ToastComponent({ type: 'error', message: 'Không có kết nối mạng, vui lòng kiểm tra lại!' })
-    }
     handleSendMessage({ message: data.message.trim() === '' ? '👍' : data.message })
     reset({ message: '' })
   }
