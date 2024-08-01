@@ -9,7 +9,7 @@ const Header = () => {
     const payload = {
       worker_id: 429
     }
-    await instance.post('/booking/conversations/3310/clear-message', payload)
+    await instance.post('/webview/conversations/3310/clear-message', payload)
   }
 
   const handleCloseWebview = () => {

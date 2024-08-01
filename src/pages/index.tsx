@@ -6,18 +6,26 @@ import Header from '@/modules/Header/Header'
 import instance from '@/services/axiosConfig'
 import { Message, MessageProps } from '@/types'
 import { groupConsecutiveMessages, handleAddLangInUrl } from '@/utils'
-import { useLocation } from 'react-router-dom'
+import { io } from 'socket.io-client'
 
 const HomePage = () => {
   const queryParams = new URLSearchParams(location.search)
+  const token = queryParams.get('token')
+  const [conversationId, setConversationId] = useState<number>(0)
+
+  const socket = io('192.168.1.22:7001', {
+    transports: ['websocket'],
+    forceNew: true,
+    query: {
+      token
+    }
+  })
 
   const orderId = Number(queryParams.get('orderId'))
   const currentId: any = Number(queryParams.get('currentId'))
   const worker_id: any = Number(queryParams.get('worker_id'))
 
   const isClient = !!worker_id
-
-  console.log({ isClient })
 
   const [onFetchingMessage, setOnFetchingMessage] = useState<boolean>(false)
   const [isAnimateChat, setIsAnimateChat] = useState<boolean>(false)
@@ -43,37 +51,46 @@ const HomePage = () => {
     setConversation((prevConversation) => [...prevConversation, newMessage])
 
     try {
-      await handleSendMessageApi({ message })
-      setConversation((prevConversation) => prevConversation.map((msg) => (msg.id === newMessage.id ? { ...msg, status: 'sent' } : msg)))
+      await handleSendMessageApi({ message, messageId: newMessage.id })
     } catch (error) {
       console.error(error)
     }
   }
 
-  const handleSendMessageApi = async ({ message }: MessageProps) => {
+  const handleSendMessageApi = async ({ message, messageId }: MessageProps & { messageId: number }) => {
     try {
       const payload = isClient ? { content: message, worker_id } : { content: message }
 
-      const endpoint = isClient ? `/booking/conversations/${orderId}` : `/booking-worker/conversations/${orderId}`
+      const endpoint = isClient ? `/webview/conversations/${orderId}` : `/webview-worker/conversations/${orderId}`
 
-      const { data } = await instance.post(endpoint, payload)
-
-      console.log({ data })
+      await instance.post(endpoint, payload)
+      setConversation((prevConversation) => prevConversation.map((msg) => (msg.id === messageId ? { ...msg, status: 'sent' } : msg)))
     } catch (error) {
       console.error(error)
+      setConversation((prevConversation) => prevConversation.map((msg) => (msg.id === messageId ? { ...msg, status: 'failed' } : msg)))
     }
   }
+  console.log({ conversation })
 
   const handleGetMessage = async () => {
     try {
       const { data }: any = isClient
-        ? await instance.get(`/booking/conversations/${orderId}`, {
+        ? await instance.get(`/webview/conversations/${orderId}`, {
             params: {
               worker_id
             }
           })
-        : await instance.get(`/booking-worker/conversations/${orderId}`)
-      setConversation(data)
+        : await instance.get(`/webview-worker/conversations/${orderId}`)
+
+      const transformedData: Message[] = data.data.map((item: Message) => {
+        return {
+          ...item,
+          status: 'sent'
+        }
+      })
+
+      setConversation(transformedData)
+      setConversationId(data.conversation_id)
     } catch (error) {
       console.error(error)
     } finally {
@@ -90,6 +107,23 @@ const HomePage = () => {
   useEffect(() => {
     setOnFetchingMessage(true)
   }, [])
+
+  // useEffect(() => {
+  //   // socket.emit('joinRoom', { conversationId })
+  //   // socket.emit(conversationId.toString(), {})
+  //   // socket.on(`conversation-ii-${conversationId.toString()}`, (data: any) => {
+  //   //   console.log(data)
+  //   // })
+  //   console.log(`self-khangdeptrai-${conversationId.toString()}`)
+  //   socket.on(`self-khangdeptrai-${conversationId.toString()}`, (data: any) => {
+  //     console.log('dasdasds')
+
+  //     console.log(data)
+  //   })
+  //   return () => {
+  //     socket.off('message')
+  //   }
+  // }, [conversation])
 
   return (
     <div className={`relative flex h-dvh flex-col`}>

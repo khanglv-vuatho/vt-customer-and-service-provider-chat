@@ -3,12 +3,16 @@ import { Button, Textarea } from '@nextui-org/react'
 import { Send2 } from 'iconsax-react'
 import { useEffect, useRef } from 'react'
 import { useForm, Controller } from 'react-hook-form'
-import { motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
+import { useNetworkState } from '@uidotdev/usehooks'
+import ToastComponent from '@/components/ToastComponent'
 type FooterInputProps = {
   handleSendMessage: ({ message }: MessageProps) => void
 }
 
 const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage }) => {
+  const network = useNetworkState()
+
   const sendRef: any = useRef<HTMLButtonElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
 
@@ -37,6 +41,9 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage }) => {
   })
 
   const handleSend = (data: any) => {
+    if (!network.online) {
+      return ToastComponent({ type: 'error', message: 'Không có kết nối mạng, vui lòng kiểm tra lại!' })
+    }
     handleSendMessage({ message: data.message.trim() === '' ? '👍' : data.message })
     reset({ message: '' })
   }
@@ -64,13 +71,15 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage }) => {
                 placeholder='Bắt đầu trò chuyện'
                 endContent={
                   field.value.trim() === '' ? (
-                    <motion.div>
-                      <Button ref={sendRef} isIconOnly radius='full' className='flex items-center justify-center bg-transparent text-primary-green transition' onClick={handleSubmit(handleSend)}>
-                        👍
-                      </Button>
-                    </motion.div>
+                    <AnimatePresence>
+                      <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.2 }} exit={{ opacity: 0, scale: 0 }}>
+                        <Button ref={sendRef} isIconOnly radius='full' className='flex items-center justify-center bg-transparent text-primary-green transition' onClick={handleSubmit(handleSend)}>
+                          👍
+                        </Button>
+                      </motion.div>
+                    </AnimatePresence>
                   ) : (
-                    <motion.div>
+                    <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.2 }} exit={{ opacity: 0, scale: 0 }}>
                       <Button ref={sendRef} isIconOnly radius='full' className='flex items-center justify-center bg-transparent text-primary-green transition' onClick={handleSubmit(handleSend)}>
                         <Send2 variant='Bold' className='rotate-45 transition' />
                       </Button>

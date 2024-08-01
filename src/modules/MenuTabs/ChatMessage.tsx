@@ -7,10 +7,9 @@ import { EmojiClickData } from 'emoji-picker-react'
 import { lazy, memo, Suspense, useMemo, useState } from 'react'
 import { io } from 'socket.io-client'
 import ImageMessage from './ImageMessage'
-import Drawer from '@/components/Drawer'
 const EmojiPicker = lazy(() => import('emoji-picker-react'))
 
-const socket = io('172.17.14.163:3000')
+const socket = io('192.168.1.22:7001')
 
 type ChatMessageProps = {
   id: string

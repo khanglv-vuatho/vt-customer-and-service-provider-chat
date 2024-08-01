@@ -42,7 +42,7 @@ export type Message = {
   created_at: number
   first?: boolean // Added field
   last?: boolean // Added field
-  status: string
+  status: 'sent' | 'pending' | 'failed'
 }
 
 export type MessageGroup = {
