@@ -4,7 +4,7 @@ import { formatLocalHoursTime } from '@/utils'
 import { Avatar } from '@nextui-org/react'
 import { motion } from 'framer-motion'
 import { AddCircle, TickCircle } from 'iconsax-react'
-import React, { memo, useEffect, useRef } from 'react'
+import React, { memo, useCallback, useEffect, useRef } from 'react'
 import MessageImage from './MessageImage'
 
 type ConversationProps = {
@@ -18,29 +18,25 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, isAnimateChat
 
   const bottomRef = useRef<HTMLDivElement>(null)
 
-  const messageAnimation = (isMe: boolean) => {
+  const messageAnimation = useCallback(() => {
     return {
-      initial: { x: isMe ? -80 : 0, y: 10 },
+      initial: { x: -40, y: 10 },
       animate: {
         x: 0,
         y: 0,
-        transition: isMe
-          ? {
-              x: { delay: 0.1, type: 'tween', stiffness: 100, duration: 0.1 },
-              y: { duration: 0.1 }
-            }
-          : {
-              duration: 0.1
-            }
+        transition: {
+          x: { delay: 0.1, type: 'tween', duration: 0.1 },
+          y: { duration: 0.1 }
+        }
       }
     }
-  }
+  }, [isAnimateChat])
 
   const shouldRenderIconStatus = (status: 'pending' | 'sent' | 'failed'): React.ReactNode => {
     let tickIcon
     switch (status) {
       case 'pending':
-        tickIcon = <div className='size-4 rounded-full ring-1 ring-inset ring-primary-blue transition' />
+        tickIcon = <div className='size-3 rounded-full ring-1 ring-inset ring-primary-blue transition' />
         break
       case 'sent':
         tickIcon = <TickCircle className='size-4 text-primary-blue transition' />
@@ -77,9 +73,9 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, isAnimateChat
                 {message?.messages?.map((item) => {
                   return (
                     <div key={`message-${item?.id}`} className={`flex w-full items-end ${isMe ? 'justify-end' : 'justify-start'} gap-0.5`}>
-                      {Number(item.type) === typeOfMessage.TEXT ? (
+                      {Number(item.type) == typeOfMessage.TEXT ? (
                         <motion.div
-                          variants={isAnimateChat ? messageAnimation(isMe) : {}}
+                          variants={isAnimateChat ? messageAnimation() : {}}
                           initial='initial'
                           animate='animate'
                           transition={{ duration: 0.3 }}

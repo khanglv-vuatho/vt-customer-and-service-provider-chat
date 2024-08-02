@@ -39,8 +39,6 @@ const Header = () => {
     setOrderDetail(result)
   }
 
-  console.log({ orderDetail })
-
   useEffect(() => {
     handleFetchingDetail()
   }, [])

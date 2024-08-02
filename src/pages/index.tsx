@@ -51,9 +51,10 @@ const HomePage = () => {
 
     try {
       await handleSendMessageApi({ message, messageId: newMessage.id, type, attachment, socket_id: socket.id })
-      setIsAnimateChat(false)
     } catch (error) {
       console.error(error)
+    } finally {
+      setIsAnimateChat(false)
     }
   }
 

@@ -1,7 +1,7 @@
 import { MessageProps, THandleSendMessage } from '@/types'
 import { Button, Textarea } from '@nextui-org/react'
 import { DocumentUpload, Send2 } from 'iconsax-react'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ButtonOnlyIcon } from '@/components/Buttons'
@@ -13,7 +13,6 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage }) => {
   const sendRef: any = useRef<HTMLButtonElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const uploadRef = useRef<HTMLInputElement>(null)
-
   useEffect(() => {
     const inputEl: any = inputRef.current
 
@@ -40,10 +39,10 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage }) => {
     }
   })
 
-  const handleSend = (data: MessageProps) => {
+  const handleSend = async (data: MessageProps) => {
     console.log({ data })
     console.log({ message: data.message.trim() === '' ? '👍' : data.message })
-    handleSendMessage({ message: data.message.trim() === '' ? '👍' : data.message })
+    await handleSendMessage({ message: data.message.trim() === '' ? '👍' : data.message })
     reset({ message: '' })
   }
 
