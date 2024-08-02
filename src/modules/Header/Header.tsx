@@ -1,17 +1,19 @@
+import { fetchingDetailOrder } from '@/apis'
 import { ButtonOnlyIcon } from '@/components/Buttons'
 import ImageFallback from '@/components/ImageFallback'
 import { DefaultModal } from '@/components/Modal'
 import { keyPossmessage } from '@/constants'
-import instance from '@/services/axiosConfig'
 import RenderFireLottie from '@/lotties'
+import instance from '@/services/axiosConfig'
 import { postMessageCustom } from '@/utils'
 import { Progress } from '@nextui-org/react'
-import { Add, Call, Location, MessageQuestion, Refresh, ShieldTick, Timer } from 'iconsax-react'
+import { Add, Call, Clock, Location, MessageQuestion, Refresh, ShieldTick } from 'iconsax-react'
 import { useEffect, useState } from 'react'
 
 const Header = () => {
   const queryParams = new URLSearchParams(location.search)
   const orderId = queryParams.get('orderId')
+  const [orderDetail, setOrderDetail] = useState<any>()
   const value = 20
 
   const [isOpen, setIsOpen] = useState(false)
@@ -33,8 +35,11 @@ const Header = () => {
   }
 
   const handleFetchingDetail = async () => {
-    await instance.get(`/webview/order/${orderId}`)
+    const result = await fetchingDetailOrder({ orderId: Number(orderId) })
+    setOrderDetail(result)
   }
+
+  console.log({ orderDetail })
 
   useEffect(() => {
     handleFetchingDetail()
@@ -65,21 +70,21 @@ const Header = () => {
           <div className='flex flex-col gap-2 *:text-sm'>
             <div className='flex items-center gap-2'>
               <span>
-                <Timer size={20} />
+                <Clock size={20} className='text-primary-gray' />
               </span>
               <time>11:00</time>
             </div>
             <div className='flex items-center gap-2'>
               <span>
-                <Location size={20} />
+                <Location size={20} className='text-primary-gray' />
               </span>
-              <time>11:00</time>
+              <p>12 Phan Văn Trị, Phường 5, Gò Vấp, TPHCM</p>
             </div>
             <div className='flex items-center gap-2'>
               <span>
                 <ShieldTick size={20} className='text-primary-green' variant='Bold' />
               </span>
-              <time>11:00</time>
+              <p>Bảo hành 7 ngày</p>
             </div>
           </div>
           <div className='flex items-center gap-2'>

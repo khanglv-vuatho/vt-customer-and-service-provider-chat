@@ -15,6 +15,7 @@ export const translate = (key: string) => {
 // Context Provider component
 export const TranslationProvider = ({ children, lang }: { children: React.ReactNode; lang: string }) => {
   //convert lang to locale
+
   const locale = lang
   const [language, setLanguage] = useState(locale)
   const [trans, setTranslations] = useState<any>(vi)

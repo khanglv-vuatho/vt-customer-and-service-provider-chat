@@ -25,7 +25,7 @@ export const DefaultModal: React.FC<DefaultModal> = ({ isOpen, onOpenChange, chi
       }}
       {...props}
     >
-      <ModalContent className={twMerge('mx-4 p-4', className)}>{() => <ModalBody>{children}</ModalBody>}</ModalContent>
+      <ModalContent className={twMerge('p-4', className)}>{() => <ModalBody>{children}</ModalBody>}</ModalContent>
     </Modal>
   )
 }

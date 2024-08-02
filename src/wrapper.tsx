@@ -25,10 +25,11 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => {
   }, [navigate])
 
   useEffect(() => {
-    if (import.meta.env.MODE === 'development') return
+    if (import.meta.env.VITEMODE === 'development') return
 
     if (typeof window !== 'undefined' && typeof navigator !== 'undefined') {
       const ua = navigator.userAgent || navigator.vendor
+
       const regexString = import.meta.env.VITE_API_REGEX
       if (regexString) {
         try {

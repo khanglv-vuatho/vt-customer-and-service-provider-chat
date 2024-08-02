@@ -4,15 +4,20 @@ import store from '@/store'
 import { Provider as ReduxProvider } from 'react-redux'
 import Wrapper from './wrapper'
 import { ToastContainer } from 'react-toastify'
+import { SocketProvider } from './context/SocketProvider'
 
 export function Provider({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate()
-
+  const queryParams = new URLSearchParams(location.search)
+  const token = queryParams.get('token') as string
+  console.log({ token })
   return (
     <NextUIProvider navigate={navigate}>
       <ReduxProvider store={store}>
         <ToastContainer />
-        <Wrapper>{children}</Wrapper>
+        <Wrapper>
+          <SocketProvider token={token}>{children}</SocketProvider>
+        </Wrapper>
       </ReduxProvider>
     </NextUIProvider>
   )

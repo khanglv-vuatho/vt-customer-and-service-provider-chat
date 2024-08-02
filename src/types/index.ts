@@ -63,6 +63,7 @@ export type TPayloadHandleSendMessageApi = {
   worker_id?: number
   attachment?: any
   type: 0 | 1
+  socket_id: string
 }
 
 export type TSendMessage = {

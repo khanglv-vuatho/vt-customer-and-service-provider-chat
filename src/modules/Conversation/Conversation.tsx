@@ -11,6 +11,7 @@ type ConversationProps = {
   conversation: MessageGroup[]
   isAnimateChat: boolean
 }
+
 const Conversation: React.FC<ConversationProps> = ({ conversation, isAnimateChat }) => {
   const queryParams = new URLSearchParams(location.search)
   const currentId: any = Number(queryParams.get('currentId'))

@@ -28,4 +28,9 @@ const sendMessageOfWorker = async ({ orderId, payload }: TSendMessage) => {
   return response.data
 }
 
-export { fetchMessageOfCline, fetchMessageOfWorker, sendMessageOfClient, sendMessageOfWorker }
+const fetchingDetailOrder = async ({ orderId }: { orderId: number }) => {
+  const response = await instance.get(`/webview/order/${orderId}`)
+  return response.data
+}
+
+export { fetchMessageOfCline, fetchMessageOfWorker, sendMessageOfClient, sendMessageOfWorker, fetchingDetailOrder }

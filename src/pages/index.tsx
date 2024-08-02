@@ -1,6 +1,5 @@
 import { lazy, memo, Suspense, useEffect, useState } from 'react'
 import ConverstaionsSkeleton from '@/modules/ConversationsSkeleton'
-// import Header from '@/modules/Header/Header'
 const Header = lazy(() => import('@/modules/Header/Header'))
 const FooterInput = lazy(() => import('@/modules/FooterInput/FooterInput'))
 const Conversation = lazy(() => import('@/modules/Conversation/Conversation'))
@@ -8,11 +7,14 @@ import { Message, MessageProps, THandleSendMessage, TPayloadHandleSendMessageApi
 import { groupConsecutiveMessages } from '@/utils'
 import { fetchMessageOfCline, fetchMessageOfWorker, sendMessageOfClient, sendMessageOfWorker } from '@/apis'
 import ToastComponent from '@/components/ToastComponent'
-import socket from '@/socket'
+import { typeOfSocket } from '@/constants'
+
+import { useSocket } from '@/context/SocketProvider'
 
 const HomePage = () => {
   const queryParams = new URLSearchParams(location.search)
-  const token = queryParams.get('token') as string
+  const [conversationInfo, setConversationInfo] = useState<any>(null)
+  const socket: any = useSocket()
 
   const orderId = Number(queryParams.get('orderId'))
   const currentId: any = Number(queryParams.get('currentId'))
@@ -48,15 +50,16 @@ const HomePage = () => {
     setConversation((prevConversation) => [...prevConversation, newMessage])
 
     try {
-      await handleSendMessageApi({ message, messageId: newMessage.id, type, attachment })
+      await handleSendMessageApi({ message, messageId: newMessage.id, type, attachment, socket_id: socket.id })
+      setIsAnimateChat(false)
     } catch (error) {
       console.error(error)
     }
   }
 
-  const handleSendMessageApi = async ({ message, messageId, type = 0, attachment }: MessageProps & { messageId: number; type: 0 | 1; attachment?: any }) => {
+  const handleSendMessageApi = async ({ message, messageId, type = 0, attachment, socket_id }: MessageProps & { messageId: number; type: 0 | 1; attachment?: any; socket_id: string }) => {
     try {
-      const payload: TPayloadHandleSendMessageApi = isClient ? { content: message, worker_id, type } : { content: message, type }
+      const payload: TPayloadHandleSendMessageApi = isClient ? { content: message, worker_id, type, socket_id } : { content: message, type, socket_id }
 
       if (type === 1) {
         payload.attachment = attachment
@@ -73,6 +76,8 @@ const HomePage = () => {
   const handleGetMessage = async () => {
     try {
       const data = isClient ? await fetchMessageOfCline({ orderId, worker_id }) : await fetchMessageOfWorker({ orderId })
+      setConversationInfo(data)
+
       //transform data to add status sent for each message in conversation to render tickIcon
       const transformedData: Message[] = data.data.map((item: Message) => {
         return {
@@ -88,7 +93,6 @@ const HomePage = () => {
         })
       }
 
-      socket(token).emit('conversation', { workerId: data?.worker_id, orderId: data?.order_id })
       setConversation(transformedData)
     } catch (error) {
       console.error(error)
@@ -108,19 +112,23 @@ const HomePage = () => {
   }, [])
 
   useEffect(() => {
-    const socketInstance = socket(token)
+    if (!conversationInfo) return
 
-    socketInstance.on('conversation', (data) => {
-      console.log({ data1123: data })
+    socket.emit(typeOfSocket.JOIN_CONVERSATION_ROOM, { workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
+
+    socket.on(typeOfSocket.MESSAGE_ARRIVE, (data: any) => {
+      if (data.socket_id == socket.id) return
+      setConversation((prevConversation) => [...prevConversation, data.message])
     })
 
     return () => {
-      socketInstance.off('conversation')
+      socket.emit(typeOfSocket.LEAVE_CONVERSATION_ROOM, { workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
     }
-  }, [socket, token])
-
-  return (
+  }, [conversationInfo])
+  const [toggle, setToggle] = useState(true)
+  return toggle ? (
     <div className={`relative flex h-dvh flex-col`}>
+      <div onClick={() => setToggle(!toggle)}>adsdass</div>
       <Suspense fallback={null}>
         <Header />
       </Suspense>
@@ -129,6 +137,10 @@ const HomePage = () => {
         <FooterInput handleSendMessage={handleSendMessage} />
       </Suspense>
     </div>
+  ) : (
+    <>
+      <div onClick={() => setToggle(!toggle)}>123</div>
+    </>
   )
 }
 
