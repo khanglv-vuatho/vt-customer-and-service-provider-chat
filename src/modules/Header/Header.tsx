@@ -129,7 +129,7 @@ const Header = () => {
             <Progress
               value={value}
               classNames={{
-                base: '1',
+                base: 'h-1',
                 indicator: '2',
                 label: '3',
                 labelWrapper: '4',
@@ -141,9 +141,9 @@ const Header = () => {
               style={{
                 left: `${value}%`
               }}
-              className='absolute bottom-0 top-[12px] size-[80px] -translate-x-1/2 -translate-y-1/2'
+              className='absolute bottom-0 size-[30px] -translate-x-1/2 translate-y-1/2'
             >
-              <RenderFireLottie className='' />
+              <RenderFireLottie />
             </div>
           </div>
         </div>

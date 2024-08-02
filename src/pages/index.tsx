@@ -1,8 +1,9 @@
-import { memo, useEffect, useState } from 'react'
-import Conversation from '@/modules/Conversation/Conversation'
-import FooterInput from '@/modules/FooterInput/FooterInput'
+import { lazy, memo, Suspense, useEffect, useState } from 'react'
 import ConverstaionsSkeleton from '@/modules/ConversationsSkeleton'
-import Header from '@/modules/Header/Header'
+// import Header from '@/modules/Header/Header'
+const Header = lazy(() => import('@/modules/Header/Header'))
+const FooterInput = lazy(() => import('@/modules/FooterInput/FooterInput'))
+const Conversation = lazy(() => import('@/modules/Conversation/Conversation'))
 import { Message, MessageProps, THandleSendMessage, TPayloadHandleSendMessageApi } from '@/types'
 import { groupConsecutiveMessages } from '@/utils'
 import { fetchMessageOfCline, fetchMessageOfWorker, sendMessageOfClient, sendMessageOfWorker } from '@/apis'
@@ -120,9 +121,13 @@ const HomePage = () => {
 
   return (
     <div className={`relative flex h-dvh flex-col`}>
-      <Header />
-      {onFetchingMessage ? <ConverstaionsSkeleton /> : <Conversation isAnimateChat={isAnimateChat} conversation={groupConsecutiveMessages(conversation)} />}
-      <FooterInput handleSendMessage={handleSendMessage} />
+      <Suspense fallback={null}>
+        <Header />
+      </Suspense>
+      <Suspense fallback={null}>{onFetchingMessage ? <ConverstaionsSkeleton /> : <Conversation isAnimateChat={isAnimateChat} conversation={groupConsecutiveMessages(conversation)} />}</Suspense>
+      <Suspense fallback={null}>
+        <FooterInput handleSendMessage={handleSendMessage} />
+      </Suspense>
     </div>
   )
 }

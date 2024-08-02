@@ -11,7 +11,7 @@ const ConverstaionsSkeleton = () => {
   )
 }
 
-const SkeletonConversation = ({ index }: { index: number }) => {
+const SkeletonConversation = memo(({ index }: { index: number }) => {
   const randomHeight = Math.floor(Math.random() * (200 - 40 + 1)) + 100
   const heightStyle = index % 2 === 0 ? '40px' : `${randomHeight}px`
 
@@ -20,6 +20,6 @@ const SkeletonConversation = ({ index }: { index: number }) => {
       <Skeleton className='flex h-full w-full max-w-[80%] rounded-lg' />
     </div>
   )
-}
+})
 
 export default memo(ConverstaionsSkeleton)
