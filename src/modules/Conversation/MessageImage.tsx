@@ -15,7 +15,7 @@ const MessageImage = ({ url }: { url: string }) => {
   }
 
   return (
-    <div className='max-w-[80%]'>
+    <div className='max-w-[80%] rounded-md'>
       <ImageFallback src={url} />
     </div>
   )

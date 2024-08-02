@@ -36,7 +36,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, isAnimateChat
     let tickIcon
     switch (status) {
       case 'pending':
-        tickIcon = <div className='size-3 rounded-full ring-1 ring-inset ring-primary-blue transition' />
+        tickIcon = <div className='size-3.5 rounded-full ring-1 ring-inset ring-primary-blue transition' />
         break
       case 'sent':
         tickIcon = <TickCircle className='size-4 text-primary-blue transition' />
@@ -51,13 +51,20 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, isAnimateChat
 
     return tickIcon
   }
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight
+    }
+  }, [conversation])
 
   useEffect(() => {
     bottomRef?.current?.scrollIntoView({ behavior: 'instant' })
-  }, [bottomRef, conversation, conversation.length])
+  }, [bottomRef, conversation, conversation.length, isAnimateChat])
 
   return (
-    <div className={`flex flex-1 flex-col gap-4 overflow-auto px-4 py-3 pb-0`}>
+    <div ref={containerRef} className={`flex flex-1 flex-col gap-4 overflow-auto px-4 py-3 pb-0`}>
       {conversation?.map((message, index) => {
         const isMe = message?.userId === currentId
         return (
