@@ -15,9 +15,7 @@ const ImageFallback = forwardRef(({ src, alt, className, fallback: customFallbac
     setFallback(customFallback)
   }
 
-  return (
-    <Image removeWrapper className={twMerge('rounded-none lg:pointer-events-none lg:select-none', className)} ref={ref} src={(fallback || src) as any} alt={alt} {...props} onError={handleError} />
-  )
+  return <Image removeWrapper className={twMerge('pointer-events-none select-none rounded-none', className)} ref={ref} src={(fallback || src) as any} alt={alt} {...props} onError={handleError} />
 })
 
 export default ImageFallback
