@@ -8,7 +8,7 @@ export const useSocket = () => useContext(SocketContext)
 export const SocketProvider = ({ children, token }: any) => {
   const [socket, setSocket] = useState<any>(null)
   useEffect(() => {
-    const newSocket = io('192.168.1.51:7001', {
+    const newSocket = io(import.meta.env.VITE_WEBSOCKET_URL, {
       query: { token }
     })
 
