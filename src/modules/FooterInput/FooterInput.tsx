@@ -47,6 +47,8 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage }) => {
     reset({ message: '' })
   }
 
+  useEffect(() => {}, [])
+
   return (
     <div className='sticky bottom-0 left-0 right-0 z-50 flex flex-col gap-2'>
       <form className='w-full'>
@@ -82,7 +84,6 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage }) => {
                           onChange={async (e) => {
                             onChange(e.target.files)
                             if (e?.target?.files && e?.target?.files?.length > 0) {
-                              console.log({ message: '', attachment: e.target.files[0], type: 1 })
                               await handleSendMessage({ message: '', attachment: e.target.files[0], type: 1 })
                             }
                             e.target.value = ''

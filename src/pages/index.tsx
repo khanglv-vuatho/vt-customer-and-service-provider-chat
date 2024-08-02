@@ -1,13 +1,13 @@
-import { lazy, memo, Suspense, useEffect, useState } from 'react'
-import ConverstaionsSkeleton from '@/modules/ConversationsSkeleton'
-const Header = lazy(() => import('@/modules/Header/Header'))
-const FooterInput = lazy(() => import('@/modules/FooterInput/FooterInput'))
-const Conversation = lazy(() => import('@/modules/Conversation/Conversation'))
-import { Message, MessageProps, THandleSendMessage, TPayloadHandleSendMessageApi } from '@/types'
-import { groupConsecutiveMessages } from '@/utils'
 import { fetchMessageOfCline, fetchMessageOfWorker, sendMessageOfClient, sendMessageOfWorker } from '@/apis'
 import ToastComponent from '@/components/ToastComponent'
 import { typeOfSocket } from '@/constants'
+import ConverstaionsSkeleton from '@/modules/ConversationsSkeleton'
+import { Message, MessageProps, THandleSendMessage, TPayloadHandleSendMessageApi } from '@/types'
+import { groupConsecutiveMessages } from '@/utils'
+import { lazy, memo, Suspense, useEffect, useState } from 'react'
+const Header = lazy(() => import('@/modules/Header/Header'))
+const FooterInput = lazy(() => import('@/modules/FooterInput/FooterInput'))
+const Conversation = lazy(() => import('@/modules/Conversation/Conversation'))
 
 import { useSocket } from '@/context/SocketProvider'
 
@@ -123,12 +123,12 @@ const HomePage = () => {
 
     return () => {
       socket.emit(typeOfSocket.LEAVE_CONVERSATION_ROOM, { workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
+      socket.off(typeOfSocket.MESSAGE_ARRIVE)
     }
   }, [conversationInfo])
-  const [toggle, setToggle] = useState(true)
-  return toggle ? (
+
+  return (
     <div className={`relative flex h-dvh flex-col`}>
-      <div onClick={() => setToggle(!toggle)}>adsdass</div>
       <Suspense fallback={null}>
         <Header />
       </Suspense>
@@ -137,10 +137,6 @@ const HomePage = () => {
         <FooterInput handleSendMessage={handleSendMessage} />
       </Suspense>
     </div>
-  ) : (
-    <>
-      <div onClick={() => setToggle(!toggle)}>123</div>
-    </>
   )
 }
 
