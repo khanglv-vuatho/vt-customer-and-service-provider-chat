@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 html {
-  @apply overscroll-none scroll-smooth;
+  @apply select-none overscroll-none scroll-smooth;
 }
 
 html *::-webkit-scrollbar {
@@ -28,9 +28,16 @@ html *::-webkit-scrollbar-track {
 html {
   font-family: 'Inter', sans-serif;
 }
+
 .font-inter {
   font-family: 'Inter', sans-serif;
 }
+
 body {
-  @apply overscroll-none scroll-smooth text-primary-black;
+  @apply select-none overscroll-none scroll-smooth text-primary-black;
+}
+
+body {
+  touch-action: manipulation;
+  -ms-touch-action: manipulation;
 }

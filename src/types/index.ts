@@ -34,10 +34,11 @@ export type User = {
 }
 
 export type Message = {
+  attachments?: TImageData[]
   by: User
   id: number
   seen: any[]
-  type: number
+  type: 0 | 1
   content: string
   created_at: number
   first?: boolean // Added field
@@ -52,4 +53,26 @@ export type MessageGroup = {
 export type MessageProps = {
   message: string
 }
+
 export type TPostMessage = { message: string; data?: any }
+
+export type TFetchMessageOfCline = { orderId: number; worker_id: number }
+
+export type TPayloadHandleSendMessageApi = {
+  content: string
+  worker_id?: number
+  attachment?: any
+  type: 0 | 1
+}
+
+export type TSendMessage = {
+  orderId: number
+  payload: TPayloadHandleSendMessageApi
+}
+type TImageData = {
+  url: string
+  type: number
+  storage: string
+}
+
+export type THandleSendMessage = MessageProps & { type?: 0 | 1; attachment?: any }

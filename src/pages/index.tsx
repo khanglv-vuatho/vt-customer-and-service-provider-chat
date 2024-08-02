@@ -1,25 +1,17 @@
-import { useEffect, useState } from 'react'
+import { memo, useEffect, useState } from 'react'
 import Conversation from '@/modules/Conversation/Conversation'
 import FooterInput from '@/modules/FooterInput/FooterInput'
 import ConverstaionsSkeleton from '@/modules/ConversationsSkeleton'
 import Header from '@/modules/Header/Header'
-import instance from '@/services/axiosConfig'
-import { Message, MessageProps } from '@/types'
-import { groupConsecutiveMessages, handleAddLangInUrl } from '@/utils'
-import { io } from 'socket.io-client'
+import { Message, MessageProps, THandleSendMessage, TPayloadHandleSendMessageApi } from '@/types'
+import { groupConsecutiveMessages } from '@/utils'
+import { fetchMessageOfCline, fetchMessageOfWorker, sendMessageOfClient, sendMessageOfWorker } from '@/apis'
+import ToastComponent from '@/components/ToastComponent'
+import socket from '@/socket'
 
 const HomePage = () => {
   const queryParams = new URLSearchParams(location.search)
-  const token = queryParams.get('token')
-  const [conversationId, setConversationId] = useState<number>(0)
-
-  const socket = io('192.168.1.22:7001', {
-    transports: ['websocket'],
-    forceNew: true,
-    query: {
-      token
-    }
-  })
+  const token = queryParams.get('token') as string
 
   const orderId = Number(queryParams.get('orderId'))
   const currentId: any = Number(queryParams.get('currentId'))
@@ -31,13 +23,12 @@ const HomePage = () => {
   const [isAnimateChat, setIsAnimateChat] = useState<boolean>(false)
   const [conversation, setConversation] = useState<Message[]>([])
 
-  const handleSendMessage = async ({ message }: MessageProps) => {
-    if (message === '') return
+  const handleSendMessage = async ({ message, type = 0, attachment }: THandleSendMessage) => {
     const newMessage: Message = {
       content: message,
       id: Date.now(),
       seen: [],
-      type: 0,
+      type,
       by: {
         id: currentId,
         profile_picture: '',
@@ -47,41 +38,41 @@ const HomePage = () => {
       created_at: Date.now(),
       status: 'pending'
     }
+    if (attachment) {
+      newMessage.attachments = [{ url: URL.createObjectURL(attachment) }] as any
+    }
+
+    console.log({ newMessage })
     setIsAnimateChat(true)
     setConversation((prevConversation) => [...prevConversation, newMessage])
 
     try {
-      await handleSendMessageApi({ message, messageId: newMessage.id })
+      await handleSendMessageApi({ message, messageId: newMessage.id, type, attachment })
     } catch (error) {
       console.error(error)
     }
   }
 
-  const handleSendMessageApi = async ({ message, messageId }: MessageProps & { messageId: number }) => {
+  const handleSendMessageApi = async ({ message, messageId, type = 0, attachment }: MessageProps & { messageId: number; type: 0 | 1; attachment?: any }) => {
     try {
-      const payload = isClient ? { content: message, worker_id } : { content: message }
+      const payload: TPayloadHandleSendMessageApi = isClient ? { content: message, worker_id, type } : { content: message, type }
 
-      const endpoint = isClient ? `/webview/conversations/${orderId}` : `/webview-worker/conversations/${orderId}`
+      if (type === 1) {
+        payload.attachment = attachment
+      }
 
-      await instance.post(endpoint, payload)
+      isClient ? await sendMessageOfClient({ orderId, payload }) : await sendMessageOfWorker({ orderId, payload })
       setConversation((prevConversation) => prevConversation.map((msg) => (msg.id === messageId ? { ...msg, status: 'sent' } : msg)))
     } catch (error) {
       console.error(error)
       setConversation((prevConversation) => prevConversation.map((msg) => (msg.id === messageId ? { ...msg, status: 'failed' } : msg)))
     }
   }
-  console.log({ conversation })
 
   const handleGetMessage = async () => {
     try {
-      const { data }: any = isClient
-        ? await instance.get(`/webview/conversations/${orderId}`, {
-            params: {
-              worker_id
-            }
-          })
-        : await instance.get(`/webview-worker/conversations/${orderId}`)
-
+      const data = isClient ? await fetchMessageOfCline({ orderId, worker_id }) : await fetchMessageOfWorker({ orderId })
+      //transform data to add status sent for each message in conversation to render tickIcon
       const transformedData: Message[] = data.data.map((item: Message) => {
         return {
           ...item,
@@ -89,8 +80,15 @@ const HomePage = () => {
         }
       })
 
+      if (!data?.worker_id || !data?.order_id) {
+        return ToastComponent({
+          type: 'error',
+          message: 'Lỗi mạng vui lòng kiểm tra lại'
+        })
+      }
+
+      socket(token).emit('conversation', { workerId: data?.worker_id, orderId: data?.order_id })
       setConversation(transformedData)
-      setConversationId(data.conversation_id)
     } catch (error) {
       console.error(error)
     } finally {
@@ -108,31 +106,25 @@ const HomePage = () => {
     setOnFetchingMessage(true)
   }, [])
 
-  // useEffect(() => {
-  //   // socket.emit('joinRoom', { conversationId })
-  //   // socket.emit(conversationId.toString(), {})
-  //   // socket.on(`conversation-ii-${conversationId.toString()}`, (data: any) => {
-  //   //   console.log(data)
-  //   // })
-  //   console.log(`self-khangdeptrai-${conversationId.toString()}`)
-  //   socket.on(`self-khangdeptrai-${conversationId.toString()}`, (data: any) => {
-  //     console.log('dasdasds')
+  useEffect(() => {
+    const socketInstance = socket(token)
 
-  //     console.log(data)
-  //   })
-  //   return () => {
-  //     socket.off('message')
-  //   }
-  // }, [conversation])
+    socketInstance.on('conversation', (data) => {
+      console.log({ data1123: data })
+    })
+
+    return () => {
+      socketInstance.off('conversation')
+    }
+  }, [socket, token])
 
   return (
     <div className={`relative flex h-dvh flex-col`}>
       <Header />
-      {location.href}
       {onFetchingMessage ? <ConverstaionsSkeleton /> : <Conversation isAnimateChat={isAnimateChat} conversation={groupConsecutiveMessages(conversation)} />}
       <FooterInput handleSendMessage={handleSendMessage} />
     </div>
   )
 }
 
-export default HomePage
+export default memo(HomePage)

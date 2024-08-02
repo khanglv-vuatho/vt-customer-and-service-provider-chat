@@ -9,7 +9,8 @@ import ChatMessage from './ChatMessage'
 import { MessageDetail } from '@/types'
 import Drawer from '@/components/Drawer'
 
-const socket = io('172.17.14.163:3000')
+const socket = io(import.meta.env.VITE_WEBSOCKET_URL)
+console.log(import.meta.env.VITE_WEBSOCKET_URL)
 
 const ChatTab = () => {
   const [conversation, setConversation] = useState<MessageDetail[]>([])

@@ -3,3 +3,8 @@ export const keyPossmessage = {
   CAN_POP: 'canPop',
   DIRECT_TO_EKYC: 'directToEkyc'
 }
+
+export const typeOfMessage = {
+  TEXT: 0,
+  IMAGE: 1
+}
