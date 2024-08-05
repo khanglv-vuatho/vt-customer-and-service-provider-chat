@@ -7,7 +7,8 @@
     "dev": "vite --host",
     "build": "tsc && vite build",
     "lint": "eslint -c .eslintrc.json ./src/**/**/*.{ts,tsx} --fix",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "production": "tsc && vite build && pm2 start ecosystem.config.cjs --env production && pm2 save -f"
   },
   "dependencies": {
     "@nextui-org/react": "^2.4.1",

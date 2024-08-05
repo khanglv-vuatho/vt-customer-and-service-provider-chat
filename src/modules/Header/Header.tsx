@@ -30,12 +30,23 @@ const Header: React.FC<THeaderProps> = ({ workerId }) => {
     }
     await instance.post(`/webview/conversations/${orderId}/clear-message`, payload)
   }
+
   const handleFetchingDetail = async () => {
     const result = await fetchingDetailOrder({ orderId: Number(orderId), worker_id: workerId })
     console.log({ result })
     setOrderDetail(result)
     setIsLoading(false)
   }
+
+  const handleCall = ({ phone }: { phone: string }) => {
+    postMessageCustom({
+      message: keyPossmessage.CALL,
+      data: {
+        call: '31212'
+      }
+    })
+  }
+
   useEffect(() => {
     setIsLoading(true)
   }, [])
@@ -54,7 +65,7 @@ const Header: React.FC<THeaderProps> = ({ workerId }) => {
           <p className='text-sm'>Trò chuyện</p>
         </div>
         <div className='flex gap-2'>
-          <ButtonOnlyIcon className='bg-primary-blue text-white'>
+          <ButtonOnlyIcon className='bg-primary-blue text-white' onClick={() => handleCall({ phone: '31212' })}>
             <Call size={24} variant='Bold' />
           </ButtonOnlyIcon>
           <ButtonOnlyIcon onClick={handleClearMessage} className='bg-primary-yellow text-white'>
@@ -62,7 +73,7 @@ const Header: React.FC<THeaderProps> = ({ workerId }) => {
           </ButtonOnlyIcon>
         </div>
       </div>
-      <OrderDetailHeader workerId={workerId} orderDetail={orderDetail} />
+      <OrderDetailHeader orderDetail={orderDetail} />
     </header>
   )
 }

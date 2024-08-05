@@ -86,6 +86,13 @@ const formatLocalHoursTime = (time: number) => {
 }
 
 const postMessageCustom = ({ message, data = {} }: TPostMessage) => {
+  ToastComponent({
+    message: JSON.stringify({
+      message,
+      data
+    }),
+    type: 'error'
+  })
   //@ts-ignore
   if (window?.vuatho) {
     //@ts-ignore

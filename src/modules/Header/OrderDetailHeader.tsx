@@ -10,17 +10,21 @@ import { Add, Clock, Location, MessageQuestion, ShieldTick } from 'iconsax-react
 import React, { memo, useState } from 'react'
 
 type TOrderDetailHeader = {
-  workerId: number
   orderDetail: TOrderDetail | null
 }
-const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ workerId, orderDetail }) => {
+const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail }) => {
   const percent = 100 - Number(orderDetail?.guarantee?.percent) || 0
+  const queryParams = new URLSearchParams(location.search)
+  const worker_id = Number(queryParams.get('worker_id'))
 
+  const isClient = !!worker_id
   const [isOpen, setIsOpen] = useState(false)
 
   const handleToggleModal = () => {
     setIsOpen(!isOpen)
   }
+
+  console.log({ orderDetail })
 
   return (
     <>
