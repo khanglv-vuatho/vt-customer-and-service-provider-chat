@@ -20,7 +20,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation }) => {
 
   const messageAnimation = useCallback(() => {
     return {
-      initial: { x: -40, y: 10 },
+      initial: { x: -80, y: 10 },
       animate: {
         x: 0,
         y: 0,
