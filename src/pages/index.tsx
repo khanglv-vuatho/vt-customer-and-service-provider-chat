@@ -136,7 +136,7 @@ const HomePage = () => {
       <Suspense fallback={null}>
         <Header workerId={conversationInfo?.worker_id} />
       </Suspense>
-      <Suspense fallback={null}>{onFetchingMessage ? <ConverstaionsSkeleton /> : <Conversation isAnimateChat={isAnimateChat} conversation={groupConsecutiveMessages(conversation)} />}</Suspense>
+      <Suspense fallback={null}>{onFetchingMessage ? <ConverstaionsSkeleton /> : <Conversation conversation={groupConsecutiveMessages(conversation)} />}</Suspense>
       <Suspense fallback={null}>
         <FooterInput handleSendMessage={handleSendMessage} />
       </Suspense>

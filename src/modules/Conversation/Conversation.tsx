@@ -10,10 +10,9 @@ import MessageImage from './MessageImage'
 
 type ConversationProps = {
   conversation: MessageGroup[]
-  isAnimateChat: boolean
 }
 
-const Conversation: React.FC<ConversationProps> = ({ conversation, isAnimateChat }) => {
+const Conversation: React.FC<ConversationProps> = ({ conversation }) => {
   const queryParams = new URLSearchParams(location.search)
   const currentId: any = Number(queryParams.get('currentId'))
 
@@ -31,7 +30,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, isAnimateChat
         }
       }
     }
-  }, [isAnimateChat])
+  }, [])
 
   const shouldRenderIconStatus = (status: 'pending' | 'sent' | 'failed'): React.ReactNode => {
     let tickIcon
@@ -56,7 +55,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, isAnimateChat
 
   useEffect(() => {
     bottomRef?.current?.scrollIntoView({ behavior: 'instant' })
-  }, [bottomRef, conversation, conversation.length, isAnimateChat])
+  }, [bottomRef, conversation, conversation.length])
 
   return (
     <div ref={containerRef} className={`flex flex-1 flex-col gap-4 overflow-auto px-4 py-3 pb-0`}>
@@ -75,9 +74,9 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, isAnimateChat
                 {message?.messages?.map((item) => {
                   return (
                     <div key={`message-${item?.id}`} className={`flex w-full items-end ${isMe ? 'justify-end' : 'justify-start'} gap-0.5`}>
-                      {Number(item.type) == typeOfMessage.TEXT ? (
+                      {Number(item.type) === typeOfMessage.TEXT ? (
                         <motion.div
-                          variants={isAnimateChat ? messageAnimation() : {}}
+                          variants={item?.status === 'pending' ? messageAnimation() : { initial: { x: 0, y: 0 } }}
                           initial='initial'
                           animate='animate'
                           transition={{ duration: 0.3 }}
