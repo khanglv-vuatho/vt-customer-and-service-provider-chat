@@ -1,10 +1,11 @@
+import { ButtonOnlyIcon } from '@/components/Buttons'
 import { MessageProps, THandleSendMessage } from '@/types'
 import { Button, Textarea } from '@nextui-org/react'
-import { DocumentUpload, Send2 } from 'iconsax-react'
-import { useEffect, useRef, useState } from 'react'
-import { useForm, Controller } from 'react-hook-form'
 import { AnimatePresence, motion } from 'framer-motion'
-import { ButtonOnlyIcon } from '@/components/Buttons'
+import { DocumentUpload, Send2 } from 'iconsax-react'
+import { useEffect, useRef } from 'react'
+import { Controller, useForm } from 'react-hook-form'
+
 type FooterInputProps = {
   handleSendMessage: ({ message }: THandleSendMessage) => Promise<void>
 }
@@ -40,12 +41,14 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage }) => {
   })
 
   const handleSend = async (data: MessageProps) => {
-    console.log({ data })
-    console.log({ message: data.message.trim() === '' ? '👍' : data.message })
     reset({ message: '' })
     await handleSendMessage({ message: data.message.trim() === '' ? '👍' : data.message })
   }
-
+  const handleClickInputFile = () => {
+    if (uploadRef.current) {
+      uploadRef.current.click()
+    }
+  }
   return (
     <div className='sticky bottom-0 left-0 right-0 z-50 flex flex-col gap-2'>
       <form className='w-full'>
@@ -86,7 +89,7 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage }) => {
                             e.target.value = ''
                           }}
                         />
-                        <ButtonOnlyIcon onClick={() => uploadRef?.current?.click()}>
+                        <ButtonOnlyIcon onClick={handleClickInputFile}>
                           <DocumentUpload variant='Bold' className='text-primary-gray' />
                         </ButtonOnlyIcon>
                       </>
