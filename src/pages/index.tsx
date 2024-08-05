@@ -24,7 +24,6 @@ const HomePage = () => {
   const isClient = !!worker_id
 
   const [onFetchingMessage, setOnFetchingMessage] = useState<boolean>(false)
-  const [isAnimateChat, setIsAnimateChat] = useState<boolean>(false)
   const [conversation, setConversation] = useState<Message[]>([])
 
   const handleSendMessage = async ({ message, type = 0, attachment }: THandleSendMessage) => {
@@ -47,15 +46,12 @@ const HomePage = () => {
     }
 
     console.log({ newMessage })
-    setIsAnimateChat(true)
     setConversation((prevConversation) => [...prevConversation, newMessage])
 
     try {
       await handleSendMessageApi({ message, messageId: newMessage.id, type, attachment, socket_id: socket.id })
     } catch (error) {
       console.error(error)
-    } finally {
-      setIsAnimateChat(false)
     }
   }
 

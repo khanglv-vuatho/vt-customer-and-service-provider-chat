@@ -42,6 +42,7 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage }) => {
   const handleSend = async (data: MessageProps) => {
     console.log({ data })
     console.log({ message: data.message.trim() === '' ? '👍' : data.message })
+    reset({ message: ' ' })
     reset({ message: '' })
     await handleSendMessage({ message: data.message.trim() === '' ? '👍' : data.message })
   }
@@ -95,14 +96,14 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage }) => {
                   {field.value.trim() === '' ? (
                     <AnimatePresence>
                       <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.2 }} exit={{ opacity: 0, scale: 0 }}>
-                        <Button ref={sendRef} isIconOnly radius='full' className='flex items-center justify-center bg-transparent text-primary-green transition' onClick={handleSubmit(handleSend)}>
+                        <Button ref={sendRef} isIconOnly radius='full' className='flex items-center justify-center bg-transparent transition' onClick={handleSubmit(handleSend)}>
                           👍
                         </Button>
                       </motion.div>
                     </AnimatePresence>
                   ) : (
                     <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.2 }} exit={{ opacity: 0, scale: 0 }}>
-                      <Button ref={sendRef} isIconOnly radius='full' className='flex items-center justify-center bg-transparent text-primary-green transition' onClick={handleSubmit(handleSend)}>
+                      <Button ref={sendRef} isIconOnly radius='full' className={`flex items-center justify-center bg-transparent text-primary-blue transition`} onClick={handleSubmit(handleSend)}>
                         <Send2 variant='Bold' className='rotate-45 transition' />
                       </Button>
                     </motion.div>
