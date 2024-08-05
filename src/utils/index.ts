@@ -27,33 +27,6 @@ const useUnfocusItem = (callback: () => void, exclusionRef?: React.RefObject<HTM
   return itemRef
 }
 
-const downloadImage = async (url: string, filename: string) => {
-  try {
-    // Fetch the image from the URL
-    const response = await fetch(url)
-    if (!response.ok) {
-      throw new Error('Network response was not ok')
-    }
-
-    // Convert the response to a blob
-    const blob = await response.blob()
-
-    // Read the blob as a data URL
-    const reader = new FileReader()
-    reader.onloadend = () => {
-      const link = document.createElement('a')
-      link.href = reader.result as string
-      link.download = filename
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-    }
-    reader.readAsDataURL(blob)
-  } catch (error) {
-    console.error('Error downloading the image:', error)
-  }
-}
-
 function capitalizeWords(string: string) {
   if (!string) return ''
   return string
@@ -198,7 +171,6 @@ const groupConsecutiveMessages = (messages: Message[]): MessageGroup[] => {
 
 export {
   capitalizeWords,
-  downloadImage,
   formatDDMMYYYY,
   formatLocalHoursTime,
   formatLocalTime,

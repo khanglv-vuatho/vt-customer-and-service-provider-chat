@@ -1,6 +1,5 @@
 import ImageFallback from '@/components/ImageFallback'
 import { DefaultModal } from '@/components/Modal'
-import { downloadImage } from '@/utils'
 import { Button } from '@nextui-org/react'
 import { Add } from 'iconsax-react'
 import { memo, useState } from 'react'
@@ -12,12 +11,6 @@ const MessageImage = ({ url }: { url: string }) => {
     setIsOpenModalImage(!isOpenModalImage)
   }
 
-  const handleDownloadImage = () => {
-    const imageUrl = url // Assuming msg.message contains the image URL
-    const filename = imageUrl.substring(imageUrl.lastIndexOf('/') + 1)
-    downloadImage(imageUrl, filename)
-  }
-
   return (
     <>
       <div onClick={handleZoomImage} className='max-w-[60%] overflow-hidden rounded-md'>
@@ -25,14 +18,9 @@ const MessageImage = ({ url }: { url: string }) => {
       </div>
       <DefaultModal className='mx-0 h-[80dvh]' isOpen={isOpenModalImage} onOpenChange={handleZoomImage}>
         <div className='flex h-full flex-col items-center justify-between'>
-          <div className='flex w-full items-center justify-between'>
+          <div className='flex w-full items-center justify-end'>
             <Button isIconOnly onClick={handleZoomImage} className='rounded-full bg-transparent text-primary-yellow'>
               <Add className='rotate-45' size={32} />
-            </Button>
-            <Button isIconOnly onClick={handleDownloadImage} className='rounded-full bg-transparent text-primary-yellow'>
-              <svg viewBox='0 0 24 24' fill='currentColor' className='size-6'>
-                <path d='M4.97 11.03a.75.75 0 111.06-1.06L11 14.94V2.75a.75.75 0 011.5 0v12.19l4.97-4.97a.75.75 0 111.06 1.06l-6.25 6.25a.75.75 0 01-1.06 0l-6.25-6.25zm-.22 9.47a.75.75 0 000 1.5h14.5a.75.75 0 000-1.5H4.75z' />
-              </svg>
             </Button>
           </div>
           <div className='flex w-full items-center justify-center'>
