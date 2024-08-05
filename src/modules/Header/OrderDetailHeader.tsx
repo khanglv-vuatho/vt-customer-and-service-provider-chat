@@ -24,7 +24,7 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ workerId, orderDetail
 
   return (
     <>
-      <DefaultModal isOpen={isOpen} onOpenChange={handleToggleModal}>
+      <DefaultModal isOpen={isOpen} onOpenChange={handleToggleModal} className='mx-8'>
         <div className='w-full'>
           <div className='ml-auto w-fit'>
             <ButtonOnlyIcon onClick={handleToggleModal}>

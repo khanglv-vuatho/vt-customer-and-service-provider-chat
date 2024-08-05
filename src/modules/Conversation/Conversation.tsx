@@ -16,6 +16,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation }) => {
   const queryParams = new URLSearchParams(location.search)
   const currentId: any = Number(queryParams.get('currentId'))
 
+  const containerRef = useRef<HTMLDivElement>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
 
   const messageAnimation = useCallback(() => {
@@ -51,7 +52,6 @@ const Conversation: React.FC<ConversationProps> = ({ conversation }) => {
 
     return tickIcon
   }
-  const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     bottomRef?.current?.scrollIntoView({ behavior: 'instant' })
