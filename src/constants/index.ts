@@ -1,7 +1,6 @@
 export const keyPossmessage = {
-  FINISHED_TEST: 'finishedTest',
   CAN_POP: 'canPop',
-  DIRECT_TO_EKYC: 'directToEkyc'
+  CALL: 'call'
 }
 
 export const typeOfMessage = {
@@ -15,3 +14,10 @@ export const typeOfSocket = {
   MESSAGE_ARRIVE: 'message-arrive',
   MESSAGE_TYPING: 'message-typing'
 }
+
+export type TypeOfRule = (typeof typeOfRule)[keyof typeof typeOfRule]
+
+export const typeOfRule = {
+  CLIENT: 'client',
+  WORKER: 'worker'
+} as const

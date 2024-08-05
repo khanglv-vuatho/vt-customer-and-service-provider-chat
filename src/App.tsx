@@ -5,13 +5,11 @@ import { CircularProgress } from '@nextui-org/react'
 import HomePage from './pages'
 
 const Redirect = lazy(() => import('./pages/redirect'))
-const TestPage = lazy(() => import('./pages/test'))
 const InvalidPage = lazy(() => import('./pages/invalid'))
 
 const routes = [
   { path: '/', element: <Redirect /> },
   { path: '/chat', element: <HomePage /> },
-  { path: '/test', element: <TestPage /> },
   { path: '/invalid', element: <InvalidPage /> }
 ]
 

@@ -28,14 +28,35 @@ const useUnfocusItem = (callback: () => void, exclusionRef?: React.RefObject<HTM
   return itemRef
 }
 
-const downloadImage = (url: string, filename: string) => {
-  const link = document.createElement('a')
-  link.href = url
-  link.download = filename
-  document.body.appendChild(link)
-  link.click()
-  document.body.removeChild(link)
+const downloadImage = async (url: string, filename: string) => {
+  try {
+    // Fetch the image from the URL
+    const response = await fetch(url)
+    if (!response.ok) {
+      throw new Error('Network response was not ok')
+    }
+
+    // Convert the response to a blob
+    const blob = await response.blob()
+    const blobUrl = window.URL.createObjectURL(blob)
+
+    // Create a temporary link element
+    const link = document.createElement('a')
+    link.href = blobUrl
+    link.download = filename
+
+    // Append the link to the body and trigger a click to start the download
+    document.body.appendChild(link)
+    link.click()
+
+    // Cleanup
+    document.body.removeChild(link)
+    window.URL.revokeObjectURL(blobUrl)
+  } catch (error) {
+    console.error('Error downloading the image:', error)
+  }
 }
+
 function capitalizeWords(string: string) {
   if (!string) return ''
   return string
@@ -141,41 +162,6 @@ const objectToFormData = (obj: any) => {
 
   return formData
 }
-const groupMessages = (messages: MessageDetail[]): GroupedMessage[] => {
-  if (messages.length === 0) return []
-
-  const groupedMessages: GroupedMessage[] = []
-  let currentGroup: GroupedMessage = {
-    username: messages[0]?.username,
-    messages: [],
-    time: messages[0].time
-  }
-
-  messages.forEach((msg, index) => {
-    if (msg.username === currentGroup.username) {
-      currentGroup.messages.push({
-        ...msg
-      })
-    } else {
-      groupedMessages.push({ ...currentGroup })
-      currentGroup = {
-        username: msg.username,
-        messages: [
-          {
-            ...msg
-          }
-        ],
-        time: msg.time
-      }
-    }
-
-    if (index === messages.length - 1) {
-      groupedMessages.push({ ...currentGroup })
-    }
-  })
-
-  return groupedMessages
-}
 
 const handleToastNoNetwork = () => {
   ToastComponent({ type: 'error', message: 'Không có kết nối mạng, vui lòng kiểm tra lại!' })
@@ -221,7 +207,6 @@ export {
   formatLocalTime,
   formatDDMMYYYY,
   postMessageCustom,
-  groupMessages,
   handleToastNoNetwork,
   downloadImage,
   formatLocalHoursTime,

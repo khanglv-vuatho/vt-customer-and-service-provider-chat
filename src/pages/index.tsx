@@ -1,10 +1,11 @@
-import { fetchMessageOfCline, fetchMessageOfWorker, handlePostMessage } from '@/apis'
+import { fetchMessage, handlePostMessage } from '@/apis'
 import ToastComponent from '@/components/ToastComponent'
-import { typeOfSocket } from '@/constants'
+import { typeOfRule, typeOfSocket } from '@/constants'
 import ConverstaionsSkeleton from '@/modules/ConversationsSkeleton'
 import { Message, MessageProps, THandleSendMessage, TPayloadHandleSendMessageApi } from '@/types'
 import { groupConsecutiveMessages } from '@/utils'
 import { lazy, memo, Suspense, useEffect, useState } from 'react'
+
 const Header = lazy(() => import('@/modules/Header/Header'))
 const FooterInput = lazy(() => import('@/modules/FooterInput/FooterInput'))
 const Conversation = lazy(() => import('@/modules/Conversation/Conversation'))
@@ -17,8 +18,8 @@ const HomePage = () => {
   const socket: any = useSocket()
 
   const orderId = Number(queryParams.get('orderId'))
-  const currentId: any = Number(queryParams.get('currentId'))
-  const worker_id: any = Number(queryParams.get('worker_id'))
+  const currentId = Number(queryParams.get('currentId'))
+  const worker_id = Number(queryParams.get('worker_id'))
 
   const isClient = !!worker_id
 
@@ -66,7 +67,7 @@ const HomePage = () => {
         payload.attachment = attachment
       }
 
-      await handlePostMessage({ orderId, payload, rule: isClient ? 'client' : 'worker' })
+      await handlePostMessage({ orderId, payload, rule: isClient ? typeOfRule.CLIENT : typeOfRule.WORKER })
       setConversation((prevConversation) => prevConversation.map((msg) => (msg.id === messageId ? { ...msg, status: 'sent' } : msg)))
     } catch (error) {
       console.error(error)
@@ -76,11 +77,11 @@ const HomePage = () => {
 
   const handleGetMessage = async () => {
     try {
-      const data = isClient ? await fetchMessageOfCline({ orderId, worker_id }) : await fetchMessageOfWorker({ orderId })
+      const data = await fetchMessage({ orderId, ...(isClient && { worker_id }) })
       setConversationInfo(data)
 
       //transform data to add status sent for each message in conversation to render tickIcon
-      const transformedData: Message[] = data.data.map((item: Message) => {
+      const transformedData: Message[] = data?.data?.map((item: Message) => {
         return {
           ...item,
           status: 'sent'
@@ -115,11 +116,13 @@ const HomePage = () => {
   useEffect(() => {
     if (!conversationInfo) return
 
+    console.log({ conversationInfo })
+
     socket.emit(typeOfSocket.JOIN_CONVERSATION_ROOM, { workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
 
     socket.on(typeOfSocket.MESSAGE_ARRIVE, (data: any) => {
       if (data?.socket_id == socket?.id) return
-      setConversation((prevConversation) => [...prevConversation, data.message])
+      setConversation((prevConversation) => [...prevConversation, data?.message])
     })
 
     return () => {
@@ -131,7 +134,7 @@ const HomePage = () => {
   return (
     <div className={`relative flex h-dvh flex-col`}>
       <Suspense fallback={null}>
-        <Header />
+        <Header workerId={conversationInfo?.worker_id} />
       </Suspense>
       <Suspense fallback={null}>{onFetchingMessage ? <ConverstaionsSkeleton /> : <Conversation isAnimateChat={isAnimateChat} conversation={groupConsecutiveMessages(conversation)} />}</Suspense>
       <Suspense fallback={null}>

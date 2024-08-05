@@ -1,10 +1,11 @@
-import { typeOfMessage } from '@/constants'
-import { MessageGroup } from '@/types'
-import { formatLocalHoursTime } from '@/utils'
 import { Avatar } from '@nextui-org/react'
 import { motion } from 'framer-motion'
 import { AddCircle, TickCircle } from 'iconsax-react'
 import React, { memo, useCallback, useEffect, useRef } from 'react'
+
+import { typeOfMessage } from '@/constants'
+import { MessageGroup } from '@/types'
+import { formatLocalHoursTime } from '@/utils'
 import MessageImage from './MessageImage'
 
 type ConversationProps = {
