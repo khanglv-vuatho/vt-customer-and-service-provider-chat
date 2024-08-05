@@ -15,7 +15,7 @@ const MessageImage = ({ url }: { url: string }) => {
   }
 
   return (
-    <div className='max-w-[80%] rounded-md'>
+    <div className='max-w-[80%] overflow-hidden rounded-md'>
       <ImageFallback src={url} />
     </div>
   )

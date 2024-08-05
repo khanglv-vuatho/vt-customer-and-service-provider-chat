@@ -66,9 +66,10 @@ export type TPayloadHandleSendMessageApi = {
   socket_id: string
 }
 
-export type TSendMessage = {
+export type THandlePostMessage = {
   orderId: number
   payload: TPayloadHandleSendMessageApi
+  rule: 'client' | 'worker'
 }
 type TImageData = {
   url: string

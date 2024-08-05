@@ -1,5 +1,5 @@
 import instance from '@/services/axiosConfig'
-import { TFetchMessageOfCline, TSendMessage } from '@/types'
+import { TFetchMessageOfCline, THandlePostMessage } from '@/types'
 import { objectToFormData } from '@/utils'
 
 const fetchMessageOfCline = async ({ orderId, worker_id }: TFetchMessageOfCline) => {
@@ -16,15 +16,9 @@ const fetchMessageOfWorker = async ({ orderId }: { orderId: number }) => {
   return response.data
 }
 
-const sendMessageOfClient = async ({ orderId, payload }: TSendMessage) => {
-  console.log({ payload2: objectToFormData(payload) })
-  const response = await instance.post(`/webview/conversations/${orderId}`, objectToFormData(payload))
-  return response.data
-}
-
-const sendMessageOfWorker = async ({ orderId, payload }: TSendMessage) => {
-  console.log({ payload1: objectToFormData(payload) })
-  const response = await instance.post(`/webview-worker/conversations/${orderId}`, objectToFormData(payload))
+const handlePostMessage = async ({ orderId, payload, rule }: THandlePostMessage) => {
+  const endpoint = rule === 'client' ? '/webview/conversations' : '/webview-worker/conversations'
+  const response = await instance.post(`${endpoint}/${orderId}`, objectToFormData(payload))
   return response.data
 }
 
@@ -33,4 +27,4 @@ const fetchingDetailOrder = async ({ orderId }: { orderId: number }) => {
   return response.data
 }
 
-export { fetchMessageOfCline, fetchMessageOfWorker, sendMessageOfClient, sendMessageOfWorker, fetchingDetailOrder }
+export { fetchMessageOfCline, fetchMessageOfWorker, fetchingDetailOrder, handlePostMessage }

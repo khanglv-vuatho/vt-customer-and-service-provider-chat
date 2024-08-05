@@ -1,4 +1,4 @@
-import { fetchMessageOfCline, fetchMessageOfWorker, sendMessageOfClient, sendMessageOfWorker } from '@/apis'
+import { fetchMessageOfCline, fetchMessageOfWorker, handlePostMessage } from '@/apis'
 import ToastComponent from '@/components/ToastComponent'
 import { typeOfSocket } from '@/constants'
 import ConverstaionsSkeleton from '@/modules/ConversationsSkeleton'
@@ -66,7 +66,7 @@ const HomePage = () => {
         payload.attachment = attachment
       }
 
-      isClient ? await sendMessageOfClient({ orderId, payload }) : await sendMessageOfWorker({ orderId, payload })
+      await handlePostMessage({ orderId, payload, rule: isClient ? 'client' : 'worker' })
       setConversation((prevConversation) => prevConversation.map((msg) => (msg.id === messageId ? { ...msg, status: 'sent' } : msg)))
     } catch (error) {
       console.error(error)
@@ -118,7 +118,7 @@ const HomePage = () => {
     socket.emit(typeOfSocket.JOIN_CONVERSATION_ROOM, { workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
 
     socket.on(typeOfSocket.MESSAGE_ARRIVE, (data: any) => {
-      if (data.socket_id == socket.id) return
+      if (data?.socket_id == socket?.id) return
       setConversation((prevConversation) => [...prevConversation, data.message])
     })
 
