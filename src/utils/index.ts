@@ -37,20 +37,18 @@ const downloadImage = async (url: string, filename: string) => {
 
     // Convert the response to a blob
     const blob = await response.blob()
-    const blobUrl = window.URL.createObjectURL(blob)
 
-    // Create a temporary link element
-    const link = document.createElement('a')
-    link.href = blobUrl
-    link.download = filename
-
-    // Append the link to the body and trigger a click to start the download
-    document.body.appendChild(link)
-    link.click()
-
-    // Cleanup
-    document.body.removeChild(link)
-    window.URL.revokeObjectURL(blobUrl)
+    // Read the blob as a data URL
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      const link = document.createElement('a')
+      link.href = reader.result as string
+      link.download = filename
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    }
+    reader.readAsDataURL(blob)
   } catch (error) {
     console.error('Error downloading the image:', error)
   }
