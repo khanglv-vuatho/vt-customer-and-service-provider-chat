@@ -60,30 +60,13 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
       inputEl?.removeEventListener('blur', handleBlur)
     }
   }, [])
-  const handleClickInputFile = () => {
+  const handleClickInputFile = (e: any) => {
+    e.preventDefault()
     if (uploadRef.current) {
       uploadRef.current.click()
     }
   }
 
-  useEffect(() => {
-    const button = buttonRef.current
-
-    const handlePointerDown = (e: any) => {
-      e.preventDefault() // Ngăn chặn hành vi mặc định
-      handleClickInputFile()
-    }
-
-    if (button) {
-      button.addEventListener('pointerdown', handlePointerDown)
-    }
-
-    return () => {
-      if (button) {
-        button.removeEventListener('pointerdown', handlePointerDown)
-      }
-    }
-  }, [])
   return (
     <div className='sticky bottom-0 left-0 right-0 z-50 flex flex-col gap-2'>
       <form className='w-full'>
@@ -136,7 +119,7 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
                             e.target.value = ''
                           }}
                         />
-                        <ButtonOnlyIcon ref={buttonRef as any}>
+                        <ButtonOnlyIcon onClick={handleClickInputFile}>
                           <DocumentUpload variant='Bold' className='text-primary-gray' />
                         </ButtonOnlyIcon>
                       </>
