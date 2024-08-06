@@ -46,6 +46,13 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
         inputEl?.focus()
         inputEl.value = ''
       } else {
+        socket.emit(typeOfSocket.MESSAGE_TYPING, {
+          socketId: socket.id,
+          message: '',
+          orderId: conversationInfo?.order_id,
+          workerId: conversationInfo?.worker_id,
+          currentId
+        })
         inputEl?.blur()
       }
     }
@@ -68,7 +75,6 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
               {...field}
               onChange={(e) => {
                 field.onChange(e.target.value)
-
                 socket.emit(typeOfSocket.MESSAGE_TYPING, {
                   socketId: socket.id,
                   message: e.target.value,
