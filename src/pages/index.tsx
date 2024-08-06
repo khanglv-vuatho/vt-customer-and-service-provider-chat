@@ -41,11 +41,20 @@ const HomePage = () => {
       created_at: Date.now(),
       status: 'pending'
     }
+
+    // turn off typing
+    socket.emit(typeOfSocket.MESSAGE_TYPING, {
+      socketId: socket.id,
+      message: '',
+      orderId: conversationInfo?.order_id,
+      workerId: conversationInfo?.worker_id,
+      currentId
+    })
+
     if (attachment) {
       newMessage.attachments = [{ url: URL.createObjectURL(attachment) }] as any
     }
 
-    console.log({ newMessage })
     setConversation((prevConversation) => [...prevConversation, newMessage])
 
     try {
@@ -112,8 +121,6 @@ const HomePage = () => {
   useEffect(() => {
     if (!conversationInfo) return
 
-    console.log({ conversationInfo })
-
     socket.emit(typeOfSocket.JOIN_CONVERSATION_ROOM, { workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
 
     socket.on(typeOfSocket.MESSAGE_ARRIVE, (data: any) => {
@@ -134,7 +141,7 @@ const HomePage = () => {
       </Suspense>
       <Suspense fallback={null}>{onFetchingMessage ? <ConverstaionsSkeleton /> : <Conversation conversation={groupConsecutiveMessages(conversation)} />}</Suspense>
       <Suspense fallback={null}>
-        <FooterInput handleSendMessage={handleSendMessage} />
+        <FooterInput handleSendMessage={handleSendMessage} conversationInfo={conversationInfo} />
       </Suspense>
     </div>
   )

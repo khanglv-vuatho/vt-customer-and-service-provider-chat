@@ -24,8 +24,6 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail }) => {
     setIsOpen(!isOpen)
   }
 
-  console.log({ orderDetail })
-
   return (
     <>
       <DefaultModal isOpen={isOpen} onOpenChange={handleToggleModal} className='mx-4'>

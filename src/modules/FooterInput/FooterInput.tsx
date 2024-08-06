@@ -1,4 +1,6 @@
 import { ButtonOnlyIcon } from '@/components/Buttons'
+import { typeOfSocket } from '@/constants'
+import { useSocket } from '@/context/SocketProvider'
 import { MessageProps, THandleSendMessage } from '@/types'
 import { Button, Textarea } from '@nextui-org/react'
 import { AnimatePresence, motion } from 'framer-motion'
@@ -8,12 +10,34 @@ import { Controller, useForm } from 'react-hook-form'
 
 type FooterInputProps = {
   handleSendMessage: ({ message }: THandleSendMessage) => Promise<void>
+  conversationInfo: any
 }
 
-const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage }) => {
+const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversationInfo }) => {
+  const queryParams = new URLSearchParams(location.search)
+
   const sendRef: any = useRef<HTMLButtonElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const uploadRef = useRef<HTMLInputElement>(null)
+  const socket: any = useSocket()
+
+  const currentId = Number(queryParams.get('currentId'))
+  const { control, handleSubmit, reset } = useForm<MessageProps & { files: File[] }>({
+    defaultValues: {
+      message: '',
+      files: []
+    }
+  })
+
+  const handleSend = async (data: MessageProps) => {
+    reset({ message: '' })
+    await handleSendMessage({ message: data.message.trim() === '' ? '👍' : data.message })
+  }
+  const handleClickInputFile = () => {
+    if (uploadRef.current) {
+      uploadRef.current.click()
+    }
+  }
   useEffect(() => {
     const inputEl: any = inputRef.current
 
@@ -33,22 +57,6 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage }) => {
     }
   }, [])
 
-  const { control, handleSubmit, reset } = useForm<MessageProps & { files: File[] }>({
-    defaultValues: {
-      message: '',
-      files: []
-    }
-  })
-
-  const handleSend = async (data: MessageProps) => {
-    reset({ message: '' })
-    await handleSendMessage({ message: data.message.trim() === '' ? '👍' : data.message })
-  }
-  const handleClickInputFile = () => {
-    if (uploadRef.current) {
-      uploadRef.current.click()
-    }
-  }
   return (
     <div className='sticky bottom-0 left-0 right-0 z-50 flex flex-col gap-2'>
       <form className='w-full'>
@@ -58,6 +66,17 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage }) => {
           render={({ field }) => (
             <Textarea
               {...field}
+              onChange={(e) => {
+                field.onChange(e.target.value)
+
+                socket.emit(typeOfSocket.MESSAGE_TYPING, {
+                  socketId: socket.id,
+                  message: e.target.value,
+                  orderId: conversationInfo?.order_id,
+                  workerId: conversationInfo?.worker_id,
+                  currentId
+                })
+              }}
               ref={inputRef}
               minRows={1}
               maxRows={3}

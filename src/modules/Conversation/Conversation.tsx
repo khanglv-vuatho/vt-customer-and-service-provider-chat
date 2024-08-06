@@ -1,23 +1,34 @@
-import { Avatar } from '@nextui-org/react'
+import { Avatar, user } from '@nextui-org/react'
 import { motion } from 'framer-motion'
 import { AddCircle, TickCircle } from 'iconsax-react'
-import React, { memo, useCallback, useEffect, useRef } from 'react'
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react'
 
-import { typeOfMessage } from '@/constants'
+import { typeOfMessage, typeOfSocket } from '@/constants'
 import { MessageGroup } from '@/types'
 import { formatLocalHoursTime } from '@/utils'
 import MessageImage from './MessageImage'
+import { useSocket } from '@/context/SocketProvider'
 
 type ConversationProps = {
   conversation: MessageGroup[]
 }
 
+type TInfoTyping = {
+  is_typing: boolean
+  user_id: number
+  socket_id: string
+}
 const Conversation: React.FC<ConversationProps> = ({ conversation }) => {
+  const socket: any = useSocket()
+  const [infoTyping, setInfoTyping] = useState<TInfoTyping | null>(null)
+
   const queryParams = new URLSearchParams(location.search)
   const currentId: any = Number(queryParams.get('currentId'))
 
   const containerRef = useRef<HTMLDivElement>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
+
+  const isAnotherUserTyping = infoTyping?.user_id === currentId
 
   const messageAnimation = useCallback(() => {
     return {
@@ -55,10 +66,17 @@ const Conversation: React.FC<ConversationProps> = ({ conversation }) => {
 
   useEffect(() => {
     bottomRef?.current?.scrollIntoView({ behavior: 'instant' })
-  }, [bottomRef, conversation, conversation.length])
+  }, [bottomRef, conversation, conversation.length, infoTyping])
+
+  useEffect(() => {
+    socket.on(typeOfSocket.MESSAGE_TYPING, (data: TInfoTyping) => {
+      if (socket.id === data?.socket_id) return
+      setInfoTyping(data)
+    })
+  }, [])
 
   return (
-    <div ref={containerRef} className={`flex flex-1 flex-col gap-4 overflow-auto px-4 py-3 pb-0`}>
+    <div ref={containerRef} className={`flex min-h-[calc(100dvh-216px)] flex-1 flex-col gap-4 overflow-auto px-4 py-3 pb-0`}>
       {conversation?.map((message, index) => {
         const isMe = message?.userId === currentId
         return (
@@ -90,7 +108,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation }) => {
                       ) : (
                         <MessageImage key={`message-${item?.attachments?.[0]?.url}`} url={item?.attachments?.[0]?.url as string} />
                       )}
-                      {isMe && shouldRenderIconStatus(item?.status)}
+                      {/* {isMe && shouldRenderIconStatus(item?.status)} */}
                     </div>
                   )
                 })}
@@ -99,6 +117,33 @@ const Conversation: React.FC<ConversationProps> = ({ conversation }) => {
           </div>
         )
       })}
+      {infoTyping?.is_typing && (
+        <motion.div
+          style={{
+            display: isAnotherUserTyping ? 'block' : 'flex'
+          }}
+          className={`-mt-3 min-h-10 w-fit items-center gap-1 rounded-lg border-1 px-2 ${isAnotherUserTyping ? 'border-transparent bg-primary-light-blue' : 'border-primary-yellow bg-transparent'}`}
+        >
+          {Array(3)
+            .fill(0)
+            .map((_, index) => (
+              <motion.div
+                key={index}
+                className='h-1.5 w-1.5 rounded-full bg-primary-black/40'
+                animate={{
+                  y: [0, -4, 0],
+                  transition: {
+                    delay: index * 0.1,
+                    duration: 0.3,
+                    ease: 'easeInOut',
+                    repeat: Infinity,
+                    repeatDelay: 1
+                  }
+                }}
+              />
+            ))}
+        </motion.div>
+      )}
       <div ref={bottomRef} /> {/* Bottom reference for auto-scrolling */}
     </div>
   )

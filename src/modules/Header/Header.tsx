@@ -33,7 +33,6 @@ const Header: React.FC<THeaderProps> = ({ workerId }) => {
 
   const handleFetchingDetail = async () => {
     const result = await fetchingDetailOrder({ orderId: Number(orderId), worker_id: workerId })
-    console.log({ result })
     setOrderDetail(result)
     setIsLoading(false)
   }
