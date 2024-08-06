@@ -190,4 +190,13 @@ export type TOrderDetail = {
   service_info: TServiceInfo
   can_feedback: boolean
   feedback: any // Define a more specific type if available
+  client_phone: TPhoneDetail
+  worker_phone: TPhoneDetail
+}
+
+type TPhoneDetail = {
+  phone: {
+    phone_code: string
+    phone_number: string
+  }
 }

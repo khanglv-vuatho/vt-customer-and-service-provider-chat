@@ -18,7 +18,9 @@ const Header: React.FC<THeaderProps> = ({ workerId }) => {
   const orderId = queryParams.get('orderId')
   const [orderDetail, setOrderDetail] = useState<TOrderDetail | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const worker_id = Number(queryParams.get('worker_id'))
 
+  const isClient = !!worker_id
   const handleCloseWebview = () => {
     postMessageCustom({
       message: keyPossmessage.CAN_POP
@@ -37,11 +39,15 @@ const Header: React.FC<THeaderProps> = ({ workerId }) => {
     setIsLoading(false)
   }
 
-  const handleCall = ({ phone }: { phone: string }) => {
+  const handleCall = () => {
+    const keyPhone = isClient ? 'client_phone' : 'worker_phone'
+    const phoneCode = orderDetail?.[keyPhone].phone.phone_code.toString() || ''
+    const phoneNumber = orderDetail?.[keyPhone].phone.phone_number.toString() || ''
+    const phone = phoneCode + phoneNumber
     postMessageCustom({
       message: keyPossmessage.CALL,
       data: {
-        call: '31212'
+        call: phone
       }
     })
   }
@@ -64,7 +70,7 @@ const Header: React.FC<THeaderProps> = ({ workerId }) => {
           <p className='text-sm'>Trò chuyện</p>
         </div>
         <div className='flex gap-2'>
-          <ButtonOnlyIcon className='bg-primary-blue text-white' onClick={() => handleCall({ phone: '31212' })}>
+          <ButtonOnlyIcon className='bg-primary-blue text-white' onClick={handleCall}>
             <Call size={24} variant='Bold' />
           </ButtonOnlyIcon>
           <ButtonOnlyIcon onClick={handleClearMessage} className='bg-primary-yellow text-white'>

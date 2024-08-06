@@ -128,10 +128,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation }) => {
       })}
       {infoTyping?.is_typing && (
         <motion.div
-          style={{
-            display: isAnotherUserTyping ? 'block' : 'flex'
-          }}
-          className={`-mt-3 min-h-10 w-fit items-center gap-1 rounded-lg border-1 px-2 ${isAnotherUserTyping ? 'border-transparent bg-primary-light-blue' : 'border-primary-yellow bg-transparent'}`}
+          className={`-mt-3 flex min-h-10 w-fit items-center gap-1 rounded-lg border-1 px-2 ${isAnotherUserTyping ? 'border-transparent bg-primary-light-blue' : 'border-primary-yellow bg-transparent'}`}
         >
           {Array(3)
             .fill(0)
