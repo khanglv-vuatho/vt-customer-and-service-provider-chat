@@ -19,6 +19,7 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
   const sendRef: any = useRef<HTMLButtonElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const uploadRef = useRef<HTMLInputElement>(null)
+  const buttonRef = useRef<HTMLInputElement>(null)
   const socket: any = useSocket()
 
   const currentId = Number(queryParams.get('currentId'))
@@ -33,11 +34,7 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
     reset({ message: '' })
     await handleSendMessage({ message: data.message.trim() === '' ? '👍' : data.message })
   }
-  const handleClickInputFile = () => {
-    if (uploadRef.current) {
-      uploadRef.current.click()
-    }
-  }
+
   useEffect(() => {
     const inputEl: any = inputRef.current
 
@@ -63,7 +60,30 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
       inputEl?.removeEventListener('blur', handleBlur)
     }
   }, [])
+  const handleClickInputFile = () => {
+    if (uploadRef.current) {
+      uploadRef.current.click()
+    }
+  }
 
+  useEffect(() => {
+    const button = buttonRef.current
+
+    const handlePointerDown = (e: any) => {
+      e.preventDefault() // Ngăn chặn hành vi mặc định
+      handleClickInputFile()
+    }
+
+    if (button) {
+      button.addEventListener('pointerdown', handlePointerDown)
+    }
+
+    return () => {
+      if (button) {
+        button.removeEventListener('pointerdown', handlePointerDown)
+      }
+    }
+  }, [])
   return (
     <div className='sticky bottom-0 left-0 right-0 z-50 flex flex-col gap-2'>
       <form className='w-full'>
@@ -87,7 +107,7 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
               minRows={1}
               maxRows={3}
               autoFocus
-              maxLength={300}
+              maxLength={30}
               radius='none'
               autoComplete='off'
               autoCorrect='off'
@@ -104,6 +124,9 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
                         <input
                           type='file'
                           accept='image/*'
+                          style={{
+                            display: 'none'
+                          }}
                           ref={uploadRef}
                           onChange={async (e) => {
                             onChange(e.target.files)
@@ -113,7 +136,7 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
                             e.target.value = ''
                           }}
                         />
-                        <ButtonOnlyIcon onClick={handleClickInputFile}>
+                        <ButtonOnlyIcon ref={buttonRef as any}>
                           <DocumentUpload variant='Bold' className='text-primary-gray' />
                         </ButtonOnlyIcon>
                       </>

@@ -1,5 +1,6 @@
 import { postMessageCustom } from '@/utils'
 import { Button, ButtonProps } from '@nextui-org/react'
+import { forwardRef } from 'react'
 import { twMerge } from 'tailwind-merge'
 
 type Props = {
@@ -88,10 +89,11 @@ export const PrimaryLightButton = ({ className, children, ...props }: Props) => 
   )
 }
 
-export const ButtonOnlyIcon = ({ className, children, ...props }: Props) => {
+export const ButtonOnlyIcon = forwardRef<HTMLButtonElement, Props>(({ className, children, ...props }, ref) => {
   return (
     <Button
       {...props}
+      ref={ref}
       isIconOnly
       onClick={(e) => {
         handlePhoneVibration()
@@ -102,4 +104,4 @@ export const ButtonOnlyIcon = ({ className, children, ...props }: Props) => {
       {children}
     </Button>
   )
-}
+})
