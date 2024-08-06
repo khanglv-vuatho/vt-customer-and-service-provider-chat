@@ -14,10 +14,10 @@ type TOrderDetailHeader = {
 }
 const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail }) => {
   const percent = 100 - Number(orderDetail?.guarantee?.percent) || 0
-  const queryParams = new URLSearchParams(location.search)
-  const worker_id = Number(queryParams.get('worker_id'))
+  // const queryParams = new URLSearchParams(location.search)
+  // const worker_id = Number(queryParams.get('worker_id'))
 
-  const isClient = !!worker_id
+  // const isClient = !!worker_id
   const [isOpen, setIsOpen] = useState(false)
 
   const handleToggleModal = () => {
@@ -81,7 +81,7 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail }) => {
           </div>
         </div>
       </DefaultModal>
-      <div className='flex flex-col gap-4 p-4'>
+      <div className='z-50 flex flex-col gap-4 bg-white p-4'>
         <div className='flex items-center justify-between text-sm font-bold'>
           <p>{orderDetail?.problems?.[0]?.description}</p>
           <p className='text-primary-yellow underline' onClick={handleToggleModal}>

@@ -69,7 +69,6 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
 
   return (
     <div className='sticky bottom-0 left-0 right-0 z-50 flex flex-col gap-2'>
-      123
       <form className='w-full'>
         <Controller
           name='message'
@@ -144,7 +143,7 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
                 </div>
               }
               classNames={{
-                base: 'px-4 border-t-1 border-[#E4E4E4]',
+                base: 'px-4 border-t-1 border-[#E4E4E4] bg-white',
                 innerWrapper: 'items-end',
                 input: 'text-primary-base placeholder:pl-1 pb-1 caret-primary-green placeholder:text-primary-gray placeholder:text-sm text-base',
                 inputWrapper:
