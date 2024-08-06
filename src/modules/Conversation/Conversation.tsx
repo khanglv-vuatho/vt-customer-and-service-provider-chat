@@ -144,6 +144,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation }) => {
             ))}
         </motion.div>
       )}
+      <input type='file' accept='image/*' />
       <div ref={bottomRef} /> {/* Bottom reference for auto-scrolling */}
     </div>
   )
