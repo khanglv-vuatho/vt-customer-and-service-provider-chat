@@ -105,7 +105,6 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
                           type='file'
                           accept='image/*'
                           ref={uploadRef}
-                          style={{ display: 'none' }}
                           onChange={async (e) => {
                             onChange(e.target.files)
                             if (e?.target?.files && e?.target?.files?.length > 0) {
