@@ -27,6 +27,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation }) => {
 
   const containerRef = useRef<HTMLDivElement>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
+  const lastElementRef = useRef<HTMLDivElement>(null)
 
   const isAnotherUserTyping = infoTyping?.user_id === currentId
 
@@ -65,7 +66,11 @@ const Conversation: React.FC<ConversationProps> = ({ conversation }) => {
   }
 
   useEffect(() => {
-    bottomRef?.current?.scrollIntoView({ behavior: 'instant' })
+    if (lastElementRef.current) {
+      lastElementRef.current.scrollIntoView({ behavior: 'instant' })
+      const lastElementHeight = lastElementRef.current.offsetHeight
+      console.log('Last element height:', lastElementHeight)
+    }
   }, [bottomRef, conversation, conversation.length, infoTyping])
 
   useEffect(() => {
@@ -91,7 +96,11 @@ const Conversation: React.FC<ConversationProps> = ({ conversation }) => {
               <div className={`flex flex-col gap-1 ${isMe ? 'items-end' : 'items-start'} `}>
                 {message?.messages?.map((item) => {
                   return (
-                    <div key={`message-${item?.id}`} className={`flex w-full items-end ${isMe ? 'justify-end' : 'justify-start'} gap-0.5`}>
+                    <div
+                      ref={conversation.length === index + 1 ? lastElementRef : undefined}
+                      key={`message-${item?.id}`}
+                      className={`flex w-full items-end ${isMe ? 'justify-end' : 'justify-start'} gap-0.5`}
+                    >
                       {Number(item.type) === typeOfMessage.TEXT ? (
                         <motion.div
                           variants={item?.status === 'pending' ? messageAnimation() : { initial: { x: 0, y: 0 } }}

@@ -13,7 +13,7 @@ const MessageImage = ({ url }: { url: string }) => {
 
   return (
     <>
-      <div onClick={handleZoomImage} className='max-w-[60%] overflow-hidden rounded-md'>
+      <div onClick={handleZoomImage} style={{ height: '' }} className='max-w-[60%] overflow-hidden rounded-md'>
         <ImageFallback src={url} />
       </div>
       <DefaultModal className='mx-0 h-[80dvh]' isOpen={isOpenModalImage} onOpenChange={handleZoomImage}>
