@@ -69,9 +69,8 @@ const Conversation: React.FC<ConversationProps> = ({ conversation }) => {
     if (lastElementRef.current) {
       lastElementRef.current.scrollIntoView({ behavior: 'instant' })
       const lastElementHeight = lastElementRef.current.offsetHeight
-      console.log('Last element height:', lastElementHeight)
     }
-  }, [bottomRef, conversation, conversation.length, infoTyping])
+  }, [bottomRef, conversation, conversation.length, infoTyping, lastElementRef])
 
   useEffect(() => {
     socket.on(typeOfSocket.MESSAGE_TYPING, (data: TInfoTyping) => {
@@ -117,7 +116,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation }) => {
                       ) : (
                         <MessageImage key={`message-${item?.attachments?.[0]?.url}`} url={item?.attachments?.[0]?.url as string} />
                       )}
-                      {/* {isMe && shouldRenderIconStatus(item?.status)} */}
+                      {isMe && shouldRenderIconStatus(item?.status)}
                     </div>
                   )
                 })}

@@ -5,7 +5,7 @@ import { MessageProps, THandleSendMessage } from '@/types'
 import { Button, Textarea } from '@nextui-org/react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { DocumentUpload, Send2 } from 'iconsax-react'
-import { useEffect, useRef } from 'react'
+import { memo, useEffect, useRef } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 
 type FooterInputProps = {
@@ -19,7 +19,6 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
   const sendRef: any = useRef<HTMLButtonElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const uploadRef = useRef<HTMLInputElement>(null)
-  const buttonRef = useRef<HTMLInputElement>(null)
   const socket: any = useSocket()
 
   const currentId = Number(queryParams.get('currentId'))
@@ -68,7 +67,7 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
   }
 
   return (
-    <div className='sticky bottom-0 left-0 right-0 z-50 flex flex-col gap-2'>
+    <motion.footer initial={{ opacity: 0, y: 100 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.1 }} className='sticky bottom-0 left-0 right-0 z-50 flex flex-col gap-2'>
       <form className='w-full'>
         <Controller
           name='message'
@@ -153,8 +152,8 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
           )}
         />
       </form>
-    </div>
+    </motion.footer>
   )
 }
 
-export default FooterInput
+export default memo(FooterInput)

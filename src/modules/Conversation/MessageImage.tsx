@@ -16,7 +16,7 @@ const MessageImage = ({ url }: { url: string }) => {
       <div onClick={handleZoomImage} style={{ height: '' }} className='max-w-[60%] overflow-hidden rounded-md'>
         <ImageFallback src={url} />
       </div>
-      <DefaultModal className='mx-0 h-[80dvh]' isOpen={isOpenModalImage} onOpenChange={handleZoomImage}>
+      <DefaultModal className='mx-0 max-h-[80dvh]' isOpen={isOpenModalImage} onOpenChange={handleZoomImage}>
         <div className='flex h-full flex-col items-center justify-between'>
           <div className='flex w-full items-center justify-end'>
             <Button isIconOnly onClick={handleZoomImage} className='rounded-full bg-transparent text-primary-yellow'>

@@ -72,7 +72,7 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail }) => {
             {(orderDetail?.problems?.[0]?.attachments?.length as any) > 0 && (
               <div className='flex items-center gap-2'>
                 {orderDetail?.problems?.[0]?.attachments.map((item) => (
-                  <div className='size-[80px] overflow-hidden rounded-md'>
+                  <div key={item?.url} className='size-[80px] overflow-hidden rounded-md'>
                     <ImageFallback src={item?.url} alt={item?.url} className='size-full' />
                   </div>
                 ))}

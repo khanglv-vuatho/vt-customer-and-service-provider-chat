@@ -4,7 +4,7 @@ import { typeOfRule, typeOfSocket } from '@/constants'
 import ConverstaionsSkeleton from '@/modules/ConversationsSkeleton'
 import { Message, MessageProps, THandleSendMessage, TPayloadHandleSendMessageApi } from '@/types'
 import { groupConsecutiveMessages } from '@/utils'
-import { lazy, memo, Suspense, useEffect, useState } from 'react'
+import { lazy, memo, Suspense, useCallback, useEffect, useState } from 'react'
 
 const Header = lazy(() => import('@/modules/Header/Header'))
 const FooterInput = lazy(() => import('@/modules/FooterInput/FooterInput'))
@@ -26,43 +26,46 @@ const HomePage = () => {
   const [onFetchingMessage, setOnFetchingMessage] = useState<boolean>(false)
   const [conversation, setConversation] = useState<Message[]>([])
 
-  const handleSendMessage = async ({ message, type = 0, attachment }: THandleSendMessage) => {
-    const newMessage: Message = {
-      content: message,
-      id: Date.now(),
-      seen: [],
-      type,
-      by: {
-        id: currentId,
-        profile_picture: '',
-        avatar: null,
-        full_name: ''
-      },
-      created_at: Date.now(),
-      status: 'pending'
-    }
+  const handleSendMessage = useCallback(
+    async ({ message, type = 0, attachment }: THandleSendMessage) => {
+      const newMessage: Message = {
+        content: message,
+        id: Date.now(),
+        seen: [],
+        type,
+        by: {
+          id: currentId,
+          profile_picture: '',
+          avatar: null,
+          full_name: ''
+        },
+        created_at: Date.now(),
+        status: 'pending'
+      }
 
-    // turn off typing
-    socket.emit(typeOfSocket.MESSAGE_TYPING, {
-      socketId: socket.id,
-      message: '',
-      orderId: conversationInfo?.order_id,
-      workerId: conversationInfo?.worker_id,
-      currentId
-    })
+      // turn off typing
+      socket.emit(typeOfSocket.MESSAGE_TYPING, {
+        socketId: socket.id,
+        message: '',
+        orderId: conversationInfo?.order_id,
+        workerId: conversationInfo?.worker_id,
+        currentId
+      })
 
-    if (attachment) {
-      newMessage.attachments = [{ url: URL.createObjectURL(attachment) }] as any
-    }
+      if (attachment) {
+        newMessage.attachments = [{ url: URL.createObjectURL(attachment) }] as any
+      }
 
-    setConversation((prevConversation) => [...prevConversation, newMessage])
+      setConversation((prevConversation) => [...prevConversation, newMessage])
 
-    try {
-      await handleSendMessageApi({ message, messageId: newMessage.id, type, attachment, socket_id: socket.id })
-    } catch (error) {
-      console.error(error)
-    }
-  }
+      try {
+        await handleSendMessageApi({ message, messageId: newMessage.id, type, attachment, socket_id: socket.id })
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    [currentId, conversationInfo, socket]
+  )
 
   const handleSendMessageApi = async ({ message, messageId, type = 0, attachment, socket_id }: MessageProps & { messageId: number; type: 0 | 1; attachment?: any; socket_id: string }) => {
     try {
