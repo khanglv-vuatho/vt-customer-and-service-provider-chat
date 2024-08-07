@@ -32,7 +32,7 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
 
   const handleSend = async (data: MessageProps) => {
     reset({ message: '' })
-    await handleSendMessage({ message: data.message.trim() === '' ? '👍' : data.message })
+    await handleSendMessage({ message: data.message.trim() === '' ? '👍' : data.message.trim() })
   }
 
   useEffect(() => {

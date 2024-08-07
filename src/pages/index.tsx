@@ -29,7 +29,7 @@ const HomePage = () => {
   const handleSendMessage = useCallback(
     async ({ message, type = 0, attachment }: THandleSendMessage) => {
       const newMessage: Message = {
-        content: message,
+        content: message.trim(),
         id: Date.now(),
         seen: [],
         type,
