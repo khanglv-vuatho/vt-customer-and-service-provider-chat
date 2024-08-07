@@ -1,4 +1,5 @@
 import { ButtonOnlyIcon } from '@/components/Buttons'
+import ToastComponent from '@/components/ToastComponent'
 import { typeOfSocket } from '@/constants'
 import { useSocket } from '@/context/SocketProvider'
 import { MessageProps, THandleSendMessage } from '@/types'
@@ -38,7 +39,10 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
     const inputEl: any = inputRef.current
 
     const handleBlur = (e: any) => {
-      if (sendRef?.current?.contains(e?.relatedTarget)) {
+      if (sendRef?.current?.contains(e?.relatedTarget) || e?.relatedTarget.name === 'upload-file-button') {
+        if (e?.relatedTarget.name === 'upload-file-button') {
+          handleClickInputFile(e)
+        }
         inputEl?.focus()
         inputEl.value = ''
       } else {
@@ -59,6 +63,7 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
       inputEl?.removeEventListener('blur', handleBlur)
     }
   }, [])
+
   const handleClickInputFile = (e: any) => {
     e.preventDefault()
     if (uploadRef.current) {
@@ -118,7 +123,7 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
                             e.target.value = ''
                           }}
                         />
-                        <ButtonOnlyIcon onClick={handleClickInputFile}>
+                        <ButtonOnlyIcon name='upload-file-button' onClick={handleClickInputFile}>
                           <DocumentUpload variant='Bold' className='text-primary-gray' />
                         </ButtonOnlyIcon>
                       </>
