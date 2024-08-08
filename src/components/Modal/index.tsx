@@ -21,7 +21,12 @@ export const DefaultModal: React.FC<DefaultModal> = ({ isOpen, onOpenChange, chi
       placement='center'
       classNames={{
         body: 'p-0',
-        base: 'rounded-xl'
+        base: 'rounded-xl',
+        backdrop: 'z-[300]',
+        closeButton: '2',
+        footer: '3',
+        header: '4',
+        wrapper: 'z-[500]'
       }}
       {...props}
     >
