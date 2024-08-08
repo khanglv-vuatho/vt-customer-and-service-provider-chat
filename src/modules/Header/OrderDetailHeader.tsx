@@ -42,7 +42,7 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail }) => {
                   <MessageQuestion className='text-primary-gray' />
                 </span>
               </div>
-              <p className='font-bold text-primary-green'>{orderDetail?.billing?.first_price}đ</p>
+              <p className='font-bold text-primary-green'>{orderDetail?.billing?.first_price.toLocaleString('en-US').toString()}đ</p>
             </div>
             <div className='flex flex-col gap-2 *:text-sm'>
               <div className='flex items-center gap-2'>

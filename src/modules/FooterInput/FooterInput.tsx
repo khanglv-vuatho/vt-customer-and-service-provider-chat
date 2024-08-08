@@ -79,6 +79,15 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
           render={({ field }) => (
             <Textarea
               {...field}
+              onBlur={() =>
+                socket.emit(typeOfSocket.MESSAGE_TYPING, {
+                  socketId: socket.id,
+                  message: '',
+                  orderId: conversationInfo?.order_id,
+                  workerId: conversationInfo?.worker_id,
+                  currentId
+                })
+              }
               onChange={(e) => {
                 field.onChange(e.target.value)
                 socket.emit(typeOfSocket.MESSAGE_TYPING, {

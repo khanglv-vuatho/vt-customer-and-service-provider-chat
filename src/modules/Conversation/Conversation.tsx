@@ -77,6 +77,9 @@ const Conversation: React.FC<ConversationProps> = ({ conversation }) => {
     socket.on(typeOfSocket.MESSAGE_TYPING, (data: TInfoTyping) => {
       if (socket.id === data?.socket_id) return
       setInfoTyping(data)
+      setTimeout(() => {
+        setInfoTyping(null)
+      }, 5000)
     })
   }, [])
 
