@@ -13,11 +13,8 @@ type TOrderDetailHeader = {
   orderDetail: TOrderDetail | null
 }
 const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail }) => {
-  const percent = 100 - Number(orderDetail?.guarantee?.percent) || 0
-  // const queryParams = new URLSearchParams(location.search)
-  // const worker_id = Number(queryParams.get('worker_id'))
+  const percent = 100 - Number(orderDetail?.guarantee?.percent) < 0 ? 0 : 100 - Number(orderDetail?.guarantee?.percent)
 
-  // const isClient = !!worker_id
   const [isOpen, setIsOpen] = useState(false)
 
   const handleToggleModal = () => {

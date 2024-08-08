@@ -200,3 +200,10 @@ type TPhoneDetail = {
     phone_number: string
   }
 }
+
+export type TConversationInfo = {
+  data: Message[]
+  order_id: number
+  worker_id: number
+  converstation_id: number
+}

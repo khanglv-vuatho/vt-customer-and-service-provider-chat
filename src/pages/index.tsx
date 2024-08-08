@@ -2,9 +2,9 @@ import { fetchMessage, handlePostMessage } from '@/apis'
 import ToastComponent from '@/components/ToastComponent'
 import { typeOfRule, typeOfSocket } from '@/constants'
 import ConverstaionsSkeleton from '@/modules/ConversationsSkeleton'
-import { Message, MessageProps, THandleSendMessage, TPayloadHandleSendMessageApi } from '@/types'
+import { Message, MessageProps, TConversationInfo, THandleSendMessage, TPayloadHandleSendMessageApi } from '@/types'
 import { groupConsecutiveMessages } from '@/utils'
-import { lazy, memo, Suspense, useCallback, useEffect, useState } from 'react'
+import { lazy, memo, Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 
 const Header = lazy(() => import('@/modules/Header/Header'))
 const FooterInput = lazy(() => import('@/modules/FooterInput/FooterInput'))
@@ -14,9 +14,7 @@ import { useSocket } from '@/context/SocketProvider'
 
 const HomePage = () => {
   const queryParams = new URLSearchParams(location.search)
-  const [conversationInfo, setConversationInfo] = useState<any>(null)
   const socket: any = useSocket()
-
   const orderId = Number(queryParams.get('orderId'))
   const currentId = Number(queryParams.get('currentId'))
   const worker_id = Number(queryParams.get('worker_id'))
@@ -25,6 +23,9 @@ const HomePage = () => {
 
   const [onFetchingMessage, setOnFetchingMessage] = useState<boolean>(false)
   const [conversation, setConversation] = useState<Message[]>([])
+  const [conversationInfo, setConversationInfo] = useState<TConversationInfo | null>(null)
+
+  const groupedMessages = useMemo(() => groupConsecutiveMessages(conversation), [conversation])
 
   const handleSendMessage = useCallback(
     async ({ message, type = 0, attachment }: THandleSendMessage) => {
@@ -140,9 +141,9 @@ const HomePage = () => {
   return (
     <div className={`relative flex h-dvh flex-col`}>
       <Suspense fallback={null}>
-        <Header workerId={conversationInfo?.worker_id} />
+        <Header workerId={Number(conversationInfo?.worker_id)} />
       </Suspense>
-      <Suspense fallback={null}>{onFetchingMessage ? <ConverstaionsSkeleton /> : <Conversation conversation={groupConsecutiveMessages(conversation)} />}</Suspense>
+      <Suspense fallback={null}>{onFetchingMessage ? <ConverstaionsSkeleton /> : <Conversation conversation={groupedMessages} />}</Suspense>
       <Suspense fallback={null}>
         <FooterInput handleSendMessage={handleSendMessage} conversationInfo={conversationInfo} />
       </Suspense>
