@@ -69,6 +69,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation }) => {
     if (lastElementRef.current) {
       lastElementRef.current.scrollIntoView({ behavior: 'instant' })
       const lastElementHeight = lastElementRef.current.offsetHeight
+      console.log({ lastElementHeight })
     }
   }, [bottomRef, conversation, conversation.length, infoTyping, lastElementRef])
 

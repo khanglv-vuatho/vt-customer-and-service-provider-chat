@@ -78,7 +78,7 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail }) => {
           </div>
         </div>
       </DefaultModal>
-      <div className='z-50 flex flex-col gap-4 bg-white p-4'>
+      <div className='z-[100] flex flex-col gap-4 bg-white p-4'>
         <div className='flex items-center justify-between text-sm font-bold'>
           <p>{orderDetail?.problems?.[0]?.description}</p>
           <p className='text-primary-yellow underline' onClick={handleToggleModal}>

@@ -1,5 +1,4 @@
 import { ButtonOnlyIcon } from '@/components/Buttons'
-import ToastComponent from '@/components/ToastComponent'
 import { typeOfSocket } from '@/constants'
 import { useSocket } from '@/context/SocketProvider'
 import { MessageProps, THandleSendMessage } from '@/types'
@@ -17,7 +16,7 @@ type FooterInputProps = {
 const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversationInfo }) => {
   const queryParams = new URLSearchParams(location.search)
 
-  const sendRef: any = useRef<HTMLButtonElement>(null)
+  const sendRef = useRef<HTMLButtonElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const uploadRef = useRef<HTMLInputElement>(null)
   const socket: any = useSocket()

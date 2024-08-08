@@ -5,7 +5,7 @@ const SocketContext = createContext({})
 
 export const useSocket = () => useContext(SocketContext)
 
-export const SocketProvider = ({ children, token }: any) => {
+export const SocketProvider = ({ children, token }: { children: React.ReactNode; token: string }) => {
   const [socket, setSocket] = useState<any>(null)
   useEffect(() => {
     const newSocket = io(import.meta.env.VITE_WEBSOCKET_URL, {

@@ -1,14 +1,14 @@
 import { motion } from 'framer-motion'
 import { Add, Call, Refresh } from 'iconsax-react'
-import { memo, useCallback, useEffect, useState } from 'react'
+import { memo, useEffect, useState } from 'react'
 
-import OrderDetailHeader from './OrderDetailHeader'
 import { fetchingDetailOrder } from '@/apis'
 import { ButtonOnlyIcon } from '@/components/Buttons'
 import { keyPossmessage } from '@/constants'
 import instance from '@/services/axiosConfig'
 import { TOrderDetail } from '@/types'
 import { postMessageCustom } from '@/utils'
+import OrderDetailHeader from './OrderDetailHeader'
 
 type THeaderProps = {
   workerId: number
@@ -19,6 +19,7 @@ const Header: React.FC<THeaderProps> = ({ workerId }) => {
   const orderId = queryParams.get('orderId')
   const [orderDetail, setOrderDetail] = useState<TOrderDetail | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+
   const worker_id = Number(queryParams.get('worker_id'))
   const isClient = !!worker_id
 
@@ -63,7 +64,7 @@ const Header: React.FC<THeaderProps> = ({ workerId }) => {
   }, [isLoading, workerId])
 
   return (
-    <motion.header initial={{ opacity: 0, y: -100 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.1 }} className='sticky left-0 right-0 top-0 flex flex-col'>
+    <motion.header initial={{ opacity: 0, y: -100 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.1 }} className='sticky left-0 right-0 top-0 z-[100] flex flex-col'>
       <div className='flex items-center justify-between border-b-2 border-[#E4E4E4] px-4 py-2'>
         <div className='flex items-center font-bold'>
           <ButtonOnlyIcon className='' onClick={handleCloseWebview}>
