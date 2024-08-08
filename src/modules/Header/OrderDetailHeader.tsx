@@ -96,7 +96,7 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail }) => {
               </span>
               <p>Bảo hành {orderDetail?.guarantee?.duration} ngày</p>
             </div>
-            <p className='text-sm font-bold'>Còn lại {orderDetail?.guarantee?.time_remaining} ngày</p>
+            <p className='text-sm font-bold'>Còn lại {Number(orderDetail?.guarantee?.time_remaining) < 0 ? 0 : orderDetail?.guarantee?.time_remaining} ngày</p>
           </div>
           <div className='relative'>
             <Progress
