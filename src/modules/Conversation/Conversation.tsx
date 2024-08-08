@@ -8,6 +8,7 @@ import { MessageGroup } from '@/types'
 import { formatLocalHoursTime } from '@/utils'
 import MessageImage from './MessageImage'
 import { useSocket } from '@/context/SocketProvider'
+import ToastComponent from '@/components/ToastComponent'
 
 type ConversationProps = {
   conversation: MessageGroup[]
@@ -77,10 +78,25 @@ const Conversation: React.FC<ConversationProps> = ({ conversation }) => {
     socket.on(typeOfSocket.MESSAGE_TYPING, (data: TInfoTyping) => {
       if (socket.id === data?.socket_id) return
       setInfoTyping(data)
-      setTimeout(() => {
-        setInfoTyping(null)
-      }, 5000)
     })
+  }, [])
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        setInfoTyping(null)
+        ToastComponent({ message: 'Rời app', type: 'error' })
+      } else {
+        ToastComponent({ message: 'Người dùng đã quay lại tab.', type: 'success' })
+      }
+    }
+
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+
+    // Cleanup event listener khi component bị unmount
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+    }
   }, [])
 
   return (
