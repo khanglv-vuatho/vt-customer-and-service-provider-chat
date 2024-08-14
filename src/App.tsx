@@ -6,18 +6,23 @@ import HomePage from './pages'
 
 const Redirect = lazy(() => import('./pages/redirect'))
 const InvalidPage = lazy(() => import('./pages/invalid'))
+let routes: {
+  path: string
+  element: JSX.Element
+}[]
 
-// const routes = [
-//   { path: '/', element: <Redirect /> },
-//   { path: '/chat', element: <HomePage /> },
-//   { path: '/invalid', element: <InvalidPage /> }
-// ]
-
-const routes = [
-  { path: '/', element: <HomePage /> },
-  { path: '/invalid', element: <InvalidPage /> }
-]
-// test
+if (import.meta.env.VITE_MODE === 'local') {
+  routes = [
+    { path: '/', element: <Redirect /> },
+    { path: '/chat', element: <HomePage /> },
+    { path: '/invalid', element: <InvalidPage /> }
+  ]
+} else {
+  routes = [
+    { path: '/', element: <HomePage /> },
+    { path: '/invalid', element: <InvalidPage /> }
+  ]
+}
 
 function App() {
   return (

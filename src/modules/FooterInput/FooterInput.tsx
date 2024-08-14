@@ -11,9 +11,10 @@ import { Controller, useForm } from 'react-hook-form'
 type FooterInputProps = {
   handleSendMessage: ({ message }: THandleSendMessage) => Promise<void>
   conversationInfo: TConversationInfo | null
+  isSendingMessage: boolean
 }
 
-const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversationInfo }) => {
+const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversationInfo, isSendingMessage }) => {
   const queryParams = new URLSearchParams(location.search)
 
   const sendRef = useRef<HTMLButtonElement>(null)
@@ -140,7 +141,15 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
                   {field.value.trim() === '' ? (
                     <AnimatePresence>
                       <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.2 }} exit={{ opacity: 0, scale: 0 }}>
-                        <Button ref={sendRef} isIconOnly radius='full' className='flex items-center justify-center bg-transparent transition' onClick={handleSubmit(handleSend)}>
+                        {/* khang */}
+                        <Button
+                          isDisabled={isSendingMessage}
+                          ref={sendRef}
+                          isIconOnly
+                          radius='full'
+                          className='flex items-center justify-center bg-transparent transition'
+                          onClick={handleSubmit(handleSend)}
+                        >
                           👍
                         </Button>
                       </motion.div>

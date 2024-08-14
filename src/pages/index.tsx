@@ -24,6 +24,7 @@ const HomePage = () => {
   const [onFetchingMessage, setOnFetchingMessage] = useState<boolean>(false)
   const [conversation, setConversation] = useState<Message[]>([])
   const [conversationInfo, setConversationInfo] = useState<TConversationInfo | null>(null)
+  const [isSendingMessage, setIsSendingMessage] = useState(false)
 
   const groupedMessages = useMemo(() => groupConsecutiveMessages(conversation), [conversation])
 
@@ -169,7 +170,7 @@ const HomePage = () => {
       </Suspense>
       <Suspense fallback={null}>{onFetchingMessage ? <ConverstaionsSkeleton /> : <Conversation conversation={groupedMessages} conversationInfo={conversationInfo} />}</Suspense>
       <Suspense fallback={null}>
-        <FooterInput handleSendMessage={handleSendMessage} conversationInfo={conversationInfo} />
+        <FooterInput handleSendMessage={handleSendMessage} isSendingMessage={isSendingMessage} conversationInfo={conversationInfo} />
       </Suspense>
     </div>
   )
