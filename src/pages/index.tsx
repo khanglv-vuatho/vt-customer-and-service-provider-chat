@@ -87,6 +87,7 @@ const HomePage = () => {
       setConversation((prevConversation) => prevConversation.map((msg) => (msg.id === messageId && msg.status !== 'seen' ? { ...msg, status: 'sent' } : msg)))
     } catch (error) {
       console.error(error)
+      setIsSendingMessage(false)
       setTimeout(() => {
         setConversation((prevConversation) => prevConversation.map((msg) => (msg.id === messageId ? { ...msg, status: 'failed' } : msg)))
       }, 300)
