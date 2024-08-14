@@ -63,6 +63,8 @@ const Header: React.FC<THeaderProps> = ({ workerId }) => {
     isLoading && !!workerId && handleFetchingDetail()
   }, [isLoading, workerId])
 
+  console.log({ orderDetail })
+
   return (
     <motion.header initial={{ opacity: 0, y: -100 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.1 }} className='sticky left-0 right-0 top-0 z-50 flex flex-col bg-white'>
       <div className='flex items-center justify-between border-b-2 border-[#E4E4E4] px-4 py-2'>
@@ -85,7 +87,7 @@ const Header: React.FC<THeaderProps> = ({ workerId }) => {
           </ButtonOnlyIcon>
         </div>
       </div>
-      <OrderDetailHeader orderDetail={orderDetail} />
+      {orderDetail?.guarantee !== null && <OrderDetailHeader orderDetail={orderDetail} />}
     </motion.header>
   )
 }
