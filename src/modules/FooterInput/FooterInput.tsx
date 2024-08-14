@@ -1,7 +1,7 @@
 import { ButtonOnlyIcon } from '@/components/Buttons'
 import { typeOfSocket } from '@/constants'
 import { useSocket } from '@/context/SocketProvider'
-import { MessageProps, THandleSendMessage } from '@/types'
+import { MessageProps, TConversationInfo, THandleSendMessage } from '@/types'
 import { Button, Textarea } from '@nextui-org/react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { DocumentUpload, Send2 } from 'iconsax-react'
@@ -10,7 +10,7 @@ import { Controller, useForm } from 'react-hook-form'
 
 type FooterInputProps = {
   handleSendMessage: ({ message }: THandleSendMessage) => Promise<void>
-  conversationInfo: any
+  conversationInfo: TConversationInfo | null
 }
 
 const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversationInfo }) => {
@@ -38,8 +38,8 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
     const inputEl: any = inputRef.current
 
     const handleBlur = (e: any) => {
-      if (sendRef?.current?.contains(e?.relatedTarget) || e?.relatedTarget.name === 'upload-file-button') {
-        if (e?.relatedTarget.name === 'upload-file-button') {
+      if (sendRef?.current?.contains(e?.relatedTarget) || e?.relatedTarget?.name === 'upload-file-button') {
+        if (e?.relatedTarget?.name === 'upload-file-button') {
           handleClickInputFile(e)
         }
         inputEl?.focus()

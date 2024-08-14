@@ -2,7 +2,7 @@ import { fetchMessage, handlePostMessage } from '@/apis'
 import ToastComponent from '@/components/ToastComponent'
 import { typeOfRule, typeOfSocket } from '@/constants'
 import ConverstaionsSkeleton from '@/modules/ConversationsSkeleton'
-import { Message, MessageProps, TConversationInfo, THandleSendMessage, TPayloadHandleSendMessageApi } from '@/types'
+import { Message, TConversationInfo, THandleSendMessage, THandleSendMessageApi, TPayloadHandleSendMessageApi } from '@/types'
 import { groupConsecutiveMessages } from '@/utils'
 import { lazy, memo, Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 
@@ -31,8 +31,8 @@ const HomePage = () => {
     async ({ message, type = 0, attachment }: THandleSendMessage) => {
       const newMessage: Message = {
         content: message.trim(),
-        id: Date.now(),
-        seen: [],
+        id: `${orderId}-${conversationInfo?.worker_id}-${conversation?.length}`,
+        seen: null,
         type,
         by: {
           id: currentId,
@@ -43,6 +43,8 @@ const HomePage = () => {
         created_at: Date.now(),
         status: 'pending'
       }
+
+      console.log({ messageId: newMessage.id })
 
       // turn off typing
       socket.emit(typeOfSocket.MESSAGE_TYPING, {
@@ -65,22 +67,27 @@ const HomePage = () => {
         console.error(error)
       }
     },
-    [currentId, conversationInfo, socket]
+    [currentId, conversation, conversationInfo, socket]
   )
 
-  const handleSendMessageApi = async ({ message, messageId, type = 0, attachment, socket_id }: MessageProps & { messageId: number; type: 0 | 1; attachment?: any; socket_id: string }) => {
+  const handleSendMessageApi = async ({ message, messageId, type = 0, attachment, socket_id }: THandleSendMessageApi) => {
     try {
-      const payload: TPayloadHandleSendMessageApi = isClient ? { content: message, worker_id, type, socket_id } : { content: message, type, socket_id }
+      const payload: TPayloadHandleSendMessageApi = isClient
+        ? { content: message, worker_id, type, socket_id, conversationId: conversationInfo?.conversation_id as number }
+        : { content: message, type, socket_id, conversationId: conversationInfo?.conversation_id as number }
 
       if (type === 1) {
         payload.attachment = attachment
       }
 
       await handlePostMessage({ orderId, payload, rule: isClient ? typeOfRule.CLIENT : typeOfRule.WORKER })
-      setConversation((prevConversation) => prevConversation.map((msg) => (msg.id === messageId ? { ...msg, status: 'sent' } : msg)))
+
+      setConversation((prevConversation) => prevConversation.map((msg) => (msg.id === messageId && msg.status !== 'seen' ? { ...msg, status: 'sent' } : msg)))
     } catch (error) {
       console.error(error)
-      setConversation((prevConversation) => prevConversation.map((msg) => (msg.id === messageId ? { ...msg, status: 'failed' } : msg)))
+      setTimeout(() => {
+        setConversation((prevConversation) => prevConversation.map((msg) => (msg.id === messageId ? { ...msg, status: 'failed' } : msg)))
+      }, 300)
     }
   }
 
@@ -89,14 +96,6 @@ const HomePage = () => {
       const data = await fetchMessage({ orderId, ...(isClient && { worker_id }) })
       setConversationInfo(data)
 
-      //transform data to add status sent for each message in conversation to render tickIcon
-      const transformedData: Message[] = data?.data?.map((item: Message) => {
-        return {
-          ...item,
-          status: 'sent'
-        }
-      })
-
       if (!data?.worker_id || !data?.order_id) {
         return ToastComponent({
           type: 'error',
@@ -104,7 +103,7 @@ const HomePage = () => {
         })
       }
 
-      setConversation(transformedData)
+      setConversation(data?.data)
     } catch (error) {
       console.error(error)
     } finally {
@@ -127,14 +126,39 @@ const HomePage = () => {
 
     socket.emit(typeOfSocket.JOIN_CONVERSATION_ROOM, { workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
 
+    socket.on(typeOfSocket.MESSAGE_SEEN, (data: any) => {
+      if (data.status === 'SEEN MESSAGE') {
+        setConversation((prev) =>
+          prev.map((message) => ({
+            ...message,
+            status: 'seen'
+          }))
+        )
+      } else {
+        setConversation((prevConversation) => prevConversation.map((msg) => (msg.id === data.message_id ? { ...msg, status: 'seen' } : msg)))
+      }
+    })
+
     socket.on(typeOfSocket.MESSAGE_ARRIVE, (data: any) => {
-      if (data?.socket_id == socket?.id) return
-      setConversation((prevConversation) => [...prevConversation, data?.message])
+      if (data?.socket_id == socket?.id) {
+        console.log({ data })
+        // setConversation((prevConversation) => prevConversation.map((msg) => (msg.id === data?.message?.id ? { ...msg, status: 'sent' } : msg)))
+      } else {
+        setConversation((prevConversation) => [...prevConversation, data?.message])
+        socket.emit(typeOfSocket.MESSAGE_SEEN, {
+          workerId: conversationInfo?.worker_id,
+          orderId: conversationInfo?.order_id,
+          currentId,
+          message_id: data?.message?.id,
+          conversationId: conversationInfo?.conversation_id
+        })
+      }
     })
 
     return () => {
       socket.emit(typeOfSocket.LEAVE_CONVERSATION_ROOM, { workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
       socket.off(typeOfSocket.MESSAGE_ARRIVE)
+      socket.off(typeOfSocket.MESSAGE_SEEN)
     }
   }, [conversationInfo])
 
@@ -143,7 +167,7 @@ const HomePage = () => {
       <Suspense fallback={null}>
         <Header workerId={Number(conversationInfo?.worker_id)} />
       </Suspense>
-      <Suspense fallback={null}>{onFetchingMessage ? <ConverstaionsSkeleton /> : <Conversation conversation={groupedMessages} />}</Suspense>
+      <Suspense fallback={null}>{onFetchingMessage ? <ConverstaionsSkeleton /> : <Conversation conversation={groupedMessages} conversationInfo={conversationInfo} />}</Suspense>
       <Suspense fallback={null}>
         <FooterInput handleSendMessage={handleSendMessage} conversationInfo={conversationInfo} />
       </Suspense>

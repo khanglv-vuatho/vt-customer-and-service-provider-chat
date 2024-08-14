@@ -10,6 +10,7 @@ export function Provider({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate()
   const queryParams = new URLSearchParams(location.search)
   const token = queryParams.get('token') as string
+
   return (
     <NextUIProvider navigate={navigate}>
       <ReduxProvider store={store}>

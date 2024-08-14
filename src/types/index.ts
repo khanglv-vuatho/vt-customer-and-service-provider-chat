@@ -34,23 +34,28 @@ export type User = {
   profile_picture: string
 }
 
+type TSeen = {
+  id: number
+  seen_at: number
+}
 export type Message = {
   attachments?: TImageData[]
   by: User
-  id: number
-  seen: any[]
+  id: string
+  seen: TSeen | null
   type: 0 | 1
   content: string
   created_at: number
   first?: boolean // Added field
   last?: boolean // Added field
-  status: 'sent' | 'pending' | 'failed'
+  status: 'sent' | 'pending' | 'failed' | 'seen'
 }
 
 export type MessageGroup = {
   userId: number
   messages: Message[]
 }
+
 export type MessageProps = {
   message: string
 }
@@ -65,6 +70,7 @@ export type TPayloadHandleSendMessageApi = {
   attachment?: any
   type: 0 | 1
   socket_id: string
+  conversationId: number
 }
 
 export type THandlePostMessage = {
@@ -205,5 +211,9 @@ export type TConversationInfo = {
   data: Message[]
   order_id: number
   worker_id: number
-  converstation_id: number
+  conversation_id: number
+  worker_picture: string
+  client_picture: string
 }
+
+export type THandleSendMessageApi = MessageProps & { messageId: string; type: 0 | 1; attachment?: any; socket_id: string }

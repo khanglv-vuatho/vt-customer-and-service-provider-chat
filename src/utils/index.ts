@@ -1,8 +1,8 @@
 import ToastComponent from '@/components/ToastComponent'
 import { Message, MessageGroup, TPostMessage } from '@/types'
 import moment from 'moment'
-import { useEffect, useRef, useState } from 'react'
-
+import React, { useEffect, useRef, useState } from 'react'
+import { motion } from 'framer-motion'
 const useUnfocusItem = (callback: () => void, exclusionRef?: React.RefObject<HTMLElement | null>): React.RefObject<any> => {
   const itemRef = useRef<any>(null)
 
@@ -83,6 +83,16 @@ const formatLocalHoursTime = (time: number) => {
 
   // Format the local date to hh:mm format
   return localDate.format('HH:mm')
+}
+
+const formatTimestamp = (timestamp: number) => {
+  // Chuyển đổi timestamp sang đối tượng Date
+  const date = new Date(timestamp)
+
+  // Lấy thời gian local dạng chuỗi
+  const localDateString = date.toLocaleString()
+
+  return localDateString
 }
 
 const postMessageCustom = ({ message, data = {} }: TPostMessage) => {
@@ -169,6 +179,26 @@ const groupConsecutiveMessages = (messages: Message[]): MessageGroup[] => {
   return groupedMessages
 }
 
+const getLastSeenId = (data: Message[]) => {
+  const lastSeenItem = data
+    .slice()
+    .reverse()
+    .find((item) => item.status === 'seen')
+
+  return lastSeenItem ? lastSeenItem.id : null
+}
+function isStringWithoutEmoji(value: string) {
+  if (typeof value !== 'string') {
+    return false
+  }
+
+  // Biểu thức chính quy để kiểm tra emoji
+  const emojiRegex =
+    /[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/u
+
+  return !emojiRegex.test(value)
+}
+
 export {
   capitalizeWords,
   formatDDMMYYYY,
@@ -180,5 +210,8 @@ export {
   objectToFormData,
   postMessageCustom,
   useDebounce,
-  useUnfocusItem
+  useUnfocusItem,
+  formatTimestamp,
+  getLastSeenId,
+  isStringWithoutEmoji
 }
