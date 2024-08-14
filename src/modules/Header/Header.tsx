@@ -4,7 +4,7 @@ import { memo, useEffect, useState } from 'react'
 
 import { fetchingDetailOrder } from '@/apis'
 import { ButtonOnlyIcon } from '@/components/Buttons'
-import { keyPossmessage } from '@/constants'
+import { keyPossmessage, typeOfGuarante } from '@/constants'
 import instance from '@/services/axiosConfig'
 import { TOrderDetail } from '@/types'
 import { postMessageCustom } from '@/utils'
@@ -87,7 +87,8 @@ const Header: React.FC<THeaderProps> = ({ workerId }) => {
           </ButtonOnlyIcon>
         </div>
       </div>
-      {orderDetail?.guarantee !== null && <OrderDetailHeader orderDetail={orderDetail} />}
+
+      {orderDetail?.guarantee.status == typeOfGuarante.active && <OrderDetailHeader orderDetail={orderDetail} />}
     </motion.header>
   )
 }

@@ -7,16 +7,16 @@ import HomePage from './pages'
 const Redirect = lazy(() => import('./pages/redirect'))
 const InvalidPage = lazy(() => import('./pages/invalid'))
 
-// const routes = [
-//   { path: '/', element: <Redirect /> },
-//   { path: '/chat', element: <HomePage /> },
-//   { path: '/invalid', element: <InvalidPage /> }
-// ]
-
 const routes = [
-  { path: '/', element: <HomePage /> },
+  { path: '/', element: <Redirect /> },
+  { path: '/chat', element: <HomePage /> },
   { path: '/invalid', element: <InvalidPage /> }
 ]
+
+// const routes = [
+//   { path: '/', element: <HomePage /> },
+//   { path: '/invalid', element: <InvalidPage /> }
+// ]
 // test
 
 function App() {

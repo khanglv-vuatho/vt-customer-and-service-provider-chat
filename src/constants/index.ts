@@ -29,3 +29,11 @@ export const commonMotionProps = {
   transition: { duration: 0.2 },
   viewport: { once: true }
 }
+
+export const typeOfGuarante = {
+  none: 0, // không có bảo hành
+  is_guaranteed: 1, // có bảo hành
+  active: 2, // đang trong thời hạn bảo hành
+  expired: 3, // hết hạn
+  cancel: 4
+} as const
