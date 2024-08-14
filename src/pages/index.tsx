@@ -80,8 +80,9 @@ const HomePage = () => {
       if (type === 1) {
         payload.attachment = attachment
       }
-
+      setIsSendingMessage(true)
       await handlePostMessage({ orderId, payload, rule: isClient ? typeOfRule.CLIENT : typeOfRule.WORKER })
+      setIsSendingMessage(false)
 
       setConversation((prevConversation) => prevConversation.map((msg) => (msg.id === messageId && msg.status !== 'seen' ? { ...msg, status: 'sent' } : msg)))
     } catch (error) {
