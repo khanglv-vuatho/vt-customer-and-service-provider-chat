@@ -99,6 +99,7 @@ const HomePage = () => {
   const handleGetMessage = async () => {
     try {
       const data = await fetchMessage({ orderId, ...(isClient && { worker_id }) })
+
       setConversationInfo(data)
 
       if (!data?.worker_id || !data?.order_id) {

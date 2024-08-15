@@ -134,7 +134,13 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
   }, [])
 
   return (
-    <div ref={containerRef} className={`flex min-h-[calc(100dvh-216px)] flex-1 flex-col gap-4 overflow-auto p-2 pt-4`}>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3, delay: 0.2 }}
+      ref={containerRef}
+      className={`flex min-h-[calc(100dvh-216px)] flex-1 flex-col gap-4 overflow-auto p-2 pt-4`}
+    >
       {conversation?.map((message, index) => {
         // last item in conversation
         const isLastItemInConversation = index === conversation.length - 1
@@ -239,7 +245,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
           </ButtonOnlyIcon>
         </motion.div>
       </AnimatePresence>
-    </div>
+    </motion.div>
   )
 }
 
