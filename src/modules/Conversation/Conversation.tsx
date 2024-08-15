@@ -6,7 +6,7 @@ import React, { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { ButtonOnlyIcon } from '@/components/Buttons'
 import { typeOfMessage, typeOfSocket } from '@/constants'
 import { useSocket } from '@/context/SocketProvider'
-import { Message, MessageGroup, TConversationInfo } from '@/types'
+import { Message, MessageGroup, TConversationInfo, TInfoTyping } from '@/types'
 import { formatLocalHoursTime, getLastSeenId, isStringWithoutEmoji } from '@/utils'
 import MessageImage from './MessageImage'
 import ImageFallback from '@/components/ImageFallback'
@@ -14,12 +14,6 @@ import ImageFallback from '@/components/ImageFallback'
 type ConversationProps = {
   conversation: MessageGroup[]
   conversationInfo: TConversationInfo | null
-}
-
-type TInfoTyping = {
-  is_typing: boolean
-  user_id: number
-  socket_id: string
 }
 
 const Conversation: React.FC<ConversationProps> = ({ conversation, conversationInfo }) => {
@@ -83,22 +77,11 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
   }
 
   useEffect(() => {
-    if (containerRef.current) {
-      containerRef.current.scrollTo({ top: containerRef.current.scrollHeight, behavior: 'instant' })
-    }
-  }, [conversation, infoTyping, isAnotherUserTyping])
-
-  useEffect(() => {
-    let timer: any
     socket.on(typeOfSocket.MESSAGE_TYPING, (data: TInfoTyping) => {
       if (socket.id === data?.socket_id) return
       setInfoTyping(data)
-      timer = setTimeout(() => {
-        setInfoTyping(null)
-      }, 7000)
     })
     return () => {
-      clearTimeout(timer)
       socket.off(typeOfSocket.MESSAGE_TYPING)
     }
   }, [])
@@ -126,6 +109,29 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
     }
   }, [containerRef])
 
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTo({ top: containerRef.current.scrollHeight, behavior: 'instant' })
+    }
+  }, [conversation, infoTyping, isAnotherUserTyping])
+
+  useEffect(() => {
+    let timer: any
+    socket.on(typeOfSocket.MESSAGE_TYPING, (data: TInfoTyping) => {
+      if (socket.id === data?.socket_id) return
+      setInfoTyping(data)
+
+      // Xóa timer cũ trước khi đặt timer mới
+      clearTimeout(timer)
+      timer = setTimeout(() => {
+        setInfoTyping(null)
+      }, 7000)
+    })
+    return () => {
+      clearTimeout(timer)
+      socket.off(typeOfSocket.MESSAGE_TYPING)
+    }
+  }, [])
   return (
     <div ref={containerRef} className={`flex min-h-[calc(100dvh-216px)] flex-1 flex-col gap-4 overflow-auto p-2`}>
       {conversation?.map((message, index) => {

@@ -217,3 +217,9 @@ export type TConversationInfo = {
 }
 
 export type THandleSendMessageApi = MessageProps & { messageId: string; type: 0 | 1; attachment?: any; socket_id: string }
+
+export type TInfoTyping = {
+  is_typing: boolean
+  user_id: number
+  socket_id: string
+}

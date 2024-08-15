@@ -1,7 +1,7 @@
 import { ButtonOnlyIcon } from '@/components/Buttons'
 import { typeOfSocket } from '@/constants'
 import { useSocket } from '@/context/SocketProvider'
-import { MessageProps, TConversationInfo, THandleSendMessage } from '@/types'
+import { MessageProps, TConversationInfo, THandleSendMessage, TInfoTyping } from '@/types'
 import { Button, Textarea } from '@nextui-org/react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { DocumentUpload, Send2 } from 'iconsax-react'

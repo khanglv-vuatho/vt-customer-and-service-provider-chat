@@ -9,7 +9,8 @@ export const SocketProvider = ({ children, token }: { children: React.ReactNode;
   const [socket, setSocket] = useState<any>(null)
   useEffect(() => {
     const newSocket = io(import.meta.env.VITE_WEBSOCKET_URL, {
-      query: { token, platform: 'webview' }
+      query: { token, platform: 'webview' },
+      reconnection: true
     })
 
     setSocket(newSocket)
