@@ -133,7 +133,7 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
                           }}
                         />
                         <ButtonOnlyIcon name='upload-file-button' onClick={handleClickInputFile}>
-                          <DocumentUpload variant='Bold' className='text-primary-gray' />
+                          <DocumentUpload variant='Bold' className='text-primary-blue' />
                         </ButtonOnlyIcon>
                       </>
                     )}
