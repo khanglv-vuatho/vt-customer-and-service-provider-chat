@@ -11,18 +11,18 @@ let routes: {
   element: JSX.Element
 }[]
 
-// if (import.meta.env.VITE_MODE === 'local') {
-//   routes = [
-//     { path: '/', element: <Redirect /> },
-//     { path: '/chat', element: <HomePage /> },
-//     { path: '/invalid', element: <InvalidPage /> }
-//   ]
-// } else {
-routes = [
-  { path: '/', element: <HomePage /> },
-  { path: '/invalid', element: <InvalidPage /> }
-]
-// }
+if (import.meta.env.VITE_TEST === 'test') {
+  routes = [
+    { path: '/', element: <Redirect /> },
+    { path: '/chat', element: <HomePage /> },
+    { path: '/invalid', element: <InvalidPage /> }
+  ]
+} else {
+  routes = [
+    { path: '/', element: <HomePage /> },
+    { path: '/invalid', element: <InvalidPage /> }
+  ]
+}
 
 function App() {
   return (

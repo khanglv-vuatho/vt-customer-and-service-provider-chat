@@ -132,8 +132,9 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
       socket.off(typeOfSocket.MESSAGE_TYPING)
     }
   }, [])
+
   return (
-    <div ref={containerRef} className={`flex min-h-[calc(100dvh-216px)] flex-1 flex-col gap-4 overflow-auto p-2`}>
+    <div ref={containerRef} className={`flex min-h-[calc(100dvh-216px)] flex-1 flex-col gap-4 overflow-auto p-2 pt-4`}>
       {conversation?.map((message, index) => {
         // last item in conversation
         const isLastItemInConversation = index === conversation.length - 1
