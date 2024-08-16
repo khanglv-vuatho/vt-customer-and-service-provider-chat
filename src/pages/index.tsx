@@ -152,6 +152,7 @@ const HomePage = () => {
         console.log({ data })
         // setConversation((prevConversation) => prevConversation.map((msg) => (msg.id === data?.message?.id ? { ...msg, status: 'sent' } : msg)))
       } else {
+        console.log({ data123: data })
         setConversation((prevConversation) => [...prevConversation, data?.message])
         socket.emit(typeOfSocket.MESSAGE_SEEN, {
           workerId: conversationInfo?.worker_id,

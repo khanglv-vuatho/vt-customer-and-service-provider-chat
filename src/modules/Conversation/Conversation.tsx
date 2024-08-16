@@ -54,7 +54,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
 
   const shouldRenderIconStatus = (status: 'pending' | 'sent' | 'failed' | 'seen', display: boolean): React.ReactNode => {
     let tickIcon
-    const avatar = isClient ? conversationInfo?.client_picture : conversationInfo?.worker_picture
+    const avatar = isClient ? conversationInfo?.worker_picture : conversationInfo?.client_picture
     switch (status) {
       case 'pending':
         tickIcon = <div className='size-4 rounded-full ring-1 ring-inset ring-primary-blue transition' />
