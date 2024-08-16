@@ -124,8 +124,6 @@ const HomePage = () => {
   }, [onFetchingMessage])
 
   useEffect(() => {
-    ToastComponent({ type: 'info', message: JSON.stringify(conversationInfo?.worker_picture) })
-    ToastComponent({ type: 'error', message: JSON.stringify(conversationInfo?.client_picture) })
     setOnFetchingMessage(true)
   }, [])
 

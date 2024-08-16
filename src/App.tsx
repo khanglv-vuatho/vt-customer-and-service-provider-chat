@@ -1,5 +1,4 @@
 import { Route, Routes } from 'react-router-dom'
-
 import { lazy, Suspense } from 'react'
 import { CircularProgress } from '@nextui-org/react'
 import HomePage from './pages'
