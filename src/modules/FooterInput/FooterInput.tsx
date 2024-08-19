@@ -12,9 +12,10 @@ type FooterInputProps = {
   handleSendMessage: ({ message }: THandleSendMessage) => Promise<void>
   conversationInfo: TConversationInfo | null
   isSendingMessage: boolean
+  onFetchingMessage: boolean
 }
 
-const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversationInfo, isSendingMessage }) => {
+const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversationInfo, isSendingMessage, onFetchingMessage }) => {
   const queryParams = new URLSearchParams(location.search)
 
   const sendRef = useRef<HTMLButtonElement>(null)
@@ -156,7 +157,14 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
                     </AnimatePresence>
                   ) : (
                     <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.2 }} exit={{ opacity: 0, scale: 0 }}>
-                      <Button ref={sendRef} isIconOnly radius='full' className={`flex items-center justify-center bg-transparent text-primary-blue transition`} onClick={handleSubmit(handleSend)}>
+                      <Button
+                        ref={sendRef}
+                        isDisabled={onFetchingMessage}
+                        isIconOnly
+                        radius='full'
+                        className={`flex items-center justify-center bg-transparent text-primary-blue transition`}
+                        onClick={handleSubmit(handleSend)}
+                      >
                         <Send2 variant='Bold' className='rotate-45 transition' />
                       </Button>
                     </motion.div>

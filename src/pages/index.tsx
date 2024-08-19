@@ -176,7 +176,7 @@ const HomePage = () => {
       </Suspense>
       <Suspense fallback={null}>{onFetchingMessage ? <ConverstaionsSkeleton /> : <Conversation conversation={groupedMessages} conversationInfo={conversationInfo} />}</Suspense>
       <Suspense fallback={null}>
-        <FooterInput handleSendMessage={handleSendMessage} isSendingMessage={isSendingMessage} conversationInfo={conversationInfo} />
+        <FooterInput handleSendMessage={handleSendMessage} isSendingMessage={isSendingMessage} onFetchingMessage={onFetchingMessage} conversationInfo={conversationInfo} />
       </Suspense>
     </div>
   )
