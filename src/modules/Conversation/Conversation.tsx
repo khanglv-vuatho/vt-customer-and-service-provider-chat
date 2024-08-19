@@ -116,6 +116,16 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
   }, [conversation, infoTyping, isAnotherUserTyping])
 
   useEffect(() => {
+    let timer = setTimeout(() => {
+      if (containerRef.current) {
+        containerRef.current.scrollTo({ top: containerRef.current.scrollHeight, behavior: 'instant' })
+      }
+    }, 1500)
+
+    return () => clearTimeout(timer)
+  }, [])
+
+  useEffect(() => {
     let timer: any
     socket.on(typeOfSocket.MESSAGE_TYPING, (data: TInfoTyping) => {
       if (socket.id === data?.socket_id) return

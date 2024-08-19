@@ -7,6 +7,7 @@ export const useSocket = () => useContext(SocketContext)
 
 export const SocketProvider = ({ children, token }: { children: React.ReactNode; token: string }) => {
   const [socket, setSocket] = useState<any>(null)
+
   useEffect(() => {
     const newSocket = io(import.meta.env.VITE_WEBSOCKET_URL, {
       query: { token, platform: 'webview' },
@@ -15,8 +16,17 @@ export const SocketProvider = ({ children, token }: { children: React.ReactNode;
 
     setSocket(newSocket)
 
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible' && socket?.disconnected) {
+        newSocket.connect()
+      }
+    }
+
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+
     return () => {
       newSocket.disconnect()
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
   }, [token])
 
