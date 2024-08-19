@@ -21,7 +21,7 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
 
   const sendRef = useRef<HTMLButtonElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
-  const uploadRef = useRef<HTMLInputElement>(null)
+  const uploadRef = useRef<HTMLInputElement | any>(null)
   const socket: any = useSocket()
 
   const currentId = Number(queryParams.get('currentId'))
@@ -90,17 +90,13 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
       }
     }
 
-    if (uploadRef.current) {
-      uploadRef.current.addEventListener('blur', handleBlur)
-      uploadRef.current.addEventListener('focusout', handleFocusOut)
-      document.addEventListener('visibilitychange', handleVisibilityChange)
-    }
+    uploadRef.current.addEventListener('blur', handleBlur)
+    uploadRef.current.addEventListener('focusout', handleFocusOut)
+    document.addEventListener('visibilitychange', handleVisibilityChange)
 
     return () => {
-      if (uploadRef.current) {
-        uploadRef.current.removeEventListener('blur', handleBlur)
-        uploadRef.current.removeEventListener('focusout', handleFocusOut)
-      }
+      uploadRef.current.removeEventListener('blur', handleBlur)
+      uploadRef.current.removeEventListener('focusout', handleFocusOut)
       document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
   }, [uploadRef])
