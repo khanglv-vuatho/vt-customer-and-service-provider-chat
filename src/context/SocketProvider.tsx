@@ -18,10 +18,8 @@ export const SocketProvider = ({ children, token }: { children: React.ReactNode;
     setSocket(newSocket)
 
     const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible' && socket?.disconnected) {
-        newSocket.connect()
-        ToastComponent({ type: 'error', message: window as any })
-      }
+      newSocket.connect()
+      ToastComponent({ type: 'error', message: window as any })
     }
 
     window.addEventListener('focus', handleVisibilityChange)
