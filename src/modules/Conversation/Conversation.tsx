@@ -6,10 +6,9 @@ import React, { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { ButtonOnlyIcon } from '@/components/Buttons'
 import { typeOfMessage, typeOfSocket } from '@/constants'
 import { useSocket } from '@/context/SocketProvider'
-import { Message, MessageGroup, TConversationInfo, TInfoTyping } from '@/types'
+import { MessageGroup, TConversationInfo, TInfoTyping } from '@/types'
 import { formatLocalHoursTime, getLastSeenId, isStringWithoutEmoji } from '@/utils'
 import MessageImage from './MessageImage'
-import ImageFallback from '@/components/ImageFallback'
 
 type ConversationProps = {
   conversation: MessageGroup[]

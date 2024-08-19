@@ -32,7 +32,8 @@ const HomePage = () => {
     async ({ message, type = 0, attachment }: THandleSendMessage) => {
       const newMessage: Message = {
         content: message.trim(),
-        id: `${orderId}-${conversationInfo?.worker_id}-${conversation?.length}`,
+        // id: `${orderId}-${conversationInfo?.worker_id}-${conversation?.length}`,
+        id: Date.now(),
         seen: null,
         type,
         by: {
@@ -72,10 +73,11 @@ const HomePage = () => {
   )
 
   const handleSendMessageApi = async ({ message, messageId, type = 0, attachment, socket_id }: THandleSendMessageApi) => {
+    let timer
     try {
       const payload: TPayloadHandleSendMessageApi = isClient
-        ? { content: message, worker_id, type, socket_id, conversationId: conversationInfo?.conversation_id as number }
-        : { content: message, type, socket_id, conversationId: conversationInfo?.conversation_id as number }
+        ? { content: message, worker_id, type, socket_id, conversationId: conversationInfo?.conversation_id as number, messageId }
+        : { content: message, type, socket_id, conversationId: conversationInfo?.conversation_id as number, messageId }
 
       if (type === 1) {
         payload.attachment = attachment
@@ -83,6 +85,8 @@ const HomePage = () => {
 
       setIsSendingMessage(true)
       await handlePostMessage({ orderId, payload, rule: isClient ? typeOfRule.CLIENT : typeOfRule.WORKER })
+      clearTimeout(timer)
+
       setIsSendingMessage(false)
 
       setConversation((prevConversation) => prevConversation.map((msg) => (msg.id === messageId && msg.status !== 'seen' ? { ...msg, status: 'sent' } : msg)))
@@ -141,14 +145,17 @@ const HomePage = () => {
           }))
         )
       } else {
-        setConversation((prevConversation) => prevConversation.map((msg) => (msg.id === data.message_id ? { ...msg, status: 'seen' } : msg)))
+        console.log('chay vao day')
+        // setConversation((prevConversation) => prevConversation.map((msg) => (msg.id === data.message_id ? { ...msg, status: 'seen' } : msg)))
       }
     })
 
     socket.on(typeOfSocket.MESSAGE_ARRIVE, (data: any) => {
       if (data?.socket_id == socket?.id) {
         console.log({ data })
-        // setConversation((prevConversation) => prevConversation.map((msg) => (msg.id === data?.message?.id ? { ...msg, status: 'sent' } : msg)))
+        console.log('chay vao day123')
+
+        setConversation((prevConversation) => prevConversation.map((msg) => (msg.id === data.message.id ? { ...msg, status: 'seen' } : msg)))
       } else {
         console.log({ data123: data })
         setConversation((prevConversation) => [...prevConversation, data?.message])

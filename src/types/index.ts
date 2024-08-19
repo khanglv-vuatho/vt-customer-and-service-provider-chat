@@ -41,7 +41,7 @@ type TSeen = {
 export type Message = {
   attachments?: TImageData[]
   by: User
-  id: string
+  id: number
   seen: TSeen | null
   type: 0 | 1
   content: string
@@ -71,6 +71,7 @@ export type TPayloadHandleSendMessageApi = {
   type: 0 | 1
   socket_id: string
   conversationId: number
+  messageId: number
 }
 
 export type THandlePostMessage = {
@@ -216,7 +217,7 @@ export type TConversationInfo = {
   client_picture: string
 }
 
-export type THandleSendMessageApi = MessageProps & { messageId: string; type: 0 | 1; attachment?: any; socket_id: string }
+export type THandleSendMessageApi = MessageProps & { messageId: number; type: 0 | 1; attachment?: any; socket_id: string }
 
 export type TInfoTyping = {
   is_typing: boolean
