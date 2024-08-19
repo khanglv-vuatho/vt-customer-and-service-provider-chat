@@ -1,3 +1,4 @@
+import ToastComponent from '@/components/ToastComponent'
 import { createContext, useContext, useEffect, useState } from 'react'
 import io from 'socket.io-client'
 
@@ -19,6 +20,7 @@ export const SocketProvider = ({ children, token }: { children: React.ReactNode;
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible' && socket?.disconnected) {
         newSocket.connect()
+        ToastComponent({ type: 'error', message: 'newSocket.connect()' })
       }
     }
 
@@ -26,6 +28,7 @@ export const SocketProvider = ({ children, token }: { children: React.ReactNode;
 
     return () => {
       newSocket.disconnect()
+      ToastComponent({ type: 'error', message: 'newSocket.disconnect()' })
       document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
   }, [token])
