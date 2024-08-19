@@ -52,29 +52,32 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
     }
   }, [])
 
-  const shouldRenderIconStatus = (status: 'pending' | 'sent' | 'failed' | 'seen', display: boolean): React.ReactNode => {
-    let tickIcon
-    const avatar = isClient ? conversationInfo?.worker_picture : conversationInfo?.client_picture
-    switch (status) {
-      case 'pending':
-        tickIcon = <div className='size-4 rounded-full ring-1 ring-inset ring-primary-blue transition' />
-        break
-      case 'sent':
-        tickIcon = <TickCircle className='size-4 text-primary-blue transition' />
-        break
-      case 'failed':
-        tickIcon = <AddCircle className='size-4 rotate-45 text-primary-red transition' />
-        break
-      case 'seen':
-        tickIcon = <Avatar src={avatar} alt={avatar} className={`size-4 max-h-4 max-w-4 duration-0 ${display ? 'opacity-100' : 'opacity-0'}`} />
-        break
+  const shouldRenderIconStatus = useCallback(
+    (status: 'pending' | 'sent' | 'failed' | 'seen', display: boolean): React.ReactNode => {
+      let tickIcon
+      const avatar = isClient ? conversationInfo?.worker_picture : conversationInfo?.client_picture
+      switch (status) {
+        case 'pending':
+          tickIcon = <div className='size-4 rounded-full ring-1 ring-inset ring-primary-blue transition' />
+          break
+        case 'sent':
+          tickIcon = <TickCircle className='size-4 text-primary-blue transition' />
+          break
+        case 'failed':
+          tickIcon = <AddCircle className='size-4 rotate-45 text-primary-red transition' />
+          break
+        case 'seen':
+          tickIcon = <Avatar src={avatar} alt={avatar} className={`size-4 max-h-4 max-w-4 duration-0 ${display ? 'opacity-100' : 'opacity-0'}`} />
+          break
 
-      default:
-        break
-    }
+        default:
+          break
+      }
 
-    return tickIcon
-  }
+      return tickIcon
+    },
+    [conversationInfo]
+  )
 
   useEffect(() => {
     socket.on(typeOfSocket.MESSAGE_TYPING, (data: TInfoTyping) => {

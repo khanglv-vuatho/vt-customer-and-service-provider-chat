@@ -1,7 +1,7 @@
 import { DefaultModal } from '@/components/Modal'
 import { handleAddLangInUrl } from '@/utils'
 import { Button } from '@nextui-org/react'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 const Redirect = () => {
@@ -14,7 +14,7 @@ const Redirect = () => {
         lang: 'vi',
         mainUrl: '/chat?currentId=429&orderId=3861',
         token:
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDI5LCJmdWxsX25hbWUiOiJMw6ogSMOgIEdpYSBLaMO0aSIsInByb2ZpbGVfcGljdHVyZSI6Imh0dHBzOi8vY2RuLTEudnVhdGhvLmNvbS9pbWFnZS9hZGJmNTljZC1jOTM1LTRhYTMtYjI0Zi00YjczYjczZDUzYjVfMTcyMTAyOTAxMDkxMC5wbmciLCJyZWZfaWQiOm51bGwsImt5Y19zdGF0dXMiOjIsIndvcmtlcl9zdGF0dXMiOjIsInNlc3Npb25fbG9naW5zIjpbeyJJUCI6IjE5Mi4xNjguMC43NyIsImRldmljZSI6IjE3MjIzMjU3ODU1NzEiLCJ0aW1lIjoxNzIyMzI1Nzg1NTcxfV0sImlhdCI6MTcyMjMyNTc4NX0.JBA8db00sY4Qk5KoBrN72zY6irfqJfymmx5vXlrug7U'
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDI5LCJmdWxsX25hbWUiOiJMw6ogSMOgIEdpYSBLaMO0aSIsInByb2ZpbGVfcGljdHVyZSI6Imh0dHBzOi8vY2RuLXNhbmRib3gudnVhdGhvLmNvbS9pbWFnZS9hZGJmNTljZC1jOTM1LTRhYTMtYjI0Zi00YjczYjczZDUzYjVfMTcyMTAyOTAxMDkxMC5wbmciLCJyZWZfaWQiOm51bGwsImt5Y19zdGF0dXMiOjIsIndvcmtlcl9zdGF0dXMiOjIsInNlc3Npb25fbG9naW5zIjpbeyJJUCI6IjExMy4xNjEuOTAuMjIyIiwiZGV2aWNlIjoiMTcyNDA0MDgyMTI0OCIsInRpbWUiOjE3MjQwNDA4MjEyNDl9XSwiaWF0IjoxNzI0MDQwODIxfQ.zDRilgopyMcNGIKTJkoo3ktz9elX8FCUpC_NrouznVE'
       })
     )
   }
@@ -24,7 +24,7 @@ const Redirect = () => {
         lang: 'vi',
         mainUrl: '/chat?currentId=570&orderId=3861&worker_id=429',
         token:
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTcwLCJmdWxsX25hbWUiOiJsZWhhZ2lha2hvaSIsInByb2ZpbGVfcGljdHVyZSI6Imh0dHBzOi8vY2RuLXNhbmRib3gudnVhdGhvLmNvbS8zOGI2MTM1Yi0wY2ViLTQ4ZTEtYWE3Ny0xZjcwNWQ1ZmU0MzhfMTcyMDQyNDE0OTE1Mi5qcGciLCJyZWZfaWQiOm51bGwsImt5Y19zdGF0dXMiOjIsIndvcmtlcl9zdGF0dXMiOjIsInNlc3Npb25fbG9naW5zIjpbeyJJUCI6IjE5Mi4xNjguMC43NyIsImRldmljZSI6IjE3MjIzMjU4MzU1MjAiLCJ0aW1lIjoxNzIyMzI1ODM1NTIwfV0sImlhdCI6MTcyMjMyNTgzNX0._X3tn1J1flDRnZsVkVY9BMnFis3XU4avJR7RScPohAs'
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTcwLCJmdWxsX25hbWUiOiJsZWhhZ2lha2hvaSIsInByb2ZpbGVfcGljdHVyZSI6Imh0dHBzOi8vY2RuLXNhbmRib3gudnVhdGhvLmNvbS9pbWFnZS8zOGI2MTM1Yi0wY2ViLTQ4ZTEtYWE3Ny0xZjcwNWQ1ZmU0MzhfMTcyMDQyNDE0OTE1Mi5qcGciLCJyZWZfaWQiOm51bGwsImt5Y19zdGF0dXMiOjIsIndvcmtlcl9zdGF0dXMiOjIsInNlc3Npb25fbG9naW5zIjpbeyJJUCI6IjExMy4xNjEuOTAuMjIyIiwiZGV2aWNlIjoiMTcyNDA0MDkzOTcyMyIsInRpbWUiOjE3MjQwNDA5Mzk3MjN9XSwiaWF0IjoxNzI0MDQwOTM5fQ.A4CJ5VxwIwsFVqhFyj1LNFhPnXG5ojbcCPZ6AD39XfY'
       })
     )
   }
