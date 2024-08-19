@@ -146,14 +146,12 @@ const HomePage = () => {
         )
       } else {
         console.log('chay vao day')
-        // setConversation((prevConversation) => prevConversation.map((msg) => (msg.id === data.message_id ? { ...msg, status: 'seen' } : msg)))
       }
     })
 
     socket.on(typeOfSocket.MESSAGE_ARRIVE, (data: any) => {
       if (data?.socket_id == socket?.id) {
         console.log({ data })
-        console.log('chay vao day123')
 
         setConversation((prevConversation) => prevConversation.map((msg) => (msg.id === data.message.id ? { ...msg, status: 'seen' } : msg)))
       } else {
