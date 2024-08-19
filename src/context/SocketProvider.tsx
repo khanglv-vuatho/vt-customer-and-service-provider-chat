@@ -12,7 +12,8 @@ export const SocketProvider = ({ children, token }: { children: React.ReactNode;
   useEffect(() => {
     const newSocket = io(import.meta.env.VITE_WEBSOCKET_URL, {
       query: { token, platform: 'webview' },
-      reconnection: true
+      reconnection: true,
+      autoConnect: true
     })
 
     setSocket(newSocket)
@@ -29,7 +30,7 @@ export const SocketProvider = ({ children, token }: { children: React.ReactNode;
     window.addEventListener('focus', () => ToastComponent({ type: 'error', message: 'focus' }))
 
     return () => {
-      newSocket.disconnect()
+      newSocket.close()
       ToastComponent({ type: 'error', message: 'newSocket.disconnect()' })
       document.removeEventListener('visibilitychange', handleVisibilityChange)
       window.removeEventListener('blur', handleVisibilityChange)

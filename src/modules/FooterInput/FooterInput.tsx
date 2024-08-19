@@ -73,34 +73,6 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
     }
   }
 
-  useEffect(() => {
-    const handleBlur = () => {
-      console.log('Mất tiêu điểm khỏi uploadRef')
-    }
-
-    const handleFocusOut = () => {
-      console.log('Rời khỏi uploadRef')
-    }
-
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        console.log('Trang đã bị ẩn')
-      } else {
-        console.log('Trang đã hiện trở lại')
-      }
-    }
-
-    uploadRef.current.addEventListener('blur', handleBlur)
-    uploadRef.current.addEventListener('focusout', handleFocusOut)
-    document.addEventListener('visibilitychange', handleVisibilityChange)
-
-    return () => {
-      uploadRef.current.removeEventListener('blur', handleBlur)
-      uploadRef.current.removeEventListener('focusout', handleFocusOut)
-      document.removeEventListener('visibilitychange', handleVisibilityChange)
-    }
-  }, [uploadRef])
-
   return (
     <motion.footer initial={{ opacity: 0, y: 100 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.2 }} className='sticky bottom-0 left-0 right-0 z-50 flex flex-col gap-2'>
       <form className='w-full'>
