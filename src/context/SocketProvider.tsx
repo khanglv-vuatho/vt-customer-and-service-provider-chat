@@ -25,11 +25,13 @@ export const SocketProvider = ({ children, token }: { children: React.ReactNode;
     }
 
     document.addEventListener('visibilitychange', handleVisibilityChange)
+    window.addEventListener('blur', handleVisibilityChange)
 
     return () => {
       newSocket.disconnect()
       ToastComponent({ type: 'error', message: 'newSocket.disconnect()' })
       document.removeEventListener('visibilitychange', handleVisibilityChange)
+      window.removeEventListener('blur', handleVisibilityChange)
     }
   }, [token])
 
