@@ -167,7 +167,7 @@ const HomePage = () => {
       socket.off(typeOfSocket.MESSAGE_ARRIVE)
       socket.off(typeOfSocket.MESSAGE_SEEN)
     }
-  }, [conversationInfo])
+  }, [conversationInfo, conversation, socket])
 
   return (
     <div className={`relative flex h-dvh flex-col`}>
