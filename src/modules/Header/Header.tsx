@@ -1,20 +1,23 @@
 import { motion } from 'framer-motion'
 import { Add, Call, Refresh } from 'iconsax-react'
-import { memo, useEffect, useState } from 'react'
+import { memo, useCallback, useEffect, useState } from 'react'
 
 import { fetchingDetailOrder } from '@/apis'
 import { ButtonOnlyIcon } from '@/components/Buttons'
-import { keyPossmessage, typeOfGuarante } from '@/constants'
+import { keyPossmessage, typeOfGuarante, typeOfSocket } from '@/constants'
 import instance from '@/services/axiosConfig'
-import { TOrderDetail } from '@/types'
+import { TConversationInfo, TOrderDetail } from '@/types'
 import { postMessageCustom } from '@/utils'
 import OrderDetailHeader from './OrderDetailHeader'
+import { useSocket } from '@/context/SocketProvider'
 
 type THeaderProps = {
   workerId: number
+  conversationInfo: TConversationInfo | null
 }
 
-const Header: React.FC<THeaderProps> = ({ workerId }) => {
+const Header: React.FC<THeaderProps> = ({ workerId, conversationInfo }) => {
+  const socket: any = useSocket()
   const queryParams = new URLSearchParams(location.search)
   const orderId = queryParams.get('orderId')
   const [orderDetail, setOrderDetail] = useState<TOrderDetail | null>(null)
@@ -23,11 +26,14 @@ const Header: React.FC<THeaderProps> = ({ workerId }) => {
   const worker_id = Number(queryParams.get('worker_id'))
   const isClient = !!worker_id
 
-  const handleCloseWebview = () => {
+  const handleCloseWebview = useCallback(async () => {
+    console.log({ conversationInfo })
+    await socket.emit(typeOfSocket.LEAVE_CONVERSATION_ROOM, { workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
+
     postMessageCustom({
       message: keyPossmessage.CAN_POP
     })
-  }
+  }, [conversationInfo])
   const handleClearMessage = async () => {
     const payload = {
       worker_id: 429
