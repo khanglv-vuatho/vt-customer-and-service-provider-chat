@@ -126,10 +126,19 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
                             display: 'none'
                           }}
                           ref={uploadRef}
+                          onClick={() => {
+                            console.log('123')
+                          }}
                           onChange={async (e) => {
+                            console.log({ e })
                             onChange(e.target.files)
                             if (e?.target?.files && e?.target?.files?.length > 0) {
                               await handleSendMessage({ message: '', attachment: e.target.files[0], type: 1 })
+                              console.log('123asd')
+                              if (!socket.connected) {
+                                console.log('Socket bị ngắt kết nối, đang kết nối lại...')
+                                socket.connect() // Thực hiện kết nối lại
+                              }
                             }
                             e.target.value = ''
                           }}

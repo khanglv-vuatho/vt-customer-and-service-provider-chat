@@ -17,24 +17,26 @@ export const SocketProvider = ({ children, token }: { children: React.ReactNode;
     })
 
     setSocket(newSocket)
-
+    const handleConnectSocket = () => {
+      newSocket.connect()
+    }
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible' && socket?.disconnected) {
-        newSocket.connect()
+        handleConnectSocket()
         ToastComponent({ type: 'error', message: 'newSocket.connect()' })
       }
     }
 
-    document.addEventListener('visibilitychange', handleVisibilityChange)
-    window.addEventListener('blur', handleVisibilityChange)
-    window.addEventListener('focus', () => ToastComponent({ type: 'error', message: 'focus' }))
+    document.addEventListener('visibilitychange', () => handleVisibilityChange())
+    window.addEventListener('blur', () => handleVisibilityChange())
+    window.addEventListener('focus', () => handleConnectSocket())
 
     return () => {
       newSocket.disconnect()
       ToastComponent({ type: 'error', message: 'newSocket.disconnect()' })
-      document.removeEventListener('visibilitychange', handleVisibilityChange)
-      window.removeEventListener('blur', handleVisibilityChange)
-      window.addEventListener('focus', () => ToastComponent({ type: 'error', message: 'focus' }))
+      document.removeEventListener('visibilitychange', () => handleVisibilityChange())
+      window.removeEventListener('blur', () => handleVisibilityChange())
+      window.addEventListener('focus', () => handleConnectSocket())
     }
   }, [token])
 
