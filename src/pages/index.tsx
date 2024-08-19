@@ -145,7 +145,7 @@ const HomePage = () => {
           }))
         )
       } else {
-        console.log('chay vao day')
+        setConversation((prevConversation) => prevConversation.map((msg) => (msg.id === data.message.id ? { ...msg, status: 'seen' } : msg)))
       }
     })
 
@@ -153,7 +153,7 @@ const HomePage = () => {
       if (data?.socket_id == socket?.id) {
         console.log({ data })
 
-        setConversation((prevConversation) => prevConversation.map((msg) => (msg.id === data.message.id ? { ...msg, status: 'seen' } : msg)))
+        console.log('chay vao day')
       } else {
         console.log({ data123: data })
         setConversation((prevConversation) => [...prevConversation, data?.message])
