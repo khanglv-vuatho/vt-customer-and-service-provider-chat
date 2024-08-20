@@ -30,16 +30,11 @@ const MessageImage = ({ url }: { url: string }) => {
     if (!isOpenModalImage) setIsLoadingInModal(true)
   }, [isOpenModalImage])
 
-  ToastComponent({
-    type: 'success',
-    message: url
-  })
-
   return (
     <>
       <div onClick={isLoading ? undefined : handleZoomImage} className='max-w-[60%] overflow-hidden rounded-md'>
         {url.includes('blob') ? (
-          <Image removeWrapper src={url} alt={url} className={`size-full max-h-[400px] max-w-[400px] object-cover`} />
+          <Image onClick={handleZoomImage} removeWrapper src={url} alt={url} className={`size-full max-h-[400px] max-w-[400px] object-cover`} />
         ) : (
           <>
             <Image removeWrapper height={400} width={400} src={handleAddResizeImage(url)} alt={url} className={`size-full min-w-[200px] object-cover blur-md ${isLoading ? 'block' : 'hidden'}`} />
