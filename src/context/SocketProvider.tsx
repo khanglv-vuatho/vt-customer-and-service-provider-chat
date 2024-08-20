@@ -33,7 +33,7 @@ export const SocketProvider = ({ children, token }: { children: React.ReactNode;
       newSocket.disconnect()
       document.removeEventListener('visibilitychange', () => handleVisibilityChange())
       window.removeEventListener('blur', () => handleVisibilityChange())
-      window.addEventListener('focus', () => handleConnectSocket())
+      window.removeEventListener('focus', () => handleConnectSocket())
     }
   }, [token])
 

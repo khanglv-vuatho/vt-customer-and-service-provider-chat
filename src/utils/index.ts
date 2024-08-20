@@ -199,6 +199,10 @@ function isStringWithoutEmoji(value: string) {
   return !emojiRegex.test(value)
 }
 
+const handle = () => {
+  //
+}
+
 export {
   capitalizeWords,
   formatDDMMYYYY,
