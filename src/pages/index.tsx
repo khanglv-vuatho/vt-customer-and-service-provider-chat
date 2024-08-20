@@ -92,7 +92,7 @@ const HomePage = () => {
       setConversation((prevConversation) => prevConversation.map((msg) => (msg.id === messageId && msg.status !== 'seen' ? { ...msg, status: 'sent' } : msg)))
     } catch (error) {
       console.error(error)
-
+      ToastComponent({ type: 'error', message: JSON.stringify(error) })
       setIsSendingMessage(false)
       setTimeout(() => {
         setConversation((prevConversation) => prevConversation.map((msg) => (msg.id === messageId ? { ...msg, status: 'failed' } : msg)))
