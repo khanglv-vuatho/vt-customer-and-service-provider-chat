@@ -50,9 +50,14 @@ const MessageImage = ({ url }: { url: string }) => {
             </Button>
           </div>
           <div className='flex max-h-[700px] w-full overflow-hidden rounded-lg px-16'>
-            <Image removeWrapper height={700} src={handleAddResizeImage(url)} alt={url} className={`size-full min-w-[200px] object-cover blur-md ${isLoadingInModal ? 'block' : 'hidden'}`} />
-            <Image removeWrapper src={url + '?width=400&height=400'} alt={url} className={`size-full object-cover ${!isLoadingInModal ? 'block' : 'hidden'}`} onLoad={handleOnLoadImageModal} />
-            <Image src={url} alt={url} />
+            {url.includes('blob') ? (
+              <Image onClick={handleZoomImage} removeWrapper src={url} alt={url} className={`size-full max-h-[400px] max-w-[400px] object-cover`} />
+            ) : (
+              <>
+                <Image removeWrapper height={400} width={400} src={handleAddResizeImage(url)} alt={url} className={`size-full min-w-[200px] object-cover blur-md ${isLoading ? 'block' : 'hidden'}`} />
+                <Image removeWrapper src={url + '?width=400&height=400'} alt={url} className={`size-full object-cover ${!isLoading ? 'block' : 'hidden'}`} onLoad={handleOnLoadImage} />
+              </>
+            )}
           </div>
         </div>
         {/* <div className='relative size-full'>
