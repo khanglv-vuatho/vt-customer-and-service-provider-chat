@@ -1,5 +1,6 @@
 import ImageCustom from '@/components/ImageCustom'
 import { DefaultModal } from '@/components/Modal'
+import ToastComponent from '@/components/ToastComponent'
 import { Button, Image } from '@nextui-org/react'
 import { Add } from 'iconsax-react'
 import { memo, useEffect, useState } from 'react'
@@ -28,6 +29,11 @@ const MessageImage = ({ url }: { url: string }) => {
   useEffect(() => {
     if (!isOpenModalImage) setIsLoadingInModal(true)
   }, [isOpenModalImage])
+
+  ToastComponent({
+    type: 'success',
+    message: url
+  })
 
   return (
     <>
