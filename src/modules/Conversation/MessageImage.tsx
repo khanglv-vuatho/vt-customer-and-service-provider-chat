@@ -14,7 +14,7 @@ const MessageImage = ({ url }: { url: string }) => {
   }
 
   const handleAddResizeImage = (src: string) => {
-    return src.includes('blob') ? src : `${src}?width=10&height=10`
+    return src.includes('blob') ? `${src}?width=260&height=260` : `${src}?width=10&height=10`
   }
   const handleOnLoadImage = () => {
     setIsLoading(false)
