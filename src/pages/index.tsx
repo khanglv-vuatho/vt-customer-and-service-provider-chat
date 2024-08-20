@@ -132,12 +132,17 @@ const HomePage = () => {
   }, [])
 
   useEffect(() => {
-    if (!conversationInfo) return
+    if (!conversationInfo?.order_id || !conversationInfo?.worker_id || conversationInfo == null) return
+    console.log({ conversationInfo })
 
     socket.emit(typeOfSocket.JOIN_CONVERSATION_ROOM, { workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
+    console.log('--x-x-x-x-x-x-x--x')
+    console.log({ workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
 
     socket.on(typeOfSocket.MESSAGE_SEEN, (data: any) => {
+      // seen all message in conversation when user get message
       if (data.status === 'SEEN MESSAGE') {
+        console.log('123', data)
         setConversation((prev) =>
           prev.map((message) => ({
             ...message,
@@ -145,11 +150,24 @@ const HomePage = () => {
           }))
         )
       } else {
-        setConversation((prevConversation) => prevConversation.map((msg) => (msg.id === data.message.id ? { ...msg, status: 'seen' } : msg)))
+        console.log('123123', data)
+
+        // setConversation((prevConversation) => prevConversation.map((msg) => (msg.id === data?.message?.id ? { ...msg, status: 'seen' } : msg)))
+        // em
+        // anh
+        //on('seen') => emit('seen', 'value') => seen
+
+        // on('seen', data)
       }
     })
 
+    socket.on('seen', (data: any) => {
+      console.log({ dataSeen: data?.data?.messageId })
+      setConversation((prevConversation) => prevConversation.map((msg) => (msg.id === data?.data?.messageId ? { ...msg, status: 'seen' } : msg)))
+    })
+
     socket.on(typeOfSocket.MESSAGE_ARRIVE, (data: any) => {
+      console.log({ data })
       if (data?.socket_id == socket?.id) {
         console.log({ data })
 
@@ -157,6 +175,10 @@ const HomePage = () => {
       } else {
         console.log({ data123: data })
         setConversation((prevConversation) => [...prevConversation, data?.message])
+        socket.emit('seen', { messageId: data?.message?.id, conversationId: conversationInfo?.conversation_id, orderId: conversationInfo?.order_id, workerId: conversationInfo?.worker_id })
+        console.log('-------------')
+        console.log({ messageId: data?.message?.id, conversationId: conversationInfo?.conversation_id, orderId: conversationInfo?.order_id, workerId: conversationInfo?.worker_id })
+
         socket.emit(typeOfSocket.MESSAGE_SEEN, {
           workerId: conversationInfo?.worker_id,
           orderId: conversationInfo?.order_id,
@@ -171,6 +193,7 @@ const HomePage = () => {
       socket.emit(typeOfSocket.LEAVE_CONVERSATION_ROOM, { workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
       socket.off(typeOfSocket.MESSAGE_ARRIVE)
       socket.off(typeOfSocket.MESSAGE_SEEN)
+      socket.off('seen')
     }
   }, [conversationInfo, conversation, socket])
 

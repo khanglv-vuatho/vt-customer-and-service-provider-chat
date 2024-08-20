@@ -5,7 +5,7 @@ import { useSocket } from '@/context/SocketProvider'
 import { MessageProps, TConversationInfo, THandleSendMessage, TInfoTyping } from '@/types'
 import { Button, Textarea } from '@nextui-org/react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { DocumentUpload, Send2 } from 'iconsax-react'
+import { CloudFog, DocumentUpload, Send2 } from 'iconsax-react'
 import { memo, useEffect, useRef } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 
@@ -48,6 +48,7 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
         inputEl?.focus()
         inputEl.value = ''
       } else {
+        console.log({ conversationInfo })
         socket.emit(typeOfSocket.MESSAGE_TYPING, {
           socketId: socket.id,
           message: '',
