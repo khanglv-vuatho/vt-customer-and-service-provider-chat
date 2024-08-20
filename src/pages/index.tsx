@@ -163,7 +163,6 @@ const HomePage = () => {
       console.log({ data })
       if (data?.socket_id == socket?.id) {
         console.log({ data })
-
         console.log('chay vao day')
       } else {
         console.log({ data123: data })

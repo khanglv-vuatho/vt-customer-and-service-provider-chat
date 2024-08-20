@@ -1,5 +1,4 @@
 import { ButtonOnlyIcon } from '@/components/Buttons'
-import ToastComponent from '@/components/ToastComponent'
 import { typeOfSocket } from '@/constants'
 import { useSocket } from '@/context/SocketProvider'
 import { MessageProps, TConversationInfo, THandleSendMessage, TInfoTyping } from '@/types'
