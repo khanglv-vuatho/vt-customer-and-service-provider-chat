@@ -19,20 +19,15 @@ export const SocketProvider = ({ children, token }: { children: React.ReactNode;
     const handleConnectSocket = () => {
       newSocket.connect()
     }
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible' && socket?.disconnected) {
-        handleConnectSocket()
-      }
-    }
 
-    document.addEventListener('visibilitychange', () => handleVisibilityChange())
-    window.addEventListener('blur', () => handleVisibilityChange())
+    document.addEventListener('visibilitychange', () => handleConnectSocket())
+    window.addEventListener('blur', () => handleConnectSocket())
     window.addEventListener('focus', () => handleConnectSocket())
 
     return () => {
       newSocket.disconnect()
-      document.removeEventListener('visibilitychange', () => handleVisibilityChange())
-      window.removeEventListener('blur', () => handleVisibilityChange())
+      document.removeEventListener('visibilitychange', () => handleConnectSocket())
+      window.removeEventListener('blur', () => handleConnectSocket())
       window.removeEventListener('focus', () => handleConnectSocket())
     }
   }, [token])
