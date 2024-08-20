@@ -151,13 +151,6 @@ const HomePage = () => {
         )
       } else {
         console.log('123123', data)
-
-        // setConversation((prevConversation) => prevConversation.map((msg) => (msg.id === data?.message?.id ? { ...msg, status: 'seen' } : msg)))
-        // em
-        // anh
-        //on('seen') => emit('seen', 'value') => seen
-
-        // on('seen', data)
       }
     })
 
@@ -175,8 +168,7 @@ const HomePage = () => {
       } else {
         console.log({ data123: data })
         setConversation((prevConversation) => [...prevConversation, data?.message])
-        socket.emit('seen', { messageId: data?.message?.id, conversationId: conversationInfo?.conversation_id, orderId: conversationInfo?.order_id, workerId: conversationInfo?.worker_id })
-        console.log('-------------')
+        socket.emit(typeOfSocket.SEEN, { messageId: data?.message?.id, conversationId: conversationInfo?.conversation_id, orderId: conversationInfo?.order_id, workerId: conversationInfo?.worker_id })
         console.log({ messageId: data?.message?.id, conversationId: conversationInfo?.conversation_id, orderId: conversationInfo?.order_id, workerId: conversationInfo?.worker_id })
 
         socket.emit(typeOfSocket.MESSAGE_SEEN, {
@@ -193,7 +185,7 @@ const HomePage = () => {
       socket.emit(typeOfSocket.LEAVE_CONVERSATION_ROOM, { workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
       socket.off(typeOfSocket.MESSAGE_ARRIVE)
       socket.off(typeOfSocket.MESSAGE_SEEN)
-      socket.off('seen')
+      socket.off(typeOfSocket.SEEN)
     }
   }, [conversationInfo, conversation, socket])
 

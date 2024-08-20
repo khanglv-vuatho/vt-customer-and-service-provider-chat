@@ -13,7 +13,8 @@ export const typeOfSocket = {
   LEAVE_CONVERSATION_ROOM: 'leave-conversation-room',
   MESSAGE_ARRIVE: 'message-arrive',
   MESSAGE_TYPING: 'message-typing',
-  MESSAGE_SEEN: 'message-seen'
+  MESSAGE_SEEN: 'message-seen',
+  SEEN: 'seen'
 } as const
 
 export type TypeOfRule = (typeof typeOfRule)[keyof typeof typeOfRule]
