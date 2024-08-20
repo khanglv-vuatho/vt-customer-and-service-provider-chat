@@ -1,20 +1,43 @@
-import ImageFallback from '@/components/ImageFallback'
+import ImageCustom from '@/components/ImageCustom'
 import { DefaultModal } from '@/components/Modal'
-import { Button } from '@nextui-org/react'
+import { Button, Image } from '@nextui-org/react'
 import { Add } from 'iconsax-react'
-import { memo, useState } from 'react'
+import { memo, useEffect, useState } from 'react'
 
 const MessageImage = ({ url }: { url: string }) => {
   const [isOpenModalImage, setIsOpenModalImage] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
 
   const handleZoomImage = () => {
     setIsOpenModalImage(!isOpenModalImage)
   }
 
+  const handleAddResizeImage = (src: string) => {
+    return src.includes('blob') ? src : `${src}?width=10&height=10`
+  }
+  const handleOnLoadImage = () => {
+    setIsLoading(false)
+  }
+
+  useEffect(() => {
+    fetch(url)
+      .then((response) => response.blob())
+      .then((blob) => {
+        const img = document.createElement('img')
+        img.src = URL.createObjectURL(blob)
+        console.log({ img })
+        URL.revokeObjectURL(img.src) // Giải phóng bộ nhớ
+      })
+  }, [url, handleOnLoadImage])
+
+  console.log({ dimensions })
+
   return (
     <>
-      <div onClick={handleZoomImage} style={{ height: '' }} className='max-w-[60%] overflow-hidden rounded-md'>
-        <ImageFallback src={url} />
+      <div onClick={isLoading ? undefined : handleZoomImage} className='max-w-[60%] overflow-hidden rounded-md'>
+        <Image removeWrapper height={700} src={handleAddResizeImage(url)} alt={url} className={`size-full object-cover blur-md ${isLoading ? 'block' : 'hidden'}`} />
+        <Image removeWrapper src={url} alt={url} className={`size-full object-cover ${!isLoading ? 'block' : 'hidden'}`} onLoad={handleOnLoadImage} />
       </div>
       <DefaultModal className='z-[200] h-auto max-h-[96dvh]' isOpen={isOpenModalImage} onOpenChange={handleZoomImage}>
         <div className='flex h-full flex-col items-center'>
@@ -23,8 +46,10 @@ const MessageImage = ({ url }: { url: string }) => {
               <Add className='rotate-45' size={32} />
             </Button>
           </div>
-          <div className='flex max-h-[700px] overflow-hidden rounded-lg px-16'>
-            <ImageFallback src={url} alt={url} className='size-full' />
+          <div className='flex max-h-[700px] w-full overflow-hidden rounded-lg px-16'>
+            <Image removeWrapper height={700} src={handleAddResizeImage(url)} alt={url} className={`size-full object-cover blur-md ${isLoading ? 'block' : 'hidden'}`} />
+            <Image removeWrapper src={url} alt={url} className={`size-full object-cover ${!isLoading ? 'block' : 'hidden'}`} onLoad={handleOnLoadImage} />
+            <Image src={url} alt={url} />
           </div>
         </div>
         {/* <div className='relative size-full'>
@@ -33,7 +58,7 @@ const MessageImage = ({ url }: { url: string }) => {
               <Add className='rotate-45' size={32} />
             </Button>
           </div>
-          <ImageFallback src={url} alt={url} className='size-full' />
+          <ImageCustom src={url} alt={url} className='size-full' />
         </div> */}
       </DefaultModal>
     </>

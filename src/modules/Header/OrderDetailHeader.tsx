@@ -1,5 +1,5 @@
 import { ButtonOnlyIcon } from '@/components/Buttons'
-import ImageFallback from '@/components/ImageFallback'
+import ImageCustom from '@/components/ImageCustom'
 import { DefaultModal } from '@/components/Modal'
 import RenderFireLottie from '@/lotties'
 import { TOrderDetail } from '@/types'
@@ -70,7 +70,7 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail }) => {
               <div className='flex items-center gap-2'>
                 {orderDetail?.problems?.[0]?.attachments.map((item) => (
                   <div key={item?.url} className='size-[80px] overflow-hidden rounded-md'>
-                    <ImageFallback src={item?.url} alt={item?.url} className='size-full' />
+                    <ImageCustom src={item?.url} alt={item?.url} className='size-full' />
                   </div>
                 ))}
               </div>
