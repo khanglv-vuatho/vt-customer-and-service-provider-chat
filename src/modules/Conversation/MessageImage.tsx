@@ -14,7 +14,7 @@ const MessageImage = ({ url }: { url: string }) => {
   }
 
   const handleAddResizeImage = (src: string) => {
-    return src.includes('blob') ? `${src}?width=260&height=260` : `${src}?width=10&height=10`
+    return src.includes('blob') ? src : `${src}?width=10&height=10`
   }
   const handleOnLoadImage = () => {
     setIsLoading(false)
@@ -32,7 +32,7 @@ const MessageImage = ({ url }: { url: string }) => {
     <>
       <div onClick={isLoading ? undefined : handleZoomImage} className='max-w-[60%] overflow-hidden rounded-md'>
         <Image removeWrapper height={400} width={400} src={handleAddResizeImage(url)} alt={url} className={`size-full min-w-[200px] object-cover blur-md ${isLoading ? 'block' : 'hidden'}`} />
-        <Image removeWrapper src={url} alt={url} className={`size-full object-cover ${!isLoading ? 'block' : 'hidden'}`} onLoad={handleOnLoadImage} />
+        <Image removeWrapper src={`${url}?width=320&height=320`} alt={url} className={`size-full object-cover ${!isLoading ? 'block' : 'hidden'}`} onLoad={handleOnLoadImage} />
       </div>
       <DefaultModal className='z-[200] h-auto max-h-[96dvh]' isOpen={isOpenModalImage} onOpenChange={handleZoomImage}>
         <div className='flex h-full flex-col items-center'>
@@ -43,7 +43,7 @@ const MessageImage = ({ url }: { url: string }) => {
           </div>
           <div className='flex max-h-[700px] w-full overflow-hidden rounded-lg px-16'>
             <Image removeWrapper height={700} src={handleAddResizeImage(url)} alt={url} className={`size-full min-w-[200px] object-cover blur-md ${isLoadingInModal ? 'block' : 'hidden'}`} />
-            <Image removeWrapper src={url} alt={url} className={`size-full object-cover ${!isLoadingInModal ? 'block' : 'hidden'}`} onLoad={handleOnLoadImageModal} />
+            <Image removeWrapper src={`${url}?width=320&height=320`} alt={url} className={`size-full object-cover ${!isLoadingInModal ? 'block' : 'hidden'}`} onLoad={handleOnLoadImageModal} />
             <Image src={url} alt={url} />
           </div>
         </div>
