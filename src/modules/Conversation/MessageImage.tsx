@@ -7,7 +7,7 @@ import { memo, useEffect, useState } from 'react'
 const MessageImage = ({ url }: { url: string }) => {
   const [isOpenModalImage, setIsOpenModalImage] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
-  const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
+  const [isLoadingInModal, setIsLoadingInModal] = useState(true)
 
   const handleZoomImage = () => {
     setIsOpenModalImage(!isOpenModalImage)
@@ -20,18 +20,13 @@ const MessageImage = ({ url }: { url: string }) => {
     setIsLoading(false)
   }
 
-  useEffect(() => {
-    fetch(url)
-      .then((response) => response.blob())
-      .then((blob) => {
-        const img = document.createElement('img')
-        img.src = URL.createObjectURL(blob)
-        console.log({ img })
-        URL.revokeObjectURL(img.src) // Giải phóng bộ nhớ
-      })
-  }, [url, handleOnLoadImage])
+  const handleOnLoadImageModal = () => {
+    setIsLoadingInModal(false)
+  }
 
-  console.log({ dimensions })
+  useEffect(() => {
+    if (!isOpenModalImage) setIsLoadingInModal(true)
+  }, [isOpenModalImage])
 
   return (
     <>
@@ -47,8 +42,8 @@ const MessageImage = ({ url }: { url: string }) => {
             </Button>
           </div>
           <div className='flex max-h-[700px] w-full overflow-hidden rounded-lg px-16'>
-            <Image removeWrapper height={700} src={handleAddResizeImage(url)} alt={url} className={`size-full object-cover blur-md ${isLoading ? 'block' : 'hidden'}`} />
-            <Image removeWrapper src={url} alt={url} className={`size-full object-cover ${!isLoading ? 'block' : 'hidden'}`} onLoad={handleOnLoadImage} />
+            <Image removeWrapper height={700} src={handleAddResizeImage(url)} alt={url} className={`size-full object-cover blur-md ${isLoadingInModal ? 'block' : 'hidden'}`} />
+            <Image removeWrapper src={url} alt={url} className={`size-full object-cover ${!isLoadingInModal ? 'block' : 'hidden'}`} onLoad={handleOnLoadImageModal} />
             <Image src={url} alt={url} />
           </div>
         </div>
