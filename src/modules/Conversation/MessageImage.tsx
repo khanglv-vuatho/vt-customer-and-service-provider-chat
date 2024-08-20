@@ -31,7 +31,7 @@ const MessageImage = ({ url }: { url: string }) => {
   return (
     <>
       <div onClick={isLoading ? undefined : handleZoomImage} className='max-w-[60%] overflow-hidden rounded-md'>
-        <Image removeWrapper height={700} src={handleAddResizeImage(url)} alt={url} className={`size-full object-cover blur-md ${isLoading ? 'block' : 'hidden'}`} />
+        <Image removeWrapper height={700} src={handleAddResizeImage(url)} alt={url} className={`size-full min-w-[200px] object-cover blur-md ${isLoading ? 'block' : 'hidden'}`} />
         <Image removeWrapper src={url} alt={url} className={`size-full object-cover ${!isLoading ? 'block' : 'hidden'}`} onLoad={handleOnLoadImage} />
       </div>
       <DefaultModal className='z-[200] h-auto max-h-[96dvh]' isOpen={isOpenModalImage} onOpenChange={handleZoomImage}>
@@ -42,7 +42,7 @@ const MessageImage = ({ url }: { url: string }) => {
             </Button>
           </div>
           <div className='flex max-h-[700px] w-full overflow-hidden rounded-lg px-16'>
-            <Image removeWrapper height={700} src={handleAddResizeImage(url)} alt={url} className={`size-full object-cover blur-md ${isLoadingInModal ? 'block' : 'hidden'}`} />
+            <Image removeWrapper height={700} src={handleAddResizeImage(url)} alt={url} className={`size-full min-w-[200px] object-cover blur-md ${isLoadingInModal ? 'block' : 'hidden'}`} />
             <Image removeWrapper src={url} alt={url} className={`size-full object-cover ${!isLoadingInModal ? 'block' : 'hidden'}`} onLoad={handleOnLoadImageModal} />
             <Image src={url} alt={url} />
           </div>
