@@ -89,7 +89,7 @@ const HomePage = () => {
 
       setIsSendingMessage(false)
 
-      setConversation((prevConversation) => prevConversation.map((msg) => (msg.id === messageId && msg.status !== 'seen' ? { ...msg, status: 'sent' } : msg)))
+      setConversation((prevConversation) => prevConversation.map((msg) => (msg.id === messageId && msg.status !== typeOfSocket.SEEN ? { ...msg, status: 'sent' } : msg)))
     } catch (error) {
       console.error(error)
       setIsSendingMessage(false)
@@ -153,9 +153,15 @@ const HomePage = () => {
       }
     })
 
-    socket.on('seen', (data: any) => {
+    socket.on(typeOfSocket.SEEN, (data: any) => {
       ToastComponent({ type: 'success', message: data?.data?.messageId })
-      setConversation((prevConversation) => prevConversation.map((msg) => (msg.id == data?.data?.messageId ? { ...msg, status: 'seen' } : msg)))
+      // setConversation((prevConversation) => prevConversation.map((msg) => (msg.id == data?.data?.messageId ? { ...msg, status: 'seen' } : msg)))
+      setConversation((prev) =>
+        prev.map((message) => ({
+          ...message,
+          status: 'seen'
+        }))
+      )
     })
 
     socket.on(typeOfSocket.MESSAGE_ARRIVE, (data: any) => {

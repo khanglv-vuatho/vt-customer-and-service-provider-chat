@@ -125,6 +125,7 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
                         <input
                           type='file'
                           accept='image/*'
+                          capture='environment'
                           style={{
                             display: 'none'
                           }}
