@@ -135,12 +135,9 @@ const HomePage = () => {
   }, [])
 
   useEffect(() => {
-    if (!conversationInfo?.order_id || !conversationInfo?.worker_id || conversationInfo == null || network.online === false || documentVisible === false) return
-    console.log({ conversationInfo })
+    if (!conversationInfo?.order_id || !conversationInfo?.worker_id || conversationInfo == null || network.online === false) return
 
     socket.emit(typeOfSocket.JOIN_CONVERSATION_ROOM, { workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
-    console.log('--x-x-x-x-x-x-x--x')
-    console.log({ workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
 
     socket.on(typeOfSocket.MESSAGE_SEEN, (data: any) => {
       // seen all message in conversation when user get message
@@ -198,13 +195,13 @@ const HomePage = () => {
   }, [conversationInfo, conversation, socket])
 
   useEffect(() => {
-    const handleVisibilityChange = async () => {
-      await handleGetMessage()
-      ToastComponent({ type: 'info', message: 'khang dep trai' })
-      socket.emit(typeOfSocket.JOIN_CONVERSATION_ROOM, { workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
+    if (documentVisible) {
+      const handleVisibilityChange = async () => {
+        ToastComponent({ type: 'info', message: 'khang dep trai' })
+        socket.emit(typeOfSocket.JOIN_CONVERSATION_ROOM, { workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
+      }
+      handleVisibilityChange()
     }
-
-    handleVisibilityChange()
   }, [documentVisible, network])
 
   return (
