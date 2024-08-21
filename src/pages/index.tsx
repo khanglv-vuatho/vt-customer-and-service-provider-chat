@@ -194,17 +194,31 @@ const HomePage = () => {
   }, [conversationInfo, conversation, socket])
 
   useEffect(() => {
-    const handleFocus = () => ToastComponent({ type: 'info', message: '123' })
-    const handleBlur = () => ToastComponent({ type: 'info', message: 'adsadsads' })
-
+    const handleFocus = async () => {
+      await handleGetMessage()
+      ToastComponent({ type: 'info', message: '123' })
+      socket.emit(typeOfSocket.JOIN_CONVERSATION_ROOM, { workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
+    }
+    const handleBlur = async () => {
+      await handleGetMessage()
+      ToastComponent({ type: 'info', message: 'adsadsads' })
+      socket.emit(typeOfSocket.JOIN_CONVERSATION_ROOM, { workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
+    }
+    const handleVisibilityChange = async () => {
+      await handleGetMessage()
+      ToastComponent({ type: 'info', message: 'khang dep trai' })
+      socket.emit(typeOfSocket.JOIN_CONVERSATION_ROOM, { workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
+    }
     // Thêm sự kiện
     window.addEventListener('focus', handleFocus)
     window.addEventListener('blur', handleBlur)
+    document.addEventListener('visibilitychange', handleVisibilityChange)
 
     // Xóa sự kiện khi component unmount
     return () => {
       window.removeEventListener('focus', handleFocus)
       window.removeEventListener('blur', handleBlur)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
   }, [])
 
