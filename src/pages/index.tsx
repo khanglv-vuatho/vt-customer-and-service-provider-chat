@@ -30,6 +30,7 @@ const HomePage = () => {
 
   const handleSendMessage = useCallback(
     async ({ message, type = 0, attachment }: THandleSendMessage) => {
+      await handleGetMessage()
       const newMessage: Message = {
         content: message.trim(),
         // id: `${orderId}-${conversationInfo?.worker_id}-${conversation?.length}`,
