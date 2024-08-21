@@ -3,6 +3,7 @@ import ToastComponent from '@/components/ToastComponent'
 import { typeOfRule, typeOfSocket } from '@/constants'
 import ConverstaionsSkeleton from '@/modules/ConversationsSkeleton'
 import { Message, TConversationInfo, THandleSendMessage, THandleSendMessageApi, TPayloadHandleSendMessageApi } from '@/types'
+import { useVisibilityChange, useNetworkState } from '@uidotdev/usehooks'
 import { groupConsecutiveMessages } from '@/utils'
 import { lazy, memo, Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 
@@ -28,6 +29,8 @@ const HomePage = () => {
 
   const groupedMessages = useMemo(() => groupConsecutiveMessages(conversation), [conversation])
 
+  const documentVisible = useVisibilityChange()
+  const network = useNetworkState()
   const handleSendMessage = useCallback(
     async ({ message, type = 0, attachment }: THandleSendMessage) => {
       await handleGetMessage()
@@ -201,12 +204,8 @@ const HomePage = () => {
       socket.emit(typeOfSocket.JOIN_CONVERSATION_ROOM, { workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
     }
 
-    window.addEventListener('visibilitychange', handleVisibilityChange)
-
-    return () => {
-      window.removeEventListener('visibilitychange', handleVisibilityChange)
-    }
-  }, [])
+    handleVisibilityChange()
+  }, [documentVisible, network])
 
   return (
     <div className={`relative flex h-dvh flex-col`}>
