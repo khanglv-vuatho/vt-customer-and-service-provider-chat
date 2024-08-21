@@ -25,7 +25,6 @@ export const SocketProvider = ({ children, token }: { children: React.ReactNode;
     window.addEventListener('focus', () => handleConnectSocket())
 
     return () => {
-      newSocket.disconnect()
       document.addEventListener('visibilitychange', () => handleConnectSocket())
       window.addEventListener('blur', () => handleConnectSocket())
       window.addEventListener('focus', () => handleConnectSocket())

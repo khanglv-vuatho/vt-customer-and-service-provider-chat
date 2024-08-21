@@ -5,11 +5,11 @@ import { memo, useCallback, useEffect, useState } from 'react'
 import { fetchingDetailOrder } from '@/apis'
 import { ButtonOnlyIcon } from '@/components/Buttons'
 import { keyPossmessage, typeOfGuarante, typeOfSocket } from '@/constants'
+import { useSocket } from '@/context/SocketProvider'
 import instance from '@/services/axiosConfig'
 import { TConversationInfo, TOrderDetail } from '@/types'
 import { postMessageCustom } from '@/utils'
 import OrderDetailHeader from './OrderDetailHeader'
-import { useSocket } from '@/context/SocketProvider'
 
 type THeaderProps = {
   workerId: number

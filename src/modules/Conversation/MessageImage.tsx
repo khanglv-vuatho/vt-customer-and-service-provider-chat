@@ -1,11 +1,13 @@
-import ImageCustom from '@/components/ImageCustom'
 import { DefaultModal } from '@/components/Modal'
-import ToastComponent from '@/components/ToastComponent'
 import { Button, Image } from '@nextui-org/react'
 import { Add } from 'iconsax-react'
 import { memo, useEffect, useState } from 'react'
 
-const MessageImage = ({ url }: { url: string }) => {
+type MessageImageProps = {
+  url: string
+}
+
+const MessageImage = ({ url }: MessageImageProps) => {
   const [isOpenModalImage, setIsOpenModalImage] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [isLoadingInModal, setIsLoadingInModal] = useState(true)
@@ -54,8 +56,15 @@ const MessageImage = ({ url }: { url: string }) => {
               <Image onClick={handleZoomImage} removeWrapper src={url} alt={url} className={`size-full max-h-[400px] max-w-[400px] object-cover`} />
             ) : (
               <>
-                <Image removeWrapper height={400} width={400} src={handleAddResizeImage(url)} alt={url} className={`size-full min-w-[200px] object-cover blur-md ${isLoading ? 'block' : 'hidden'}`} />
-                <Image removeWrapper src={url + '?width=400&height=400'} alt={url} className={`size-full object-cover ${!isLoading ? 'block' : 'hidden'}`} onLoad={handleOnLoadImage} />
+                <Image
+                  removeWrapper
+                  height={400}
+                  width={400}
+                  src={handleAddResizeImage(url)}
+                  alt={url}
+                  className={`size-full min-w-[200px] object-cover blur-md ${isLoadingInModal ? 'block' : 'hidden'}`}
+                />
+                <Image removeWrapper src={url + '?width=400&height=400'} alt={url} className={`size-full object-cover ${!isLoadingInModal ? 'block' : 'hidden'}`} onLoad={handleOnLoadImageModal} />
               </>
             )}
           </div>
