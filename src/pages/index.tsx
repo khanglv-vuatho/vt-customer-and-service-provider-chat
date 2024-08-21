@@ -154,8 +154,8 @@ const HomePage = () => {
     })
 
     socket.on('seen', (data: any) => {
-      console.log({ dataSeen: data?.data?.messageId })
-      setConversation((prevConversation) => prevConversation.map((msg) => (msg.id === data?.data?.messageId ? { ...msg, status: 'seen' } : msg)))
+      ToastComponent({ type: 'success', message: data?.data?.messageId })
+      setConversation((prevConversation) => prevConversation.map((msg) => (msg.id == data?.data?.messageId ? { ...msg, status: 'seen' } : msg)))
     })
 
     socket.on(typeOfSocket.MESSAGE_ARRIVE, (data: any) => {
