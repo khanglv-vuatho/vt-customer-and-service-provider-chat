@@ -135,7 +135,7 @@ const HomePage = () => {
   }, [])
 
   useEffect(() => {
-    if (!conversationInfo?.order_id || !conversationInfo?.worker_id || conversationInfo == null || network.online === false) return
+    if (!conversationInfo?.order_id || !conversationInfo?.worker_id || conversationInfo == null || network.online === false || documentVisible === false) return
     console.log({ conversationInfo })
 
     socket.emit(typeOfSocket.JOIN_CONVERSATION_ROOM, { workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
