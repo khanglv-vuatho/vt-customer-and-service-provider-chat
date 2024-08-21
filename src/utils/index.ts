@@ -162,6 +162,7 @@ const groupConsecutiveMessages = (messages: Message[]): MessageGroup[] => {
       if (currentGroup.length >= 2) {
         currentGroup[0].first = true
         currentGroup[currentGroup.length - 1].last = true
+        currentGroup[currentGroup.length - 1].status = 'seen'
       }
       groupedMessages.push({ userId: currentUserId, messages: currentGroup })
       currentGroup = [messages[i]]
@@ -173,6 +174,7 @@ const groupConsecutiveMessages = (messages: Message[]): MessageGroup[] => {
   if (currentGroup.length >= 2) {
     currentGroup[0].first = true
     currentGroup[currentGroup.length - 1].last = true
+    currentGroup[currentGroup.length - 1].status = 'seen'
   }
   groupedMessages.push({ userId: currentUserId, messages: currentGroup })
 
