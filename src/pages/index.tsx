@@ -193,6 +193,21 @@ const HomePage = () => {
     }
   }, [conversationInfo, conversation, socket])
 
+  useEffect(() => {
+    const handleFocus = () => ToastComponent({ type: 'info', message: '123' })
+    const handleBlur = () => ToastComponent({ type: 'info', message: 'adsadsads' })
+
+    // Thêm sự kiện
+    window.addEventListener('focus', handleFocus)
+    window.addEventListener('blur', handleBlur)
+
+    // Xóa sự kiện khi component unmount
+    return () => {
+      window.removeEventListener('focus', handleFocus)
+      window.removeEventListener('blur', handleBlur)
+    }
+  }, [])
+
   return (
     <div className={`relative flex h-dvh flex-col`}>
       <Suspense fallback={null}>
