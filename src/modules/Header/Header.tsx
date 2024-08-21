@@ -6,6 +6,7 @@ import { fetchingDetailOrder } from '@/apis'
 import { ButtonOnlyIcon } from '@/components/Buttons'
 import { keyPossmessage, typeOfGuarante, typeOfSocket } from '@/constants'
 import { useSocket } from '@/context/SocketProvider'
+import { translate } from '@/context/translationProvider'
 import instance from '@/services/axiosConfig'
 import { TConversationInfo, TOrderDetail } from '@/types'
 import { postMessageCustom } from '@/utils'
@@ -17,6 +18,7 @@ type THeaderProps = {
 }
 
 const Header: React.FC<THeaderProps> = ({ workerId, conversationInfo }) => {
+  const h = translate('Header')
   const socket: any = useSocket()
   const queryParams = new URLSearchParams(location.search)
   const orderId = queryParams.get('orderId')
@@ -76,7 +78,7 @@ const Header: React.FC<THeaderProps> = ({ workerId, conversationInfo }) => {
           <ButtonOnlyIcon className='' onClick={handleCloseWebview}>
             <Add className='rotate-45' size={32} />
           </ButtonOnlyIcon>
-          <p className='text-sm'>Trò chuyện</p>
+          <p className='text-sm'>{h?.title}</p>
         </div>
         <div className='flex gap-2'>
           {isLoading ? (

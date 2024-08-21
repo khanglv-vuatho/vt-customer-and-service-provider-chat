@@ -1,6 +1,7 @@
 import { ButtonOnlyIcon } from '@/components/Buttons'
 import { typeOfSocket } from '@/constants'
 import { useSocket } from '@/context/SocketProvider'
+import { translate } from '@/context/translationProvider'
 import { MessageProps, TConversationInfo, THandleSendMessage } from '@/types'
 import { Button, Textarea } from '@nextui-org/react'
 import { AnimatePresence, motion } from 'framer-motion'
@@ -16,6 +17,8 @@ type FooterInputProps = {
 }
 
 const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversationInfo, isSendingMessage, onFetchingMessage }) => {
+  const f = translate('Footer')
+
   const queryParams = new URLSearchParams(location.search)
 
   const sendRef = useRef<HTMLButtonElement>(null)
@@ -111,7 +114,7 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
               autoCorrect='off'
               autoCapitalize='off'
               spellCheck='false'
-              placeholder='Bắt đầu trò chuyện'
+              placeholder={f?.text1}
               endContent={
                 <div className='flex items-center gap-2'>
                   <Controller

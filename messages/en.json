@@ -1,1 +1,8 @@
-{}
+{
+  "Header": {
+    "title": "Conversation"
+  },
+  "Footer": {
+    "text1": "Start conversation"
+  }
+}
