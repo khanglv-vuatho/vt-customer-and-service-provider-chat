@@ -12,6 +12,7 @@ const FooterInput = lazy(() => import('@/modules/FooterInput/FooterInput'))
 const Conversation = lazy(() => import('@/modules/Conversation/Conversation'))
 
 import { useSocket } from '@/context/SocketProvider'
+import { CircularProgress } from '@nextui-org/react'
 
 const HomePage = () => {
   const queryParams = new URLSearchParams(location.search)
@@ -26,6 +27,7 @@ const HomePage = () => {
   const [conversation, setConversation] = useState<Message[]>([])
   const [conversationInfo, setConversationInfo] = useState<TConversationInfo | null>(null)
   const [isSendingMessage, setIsSendingMessage] = useState(false)
+  const [onReloadMessage, setOnReloadMessage] = useState<boolean>(false)
 
   const groupedMessages = useMemo(() => groupConsecutiveMessages(conversation), [conversation])
 
@@ -121,6 +123,7 @@ const HomePage = () => {
       console.error(error)
     } finally {
       setOnFetchingMessage(false)
+      setOnReloadMessage(false)
     }
   }
 
@@ -135,7 +138,7 @@ const HomePage = () => {
   }, [])
 
   useEffect(() => {
-    if (!conversationInfo?.order_id || !conversationInfo?.worker_id || conversationInfo == null || network.online === false) return
+    if (!conversationInfo?.order_id || !conversationInfo?.worker_id || conversationInfo == null || network.online === false || documentVisible === false) return
 
     socket.emit(typeOfSocket.JOIN_CONVERSATION_ROOM, { workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
 
@@ -196,20 +199,27 @@ const HomePage = () => {
 
   useEffect(() => {
     if (documentVisible) {
+      setOnReloadMessage(true)
       const handleVisibilityChange = async () => {
+        console.log({ workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
         ToastComponent({ type: 'info', message: 'khang dep trai' })
-        socket.emit(typeOfSocket.JOIN_CONVERSATION_ROOM, { workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
+        socket?.emit(typeOfSocket.JOIN_CONVERSATION_ROOM, { workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
       }
       handleVisibilityChange()
     }
   }, [documentVisible, network])
+
+  useEffect(() => {
+    if (onFetchingMessage) return
+    onReloadMessage && handleGetMessage()
+  }, [onReloadMessage])
 
   return (
     <div className={`relative flex h-dvh flex-col`}>
       <Suspense fallback={null}>
         <Header workerId={Number(conversationInfo?.worker_id)} conversationInfo={conversationInfo} />
       </Suspense>
-      <Suspense fallback={null}>{onFetchingMessage ? <ConverstaionsSkeleton /> : <Conversation conversation={groupedMessages} conversationInfo={conversationInfo} />}</Suspense>
+      <Suspense fallback={null}>{onFetchingMessage || onReloadMessage ? <ConverstaionsSkeleton /> : <Conversation conversation={groupedMessages} conversationInfo={conversationInfo} />}</Suspense>
       <Suspense fallback={null}>
         <FooterInput handleSendMessage={handleSendMessage} isSendingMessage={isSendingMessage} onFetchingMessage={onFetchingMessage} conversationInfo={conversationInfo} />
       </Suspense>
