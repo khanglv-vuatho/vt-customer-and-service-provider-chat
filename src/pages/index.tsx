@@ -74,6 +74,7 @@ const HomePage = () => {
 
       try {
         await handleSendMessageApi({ message, messageId: newMessage.id, type, attachment, socket_id: socket.id })
+        if (type == 1) setOnReloadMessage(true)
       } catch (error) {
         console.error(error)
       }
@@ -207,12 +208,8 @@ const HomePage = () => {
   }, [conversationInfo, conversation, socket])
 
   useEffect(() => {
-    let timeoutId: any
-
     if (documentVisible) {
-      timeoutId = setTimeout(() => {
-        setOnReloadMessage(true)
-      }, 1000)
+      setOnReloadMessage(true)
 
       const handleVisibilityChange = () => {
         console.log({ workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
@@ -221,10 +218,6 @@ const HomePage = () => {
       }
 
       handleVisibilityChange()
-    }
-
-    return () => {
-      clearTimeout(timeoutId)
     }
   }, [documentVisible, network])
 
