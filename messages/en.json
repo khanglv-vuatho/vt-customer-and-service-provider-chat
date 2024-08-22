@@ -4,5 +4,8 @@
   },
   "Footer": {
     "text1": "Start conversation"
+  },
+  "Order": {
+    "text1": "Your order has been canceled"
   }
 }

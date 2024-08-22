@@ -12,8 +12,11 @@ const FooterInput = lazy(() => import('@/modules/FooterInput/FooterInput'))
 const Conversation = lazy(() => import('@/modules/Conversation/Conversation'))
 
 import { useSocket } from '@/context/SocketProvider'
+import { translate } from '@/context/translationProvider'
 
 const HomePage = () => {
+  const o = translate('Order')
+
   const queryParams = new URLSearchParams(location.search)
   const socket: any = useSocket()
   const orderId = Number(queryParams.get('orderId'))
@@ -143,6 +146,7 @@ const HomePage = () => {
     socket.emit(typeOfSocket.JOIN_CONVERSATION_ROOM, { workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
 
     socket.on(typeOfSocket.CANCEL_ORDER, (data: any) => {
+      console.log({ dataCancleOrder: data })
       setIsCancleOrder(true)
     })
 
@@ -226,7 +230,7 @@ const HomePage = () => {
       </Suspense>
       <Suspense fallback={null}>{onFetchingMessage ? <ConverstaionsSkeleton /> : <Conversation conversation={groupedMessages} conversationInfo={conversationInfo} />}</Suspense>
       {isCancleOrder ? (
-        <p className='z-50 bg-white p-2 text-center text-primary-gray'>Đơn hàng của bạn đã bị huỷ.</p>
+        <p className='z-50 bg-white p-3 text-center text-sm text-primary-gray'>{o?.text1}.</p>
       ) : (
         <Suspense fallback={null}>
           <FooterInput
