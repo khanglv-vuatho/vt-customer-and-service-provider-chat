@@ -219,9 +219,15 @@ const HomePage = () => {
       <Suspense fallback={null}>
         <Header workerId={Number(conversationInfo?.worker_id)} conversationInfo={conversationInfo} />
       </Suspense>
-      <Suspense fallback={null}>{onFetchingMessage || onReloadMessage ? <ConverstaionsSkeleton /> : <Conversation conversation={groupedMessages} conversationInfo={conversationInfo} />}</Suspense>
+      <Suspense fallback={null}>{onFetchingMessage ? <ConverstaionsSkeleton /> : <Conversation conversation={groupedMessages} conversationInfo={conversationInfo} />}</Suspense>
       <Suspense fallback={null}>
-        <FooterInput handleSendMessage={handleSendMessage} isSendingMessage={isSendingMessage} onFetchingMessage={onFetchingMessage} conversationInfo={conversationInfo} />
+        <FooterInput
+          handleSendMessage={handleSendMessage}
+          onReloadMessage={onReloadMessage}
+          isSendingMessage={isSendingMessage}
+          onFetchingMessage={onFetchingMessage}
+          conversationInfo={conversationInfo}
+        />
       </Suspense>
     </div>
   )

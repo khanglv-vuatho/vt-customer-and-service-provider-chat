@@ -14,9 +14,10 @@ type FooterInputProps = {
   conversationInfo: TConversationInfo | null
   isSendingMessage: boolean
   onFetchingMessage: boolean
+  onReloadMessage: boolean
 }
 
-const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversationInfo, isSendingMessage, onFetchingMessage }) => {
+const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversationInfo, isSendingMessage, onFetchingMessage, onReloadMessage }) => {
   const f = translate('Footer')
 
   const queryParams = new URLSearchParams(location.search)
@@ -172,7 +173,7 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
                     <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.2 }} exit={{ opacity: 0, scale: 0 }}>
                       <Button
                         ref={sendRef}
-                        isDisabled={onFetchingMessage}
+                        isDisabled={onFetchingMessage || onReloadMessage}
                         isIconOnly
                         radius='full'
                         className={`flex items-center justify-center bg-transparent text-primary-blue transition`}
