@@ -232,7 +232,7 @@ const HomePage = () => {
         <Header workerId={Number(conversationInfo?.worker_id)} conversationInfo={conversationInfo} />
       </Suspense>
       <Suspense fallback={null}>{onFetchingMessage ? <ConverstaionsSkeleton /> : <Conversation conversation={groupedMessages} conversationInfo={conversationInfo} />}</Suspense>
-      {false ? (
+      {isCancleOrder ? (
         <p className='z-50 bg-white p-3 text-center text-sm text-primary-gray'>{o?.text1}.</p>
       ) : (
         <Suspense fallback={null}>
