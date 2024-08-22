@@ -1,4 +1,5 @@
 import { ButtonOnlyIcon } from '@/components/Buttons'
+import ToastComponent from '@/components/ToastComponent'
 import { typeOfSocket } from '@/constants'
 import { useSocket } from '@/context/SocketProvider'
 import { translate } from '@/context/translationProvider'
@@ -6,7 +7,7 @@ import { MessageProps, TConversationInfo, THandleSendMessage } from '@/types'
 import { Button, Textarea } from '@nextui-org/react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { DocumentUpload, Send2 } from 'iconsax-react'
-import { memo, useEffect, useRef } from 'react'
+import { memo, useEffect, useRef, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 
 type FooterInputProps = {
@@ -21,6 +22,7 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
   const f = translate('Footer')
 
   const queryParams = new URLSearchParams(location.search)
+  const [inputOpenedTime, setInputOpenedTime] = useState<number>(0)
 
   const sendRef = useRef<HTMLButtonElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
@@ -131,11 +133,31 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
                           }}
                           ref={uploadRef}
                           onClick={() => {
-                            console.log('123')
+                            setInputOpenedTime(Date.now())
                           }}
                           onChange={async (e) => {
                             console.log({ e })
+                            const currentTime = Date.now()
+                            const timeDifference = currentTime - inputOpenedTime
+                            const cameraUsageThreshold = 2000
+
+                            if (timeDifference > cameraUsageThreshold) {
+                              ToastComponent({
+                                type: 'info',
+                                message: 'Camera likely used'
+                              })
+                              console.log('Camera likely used')
+                            } else {
+                              ToastComponent({
+                                type: 'info',
+                                message: 'File selected from gallery'
+                              })
+
+                              console.log('File selected from gallery')
+                            }
+
                             onChange(e.target.files)
+
                             if (e?.target?.files && e?.target?.files?.length > 0) {
                               await handleSendMessage({ message: '', attachment: e.target.files[0], type: 1 })
                               console.log('123asd')

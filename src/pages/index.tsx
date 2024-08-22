@@ -207,14 +207,24 @@ const HomePage = () => {
   }, [conversationInfo, conversation, socket])
 
   useEffect(() => {
+    let timeoutId: any
+
     if (documentVisible) {
-      setOnReloadMessage(true)
-      const handleVisibilityChange = async () => {
+      timeoutId = setTimeout(() => {
+        setOnReloadMessage(true)
+      }, 1000)
+
+      const handleVisibilityChange = () => {
         console.log({ workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
         ToastComponent({ type: 'info', message: 'khang dep trai' })
         socket?.emit(typeOfSocket.JOIN_CONVERSATION_ROOM, { workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
       }
+
       handleVisibilityChange()
+    }
+
+    return () => {
+      clearTimeout(timeoutId)
     }
   }, [documentVisible, network])
 
