@@ -182,16 +182,16 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
                         {Number(item.type) === typeOfMessage.TEXT ? (
                           // only text
 
-                          isStringWithoutEmoji(item.content) ? (
+                          !isStringWithoutEmoji(item.content) && item?.content.length == 2 ? (
                             <motion.div
                               variants={item?.status === 'pending' ? messageAnimation() : { initial: { x: 0, y: 0 } }}
                               initial='initial'
                               animate='animate'
                               transition={{ duration: 0.2 }}
                               viewport={{ once: true }}
-                              className={`max-w-[80%] rounded-lg border-1 p-3.5 ${isMe ? 'border-transparent bg-primary-light-blue' : 'border-primary-yellow bg-transparent'}`}
+                              className={`max-w-[80%] p-3.5`}
                             >
-                              <pre className='font-inter break-words text-sm' style={{ whiteSpace: 'pre-wrap' }}>
+                              <pre className={`font-inter break-words text-sm ${item?.content.length == 2 ? 'scale-[2.5]' : ''}`} style={{ whiteSpace: 'pre-wrap' }}>
                                 {item?.content}
                               </pre>
                             </motion.div>
@@ -202,9 +202,9 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
                               animate='animate'
                               transition={{ duration: 0.2 }}
                               viewport={{ once: true }}
-                              className={`max-w-[80%] p-3.5`}
+                              className={`max-w-[80%] rounded-lg border-1 p-3.5 ${isMe ? 'border-transparent bg-primary-light-blue' : 'border-primary-yellow bg-transparent'}`}
                             >
-                              <pre className={`font-inter break-words text-sm ${item?.content.length == 2 ? 'scale-[2.5]' : ''}`} style={{ whiteSpace: 'pre-wrap' }}>
+                              <pre className='font-inter break-words text-sm' style={{ whiteSpace: 'pre-wrap' }}>
                                 {item?.content}
                               </pre>
                             </motion.div>
