@@ -3,8 +3,8 @@ import ToastComponent from '@/components/ToastComponent'
 import { typeOfRule, typeOfSocket } from '@/constants'
 import ConverstaionsSkeleton from '@/modules/ConversationsSkeleton'
 import { Message, TConversationInfo, THandleSendMessage, THandleSendMessageApi, TPayloadHandleSendMessageApi } from '@/types'
-import { useVisibilityChange, useNetworkState } from '@uidotdev/usehooks'
 import { groupConsecutiveMessages } from '@/utils'
+import { useNetworkState, useVisibilityChange } from '@uidotdev/usehooks'
 import { lazy, memo, Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 
 const Header = lazy(() => import('@/modules/Header/Header'))
@@ -12,7 +12,6 @@ const FooterInput = lazy(() => import('@/modules/FooterInput/FooterInput'))
 const Conversation = lazy(() => import('@/modules/Conversation/Conversation'))
 
 import { useSocket } from '@/context/SocketProvider'
-import { CircularProgress } from '@nextui-org/react'
 
 const HomePage = () => {
   const queryParams = new URLSearchParams(location.search)
@@ -28,6 +27,7 @@ const HomePage = () => {
   const [conversationInfo, setConversationInfo] = useState<TConversationInfo | null>(null)
   const [isSendingMessage, setIsSendingMessage] = useState(false)
   const [onReloadMessage, setOnReloadMessage] = useState<boolean>(false)
+  const [isCancleOrder, setIsCancleOrder] = useState<boolean>(false)
 
   const groupedMessages = useMemo(() => groupConsecutiveMessages(conversation), [conversation])
 
@@ -142,6 +142,10 @@ const HomePage = () => {
 
     socket.emit(typeOfSocket.JOIN_CONVERSATION_ROOM, { workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
 
+    socket.on(typeOfSocket.CANCEL_ORDER, (data: any) => {
+      setIsCancleOrder(true)
+    })
+
     socket.on(typeOfSocket.MESSAGE_SEEN, (data: any) => {
       // seen all message in conversation when user get message
       if (data.status === 'SEEN MESSAGE') {
@@ -194,6 +198,7 @@ const HomePage = () => {
       socket.off(typeOfSocket.MESSAGE_ARRIVE)
       socket.off(typeOfSocket.MESSAGE_SEEN)
       socket.off(typeOfSocket.SEEN)
+      socket.off(typeOfSocket.CANCEL_ORDER)
     }
   }, [conversationInfo, conversation, socket])
 
@@ -220,15 +225,19 @@ const HomePage = () => {
         <Header workerId={Number(conversationInfo?.worker_id)} conversationInfo={conversationInfo} />
       </Suspense>
       <Suspense fallback={null}>{onFetchingMessage ? <ConverstaionsSkeleton /> : <Conversation conversation={groupedMessages} conversationInfo={conversationInfo} />}</Suspense>
-      <Suspense fallback={null}>
-        <FooterInput
-          handleSendMessage={handleSendMessage}
-          onReloadMessage={onReloadMessage}
-          isSendingMessage={isSendingMessage}
-          onFetchingMessage={onFetchingMessage}
-          conversationInfo={conversationInfo}
-        />
-      </Suspense>
+      {isCancleOrder ? (
+        <p className='z-50 bg-white p-2 text-center text-primary-gray'>Đơn hàng của bạn đã bị huỷ.</p>
+      ) : (
+        <Suspense fallback={null}>
+          <FooterInput
+            handleSendMessage={handleSendMessage}
+            onReloadMessage={onReloadMessage}
+            isSendingMessage={isSendingMessage}
+            onFetchingMessage={onFetchingMessage}
+            conversationInfo={conversationInfo}
+          />
+        </Suspense>
+      )}
     </div>
   )
 }
