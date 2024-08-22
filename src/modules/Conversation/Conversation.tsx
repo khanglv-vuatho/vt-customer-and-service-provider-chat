@@ -181,6 +181,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
                       >
                         {Number(item.type) === typeOfMessage.TEXT ? (
                           // only text
+
                           isStringWithoutEmoji(item.content) ? (
                             <motion.div
                               variants={item?.status === 'pending' ? messageAnimation() : { initial: { x: 0, y: 0 } }}
@@ -203,7 +204,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
                               viewport={{ once: true }}
                               className={`max-w-[80%] p-3.5`}
                             >
-                              <pre className='font-inter scale-[2.5] break-words text-sm' style={{ whiteSpace: 'pre-wrap' }}>
+                              <pre className={`font-inter break-words text-sm ${item?.content.length == 2 ? 'scale-[2.5]' : ''}`} style={{ whiteSpace: 'pre-wrap' }}>
                                 {item?.content}
                               </pre>
                             </motion.div>
