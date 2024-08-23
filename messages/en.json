@@ -7,5 +7,10 @@
   },
   "Order": {
     "text1": "Your order has been canceled"
+  },
+  "OrderDetailHeader": {
+    "text": "Estimated Price",
+    "text1": "This is the price that the technician estimates. The final price will be confirmed after a thorough inspection on-site.",
+    "text2": "Understood"
   }
 }

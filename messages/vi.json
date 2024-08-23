@@ -7,5 +7,10 @@
   },
   "Order": {
     "text1": "Đơn hàng của bạn đã bị huỷ"
+  },
+  "OrderDetailHeader": {
+    "text": "Giá dự kiến",
+    "text1": "Đây là giá mà thợ dự kiến ước lượng khoảng giá, đến nơi kiểm tra kĩ sẽ chốt giá sau",
+    "text2": "Đã hiểu"
   }
 }

@@ -1,6 +1,7 @@
 import { ButtonOnlyIcon, PrimaryButton } from '@/components/Buttons'
 import ImageCustom from '@/components/ImageCustom'
 import { DefaultModal } from '@/components/Modal'
+import { translate } from '@/context/translationProvider'
 import RenderFireLottie from '@/lotties'
 import { TOrderDetail } from '@/types'
 import { formatDDMMYYYY, formatLocalTime } from '@/utils'
@@ -13,6 +14,7 @@ type TOrderDetailHeader = {
   orderDetail: TOrderDetail | null
 }
 const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail }) => {
+  const od = translate('OrderDetailHeader')
   const percent = 100 - Number(orderDetail?.guarantee?.percent) < 0 ? 0 : 100 - Number(orderDetail?.guarantee?.percent)
 
   const [isOpen, setIsOpen] = useState(false)
@@ -133,11 +135,11 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail }) => {
       >
         <div className='flex w-full flex-col gap-4'>
           <div className='flex flex-col items-center justify-center gap-1 text-primary-black *:text-center'>
-            <p className='font-bold'>Giá dự kiến</p>
-            <p className='text-sm'>Đây là giá mà thợ dự kiến ước lượng khoảng giá, đến nơi kiểm tra kĩ sẽ chốt giá sau.</p>
+            <p className='font-bold'>{od?.text}</p>
+            <p className='text-sm'>{od?.text1}.</p>
           </div>
           <PrimaryButton className='rounded-full font-bold text-primary-black' onClick={handleOpenExplainPrice}>
-            Đã hiểu
+            {od?.text2}
           </PrimaryButton>
         </div>
       </DefaultModal>
