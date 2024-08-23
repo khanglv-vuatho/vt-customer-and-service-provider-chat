@@ -5,11 +5,11 @@ import { typeOfPriceOfOrderDetail } from '@/constants'
 import { translate } from '@/context/translationProvider'
 import RenderFireLottie from '@/lotties'
 import { TOrderDetail } from '@/types'
-import { formatDDMMYYYY, formatLocalTime } from '@/utils'
+import { formatDDMMYYYY, formatLocalTime, getPriceDetails } from '@/utils'
 
 import { Progress } from '@nextui-org/react'
 import { Add, Clock, Location, MessageQuestion, ShieldTick } from 'iconsax-react'
-import React, { memo, useState } from 'react'
+import React, { memo, useMemo, useState } from 'react'
 
 type TOrderDetailHeader = {
   orderDetail: TOrderDetail | null
@@ -22,28 +22,14 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail, isHasPro
   const [isOpen, setIsOpen] = useState(false)
   const [isOpenExplainPrice, setIsOpenExplainPrice] = useState(false)
 
-  const [statusTextOfPrice, setStatusTextOfPrice] = useState<number | null>(null)
+  const detailOrderDisplay = useMemo(() => getPriceDetails(orderDetail as TOrderDetail), [orderDetail])
 
   const handleToggleModal = () => {
     setIsOpen(!isOpen)
   }
 
-  const getPriceDetails = () => {
-    const { final_price, first_price } = orderDetail?.billing || {}
-    const isFinalPrice = !!final_price
-
-    return {
-      isFinalPrice,
-      price: Number(isFinalPrice ? final_price : first_price),
-      status: isFinalPrice ? typeOfPriceOfOrderDetail.final_price : typeOfPriceOfOrderDetail.frist_price,
-      text: isFinalPrice ? od?.['text-1'] : od?.text
-    }
-  }
-
   const handleOpenExplainPrice = () => {
-    const { status } = getPriceDetails()
     setIsOpenExplainPrice(!isOpenExplainPrice)
-    setStatusTextOfPrice(status)
   }
 
   return (
@@ -86,7 +72,7 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail, isHasPro
                 </p>
               </div>
             </div>
-            {(orderDetail?.problems?.[0]?.attachments?.length as any) > 0 && (
+            {(orderDetail?.problems?.[0]?.attachments?.length as number) > 0 && (
               <div className='flex items-center gap-2'>
                 {orderDetail?.problems?.[0]?.attachments.map((item) => (
                   <div key={item?.url} className='size-[80px] overflow-hidden rounded-md'>
@@ -97,12 +83,12 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail, isHasPro
             )}
             <div className='flex items-center justify-between'>
               <div className='flex items-center gap-2 text-sm'>
-                <p>{getPriceDetails()?.text}</p>
+                <p>{detailOrderDisplay.price === typeOfPriceOfOrderDetail.final_price ? od?.['text-1'] : od?.text}</p>
                 <span onClick={handleOpenExplainPrice}>
                   <MessageQuestion className='text-primary-gray' />
                 </span>
               </div>
-              <p className='font-bold text-primary-blue'>{getPriceDetails()?.price.toLocaleString('en-US').toString()}đ</p>
+              <p className='font-bold text-primary-blue'>{detailOrderDisplay?.price?.toLocaleString('en-US')?.toString()}đ</p>
             </div>
           </div>
         </div>
@@ -165,9 +151,9 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail, isHasPro
         <div className='flex w-full flex-col gap-4'>
           <div className='flex flex-col items-center justify-center gap-1 text-primary-black *:text-center'>
             {/* <p className='font-bold'>{od?.text}</p> */}
-            <p className='font-bold'>{statusTextOfPrice === typeOfPriceOfOrderDetail.final_price ? od?.['text-1'] : od?.text}</p>
+            <p className='font-bold'>{detailOrderDisplay?.price === typeOfPriceOfOrderDetail.final_price ? od?.['text-1'] : od?.text}</p>
             {/* <p className='text-sm'>{od?.text1}.</p> */}
-            <p className='text-sm'>{statusTextOfPrice === typeOfPriceOfOrderDetail.final_price ? od?.['text1-1'] : od?.text1}.</p>
+            <p className='text-sm'>{detailOrderDisplay?.price === typeOfPriceOfOrderDetail.final_price ? od?.['text1-1'] : od?.text1}.</p>
           </div>
           <PrimaryButton className='rounded-full font-bold text-primary-black' onClick={handleOpenExplainPrice}>
             {od?.text2}

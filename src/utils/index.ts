@@ -1,8 +1,9 @@
 import ToastComponent from '@/components/ToastComponent'
-import { Message, MessageGroup, TPostMessage } from '@/types'
+import { Message, MessageGroup, TOrderDetail, TPostMessage } from '@/types'
 import moment from 'moment'
 import React, { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
+import { typeOfPriceOfOrderDetail } from '@/constants'
 const useUnfocusItem = (callback: () => void, exclusionRef?: React.RefObject<HTMLElement | null>): React.RefObject<any> => {
   const itemRef = useRef<any>(null)
 
@@ -202,7 +203,15 @@ function isStringWithoutEmoji(value: string) {
 const handle = () => {
   //
 }
+const getPriceDetails = (orderDetail: TOrderDetail) => {
+  const { final_price, first_price } = orderDetail?.billing || {}
+  const isFinalPrice = final_price !== 0
 
+  return {
+    price: isFinalPrice ? final_price : first_price,
+    status: isFinalPrice ? typeOfPriceOfOrderDetail.final_price : typeOfPriceOfOrderDetail.frist_price
+  }
+}
 export {
   capitalizeWords,
   formatDDMMYYYY,
@@ -217,5 +226,6 @@ export {
   useUnfocusItem,
   formatTimestamp,
   getLastSeenId,
-  isStringWithoutEmoji
+  isStringWithoutEmoji,
+  getPriceDetails
 }
