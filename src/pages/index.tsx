@@ -146,7 +146,7 @@ const HomePage = () => {
 
     socket.emit(typeOfSocket.JOIN_CONVERSATION_ROOM, { workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
 
-    socket.on(typeOfSocket.CANCEL_ORDER, (data: any) => {
+    socket.on(typeOfSocket.MESSAGE_BLOCK, (data: any) => {
       console.log({ dataCancleOrder: data })
       setIsCancleOrder(true)
     })
@@ -167,7 +167,6 @@ const HomePage = () => {
     })
 
     socket.on(typeOfSocket.SEEN, (data: any) => {
-      ToastComponent({ type: 'success', message: data?.data?.messageId })
       // setConversation((prevConversation) => prevConversation.map((msg) => (msg.id == data?.data?.messageId ? { ...msg, status: 'seen' } : msg)))
       setConversation((prev) =>
         prev.map((message) => ({
@@ -203,7 +202,7 @@ const HomePage = () => {
       socket.off(typeOfSocket.MESSAGE_ARRIVE)
       socket.off(typeOfSocket.MESSAGE_SEEN)
       socket.off(typeOfSocket.SEEN)
-      socket.off(typeOfSocket.CANCEL_ORDER)
+      socket.off(typeOfSocket.MESSAGE_BLOCK)
     }
   }, [conversationInfo, conversation, socket])
 
@@ -213,7 +212,6 @@ const HomePage = () => {
 
       const handleVisibilityChange = () => {
         console.log({ workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
-        ToastComponent({ type: 'info', message: 'khang dep trai' })
         socket?.emit(typeOfSocket.JOIN_CONVERSATION_ROOM, { workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
       }
 
