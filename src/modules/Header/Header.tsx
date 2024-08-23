@@ -48,17 +48,17 @@ const Header: React.FC<THeaderProps> = ({ workerId, conversationInfo }) => {
     setOrderDetail(result)
     setIsLoading(false)
   }
-
   // postmessage to app for call
   const handleCall = () => {
     const keyPhone = isClient ? 'client_phone' : 'worker_phone'
     const phoneCode = orderDetail?.[keyPhone]?.phone?.phone_code || ''
     const phoneNumber = orderDetail?.[keyPhone]?.phone?.phone_number || ''
-    const phone = (phoneCode + phoneNumber).toString()
+
     postMessageCustom({
       message: keyPossmessage?.CALL,
       data: {
-        call: phone
+        phoneCode,
+        phoneNumber
       }
     })
   }
