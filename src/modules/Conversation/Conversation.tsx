@@ -9,6 +9,7 @@ import { useSocket } from '@/context/SocketProvider'
 import { MessageGroup, TConversationInfo, TInfoTyping } from '@/types'
 import { formatLocalHoursTime, getLastSeenId, isStringWithoutEmoji } from '@/utils'
 import MessageImage from './MessageImage'
+import ToastComponent from '@/components/ToastComponent'
 
 type ConversationProps = {
   conversation: MessageGroup[]
@@ -55,6 +56,8 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
     (status: 'pending' | 'sent' | 'failed' | 'seen', display: boolean): React.ReactNode => {
       let tickIcon
       const avatar = isClient ? conversationInfo?.worker_picture : conversationInfo?.client_picture
+      ToastComponent({ type: 'error', message: JSON.stringify(avatar) })
+      ToastComponent({ type: 'error', message: JSON.stringify(conversationInfo) })
       switch (status) {
         case 'pending':
           tickIcon = <div className='size-4 rounded-full ring-1 ring-inset ring-primary-blue transition' />
