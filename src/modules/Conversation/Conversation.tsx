@@ -54,11 +54,12 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
 
   const shouldRenderIconStatus = useCallback(
     (status: 'pending' | 'sent' | 'failed' | 'seen', display: boolean): React.ReactNode => {
+      ToastComponent({ type: 'error', message: JSON.stringify(conversationInfo) })
       if (conversationInfo === null) return null
       let tickIcon
       const avatar = isClient ? conversationInfo?.worker_picture : conversationInfo?.client_picture
-      ToastComponent({ type: 'error', message: JSON.stringify(avatar) })
-      ToastComponent({ type: 'error', message: JSON.stringify(conversationInfo) })
+      // ToastComponent({ type: 'error', message: JSON.stringify(avatar) })
+      // ToastComponent({ type: 'error', message: JSON.stringify(conversationInfo) })
       switch (status) {
         case 'pending':
           tickIcon = <div className='size-4 rounded-full ring-1 ring-inset ring-primary-blue transition' />
