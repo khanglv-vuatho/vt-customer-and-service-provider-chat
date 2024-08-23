@@ -11,6 +11,7 @@ import instance from '@/services/axiosConfig'
 import { TConversationInfo, TOrderDetail } from '@/types'
 import { postMessageCustom } from '@/utils'
 import OrderDetailHeader from './OrderDetailHeader'
+import ToastComponent from '@/components/ToastComponent'
 
 type THeaderProps = {
   workerId: number
@@ -36,6 +37,7 @@ const Header: React.FC<THeaderProps> = ({ workerId, conversationInfo }) => {
       message: keyPossmessage.CAN_POP
     })
   }, [conversationInfo])
+
   const handleClearMessage = async () => {
     const payload = {
       worker_id: 429
@@ -48,6 +50,7 @@ const Header: React.FC<THeaderProps> = ({ workerId, conversationInfo }) => {
     setOrderDetail(result)
     setIsLoading(false)
   }
+
   // postmessage to app for call
   const handleCall = () => {
     const keyPhone = isClient ? 'client_phone' : 'worker_phone'
