@@ -109,7 +109,7 @@ const HomePage = () => {
     }
   }
 
-  const handleGetMessage = async () => {
+  const handleGetMessage = useCallback(async () => {
     try {
       const data = await fetchMessage({ orderId, ...(isClient && { worker_id }) })
 
@@ -129,7 +129,7 @@ const HomePage = () => {
       setOnFetchingMessage(false)
       setOnReloadMessage(false)
     }
-  }
+  }, [])
 
   useEffect(() => {
     if (onFetchingMessage) {
