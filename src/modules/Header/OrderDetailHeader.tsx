@@ -1,4 +1,4 @@
-import { ButtonOnlyIcon } from '@/components/Buttons'
+import { ButtonOnlyIcon, PrimaryButton } from '@/components/Buttons'
 import ImageCustom from '@/components/ImageCustom'
 import { DefaultModal } from '@/components/Modal'
 import RenderFireLottie from '@/lotties'
@@ -16,9 +16,13 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail }) => {
   const percent = 100 - Number(orderDetail?.guarantee?.percent) < 0 ? 0 : 100 - Number(orderDetail?.guarantee?.percent)
 
   const [isOpen, setIsOpen] = useState(false)
+  const [isOpenExplainPrice, setIsOpenExplainPrice] = useState(false)
 
   const handleToggleModal = () => {
     setIsOpen(!isOpen)
+  }
+  const handleOpenExplainPrice = () => {
+    setIsOpenExplainPrice(!isOpenExplainPrice)
   }
 
   return (
@@ -38,7 +42,7 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail }) => {
             <div className='flex items-center justify-between'>
               <div className='flex items-center gap-1 text-sm'>
                 <p>Giá dự kiến</p>
-                <span>
+                <span onClick={handleOpenExplainPrice}>
                   <MessageQuestion className='text-primary-gray' />
                 </span>
               </div>
@@ -113,6 +117,30 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail }) => {
           </div>
         </div>
       </div>
+      <DefaultModal
+        classNames={{
+          body: 'p-0',
+          base: 'rounded-t-xl rounded-b-none m-0 p-0',
+          backdrop: 'z-[900]',
+          closeButton: '2',
+          footer: '3',
+          header: '4',
+          wrapper: 'z-[1000]'
+        }}
+        isOpen={isOpenExplainPrice}
+        placement='bottom'
+        onOpenChange={handleOpenExplainPrice}
+      >
+        <div className='flex w-full flex-col gap-4'>
+          <div className='flex flex-col items-center justify-center gap-1 text-primary-black *:text-center'>
+            <p className='font-bold'>Giá dự kiến</p>
+            <p className='text-sm'>Đây là giá mà thợ dự kiến ước lượng khoảng giá, đến nơi kiểm tra kĩ sẽ chốt giá sau.</p>
+          </div>
+          <PrimaryButton className='rounded-full font-bold text-primary-black' onClick={handleOpenExplainPrice}>
+            Đã hiểu
+          </PrimaryButton>
+        </div>
+      </DefaultModal>
     </>
   )
 }
