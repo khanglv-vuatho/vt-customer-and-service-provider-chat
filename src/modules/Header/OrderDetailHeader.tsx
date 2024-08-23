@@ -36,13 +36,12 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail, isHasPro
       isFinalPrice,
       price: Number(isFinalPrice ? final_price : first_price),
       status: isFinalPrice ? typeOfPriceOfOrderDetail.final_price : typeOfPriceOfOrderDetail.frist_price,
-      text: isFinalPrice ? 'Giá chốt' : 'Giá dự kiến'
+      text: isFinalPrice ? od?.['text-1'] : od?.text
     }
   }
 
   const handleOpenExplainPrice = () => {
     const { status } = getPriceDetails()
-    console.log({ status })
     setIsOpenExplainPrice(!isOpenExplainPrice)
     setStatusTextOfPrice(status)
   }
@@ -52,7 +51,7 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail, isHasPro
       <DefaultModal isOpen={isOpen} onOpenChange={handleToggleModal} className='mx-4'>
         <div className='w-full'>
           <div className='flex w-full items-center justify-between'>
-            <p className='font-bold'>Chi tiết đơn hàng</p>
+            <p className='font-bold'>{od?.title}</p>
             <ButtonOnlyIcon onClick={handleToggleModal}>
               <Add className='rotate-45' size={32} />
             </ButtonOnlyIcon>
@@ -82,7 +81,9 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail, isHasPro
                 <span>
                   <ShieldTick size={20} className='text-primary-green' variant='Bold' />
                 </span>
-                <p>Bảo hành {orderDetail?.guarantee?.duration} ngày</p>
+                <p>
+                  {od?.text3} {orderDetail?.guarantee?.duration} {od?.text4}
+                </p>
               </div>
             </div>
             {(orderDetail?.problems?.[0]?.attachments?.length as any) > 0 && (
@@ -110,7 +111,7 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail, isHasPro
         <div className='flex items-center justify-between gap-10 text-sm font-bold'>
           <p>{orderDetail?.problems?.[0]?.description}</p>
           <p className='whitespace-nowrap text-primary-yellow underline' onClick={handleToggleModal}>
-            Xem chi tiết
+            {od?.text5}
           </p>
         </div>
         {isHasProcess && (
@@ -120,9 +121,13 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail, isHasPro
                 <span>
                   <ShieldTick size={24} variant='Bold' className='text-primary-green' />
                 </span>
-                <p>Bảo hành {orderDetail?.guarantee?.duration} ngày</p>
+                <p>
+                  {od?.text3} {orderDetail?.guarantee?.duration} {od?.text4}
+                </p>
               </div>
-              <p className='text-sm font-bold'>Còn lại {Number(orderDetail?.guarantee?.time_remaining) < 0 ? 0 : orderDetail?.guarantee?.time_remaining} ngày</p>
+              <p className='text-sm font-bold'>
+                {od?.text6} {Number(orderDetail?.guarantee?.time_remaining) < 0 ? 0 : orderDetail?.guarantee?.time_remaining} {od?.text4}
+              </p>
             </div>
             <div className='relative'>
               <Progress
@@ -160,9 +165,9 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail, isHasPro
         <div className='flex w-full flex-col gap-4'>
           <div className='flex flex-col items-center justify-center gap-1 text-primary-black *:text-center'>
             {/* <p className='font-bold'>{od?.text}</p> */}
-            <p className='font-bold'>{statusTextOfPrice === typeOfPriceOfOrderDetail.final_price ? 'Giá chốt' : 'Giá dự kiến'}</p>
+            <p className='font-bold'>{statusTextOfPrice === typeOfPriceOfOrderDetail.final_price ? od?.['text-1'] : od?.text}</p>
             {/* <p className='text-sm'>{od?.text1}.</p> */}
-            <p className='text-sm'>{statusTextOfPrice === typeOfPriceOfOrderDetail.final_price ? 'Định nghĩa của giá chốt' : od?.text1}.</p>
+            <p className='text-sm'>{statusTextOfPrice === typeOfPriceOfOrderDetail.final_price ? od?.['text1-1'] : od?.text1}.</p>
           </div>
           <PrimaryButton className='rounded-full font-bold text-primary-black' onClick={handleOpenExplainPrice}>
             {od?.text2}
