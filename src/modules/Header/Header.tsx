@@ -97,7 +97,7 @@ const Header: React.FC<THeaderProps> = ({ workerId, conversationInfo }) => {
         </div>
       </div>
 
-      {orderDetail?.guarantee.status == typeOfGuarante.active && <OrderDetailHeader orderDetail={orderDetail} />}
+      <OrderDetailHeader orderDetail={orderDetail} isHasProcess={orderDetail?.guarantee.status == 1} />
     </motion.header>
   )
 }

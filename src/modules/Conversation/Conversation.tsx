@@ -142,6 +142,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
         setInfoTyping(null)
       }, 7000)
     })
+
     return () => {
       clearTimeout(timer)
       socket.off(typeOfSocket.MESSAGE_TYPING)

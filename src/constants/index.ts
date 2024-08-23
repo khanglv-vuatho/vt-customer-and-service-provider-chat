@@ -39,3 +39,8 @@ export const typeOfGuarante = {
   expired: 3, // hết hạn
   cancel: 4
 } as const
+
+export const typeOfPriceOfOrderDetail = {
+  frist_price: 0, // không có bảo hành
+  final_price: 1
+} as const
