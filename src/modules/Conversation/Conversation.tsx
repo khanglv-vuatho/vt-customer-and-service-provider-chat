@@ -54,7 +54,6 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
 
   const shouldRenderIconStatus = useCallback(
     (status: 'pending' | 'sent' | 'failed' | 'seen', display: boolean): React.ReactNode => {
-      ToastComponent({ type: 'error', message: JSON.stringify(conversationInfo) })
       if (conversationInfo === null) return null
       let tickIcon
       const avatar = isClient ? conversationInfo?.worker_picture : conversationInfo?.client_picture
