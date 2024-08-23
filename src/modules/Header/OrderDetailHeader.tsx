@@ -96,13 +96,13 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail, isHasPro
               </div>
             )}
             <div className='flex items-center justify-between'>
-              <div className='flex items-center gap-1 text-sm'>
+              <div className='flex items-center gap-2 text-sm'>
                 <p>{getPriceDetails()?.text}</p>
                 <span onClick={handleOpenExplainPrice}>
                   <MessageQuestion className='text-primary-gray' />
                 </span>
               </div>
-              <p className='font-bold text-primary-blue'>{getPriceDetails()?.price}đ</p>
+              <p className='font-bold text-primary-blue'>{getPriceDetails()?.price.toLocaleString('en-US').toString()}đ</p>
             </div>
           </div>
         </div>
