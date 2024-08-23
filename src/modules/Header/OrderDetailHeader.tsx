@@ -1,6 +1,7 @@
 import { ButtonOnlyIcon, PrimaryButton } from '@/components/Buttons'
 import ImageCustom from '@/components/ImageCustom'
 import { DefaultModal } from '@/components/Modal'
+import ToastComponent from '@/components/ToastComponent'
 import { typeOfPriceOfOrderDetail } from '@/constants'
 import { translate } from '@/context/translationProvider'
 import RenderFireLottie from '@/lotties'
@@ -23,6 +24,8 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail, isHasPro
   const [isOpenExplainPrice, setIsOpenExplainPrice] = useState(false)
 
   const detailOrderDisplay = useMemo(() => getPriceDetails(orderDetail as TOrderDetail), [orderDetail])
+
+  ToastComponent({ type: 'success', message: JSON.stringify(orderDetail?.billing) })
 
   const handleToggleModal = () => {
     setIsOpen(!isOpen)
