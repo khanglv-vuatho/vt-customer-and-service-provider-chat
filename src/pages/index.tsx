@@ -206,7 +206,7 @@ const HomePage = () => {
       socket.off(typeOfSocket.MESSAGE_ARRIVE)
       socket.off(typeOfSocket.MESSAGE_SEEN)
       socket.off(typeOfSocket.SEEN)
-      socket.off(typeOfSocket.MESSAGE_BLOCK)
+      // socket.off(typeOfSocket.MESSAGE_BLOCK)
     }
   }, [conversationInfo, conversation, socket])
 

@@ -31,15 +31,16 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail }) => {
     <>
       <DefaultModal isOpen={isOpen} onOpenChange={handleToggleModal} className='mx-4'>
         <div className='w-full'>
-          <div className='ml-auto w-fit'>
+          <div className='flex w-full items-center justify-between'>
+            <p className='font-bold'>Chi tiết đơn hàng</p>
             <ButtonOnlyIcon onClick={handleToggleModal}>
               <Add className='rotate-45' size={32} />
             </ButtonOnlyIcon>
           </div>
           <div className='flex flex-col gap-4'>
             <div className='flex flex-col gap-1 text-sm'>
-              <p className='font-bold'>{orderDetail?.problems?.[0]?.description}</p>
-              <p>{orderDetail?.problems?.[0]?.title?.vi}</p>
+              <p className='font-bold'>{orderDetail?.problems?.[0]?.title?.vi}</p>
+              <p>{orderDetail?.problems?.[0]?.description}</p>
             </div>
             <div className='flex items-center justify-between'>
               <div className='flex items-center gap-1 text-sm'>
@@ -85,9 +86,9 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail }) => {
         </div>
       </DefaultModal>
       <div className='z-50 flex flex-col gap-4 bg-white p-4'>
-        <div className='flex items-center justify-between text-sm font-bold'>
+        <div className='flex items-center justify-between gap-10 text-sm font-bold'>
           <p>{orderDetail?.problems?.[0]?.description}</p>
-          <p className='text-primary-yellow underline' onClick={handleToggleModal}>
+          <p className='whitespace-nowrap text-primary-yellow underline' onClick={handleToggleModal}>
             Xem chi tiết
           </p>
         </div>
