@@ -24,7 +24,6 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail, isHasPro
   const [isOpenExplainPrice, setIsOpenExplainPrice] = useState(false)
 
   const detailOrderDisplay = useMemo(() => getPriceDetails(orderDetail as TOrderDetail), [orderDetail])
-  console.log({ detailOrderDisplay })
   const handleToggleModal = () => {
     setIsOpen(!isOpen)
   }
@@ -33,7 +32,10 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail, isHasPro
     setIsOpenExplainPrice(!isOpenExplainPrice)
   }
 
-  console.log(detailOrderDisplay?.status === typeOfPriceOfOrderDetail.final_price)
+  ToastComponent({
+    type: 'info',
+    message: JSON.stringify(detailOrderDisplay)
+  })
 
   return (
     <>
