@@ -36,6 +36,10 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail, isHasPro
     type: 'info',
     message: JSON.stringify(detailOrderDisplay)
   })
+  ToastComponent({
+    type: 'info',
+    message: JSON.stringify(orderDetail?.billing)
+  })
 
   return (
     <>
