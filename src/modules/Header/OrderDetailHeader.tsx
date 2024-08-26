@@ -24,9 +24,7 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail, isHasPro
   const [isOpenExplainPrice, setIsOpenExplainPrice] = useState(false)
 
   const detailOrderDisplay = useMemo(() => getPriceDetails(orderDetail as TOrderDetail), [orderDetail])
-
-  ToastComponent({ type: 'success', message: JSON.stringify(orderDetail?.billing) })
-
+  console.log({ detailOrderDisplay })
   const handleToggleModal = () => {
     setIsOpen(!isOpen)
   }
@@ -34,6 +32,8 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail, isHasPro
   const handleOpenExplainPrice = () => {
     setIsOpenExplainPrice(!isOpenExplainPrice)
   }
+
+  console.log(detailOrderDisplay?.status === typeOfPriceOfOrderDetail.final_price)
 
   return (
     <>
@@ -86,7 +86,7 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail, isHasPro
             )}
             <div className='flex items-center justify-between'>
               <div className='flex items-center gap-2 text-sm'>
-                <p>{detailOrderDisplay.price === typeOfPriceOfOrderDetail.final_price ? od?.['text-1'] : od?.text}</p>
+                <p>{detailOrderDisplay.status === typeOfPriceOfOrderDetail.final_price ? od?.['text-1'] : od?.text}</p>
                 <span onClick={handleOpenExplainPrice}>
                   <MessageQuestion className='text-primary-gray' />
                 </span>
@@ -154,9 +154,9 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail, isHasPro
         <div className='flex w-full flex-col gap-4'>
           <div className='flex flex-col items-center justify-center gap-1 text-primary-black *:text-center'>
             {/* <p className='font-bold'>{od?.text}</p> */}
-            <p className='font-bold'>{detailOrderDisplay?.price === typeOfPriceOfOrderDetail.final_price ? od?.['text-1'] : od?.text}</p>
+            <p className='font-bold'>{detailOrderDisplay?.status === typeOfPriceOfOrderDetail.final_price ? od?.['text-1'] : od?.text}</p>
             {/* <p className='text-sm'>{od?.text1}.</p> */}
-            <p className='text-sm'>{detailOrderDisplay?.price === typeOfPriceOfOrderDetail.final_price ? od?.['text1-1'] : od?.text1}.</p>
+            <p className='text-sm'>{detailOrderDisplay?.status === typeOfPriceOfOrderDetail.final_price ? od?.['text1-1'] : od?.text1}.</p>
           </div>
           <PrimaryButton className='rounded-full font-bold text-primary-black' onClick={handleOpenExplainPrice}>
             {od?.text2}

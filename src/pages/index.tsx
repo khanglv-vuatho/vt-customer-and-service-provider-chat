@@ -147,10 +147,6 @@ const HomePage = () => {
     socket.emit(typeOfSocket.JOIN_CONVERSATION_ROOM, { workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
 
     socket.on(typeOfSocket.MESSAGE_BLOCK, (data: any) => {
-      ToastComponent({
-        type: 'info',
-        message: JSON.stringify({ dataCancleOrder: data })
-      })
       console.log({ dataCancleOrder: data })
       setIsCancleOrder(true)
     })
@@ -215,7 +211,6 @@ const HomePage = () => {
       setOnReloadMessage(true)
 
       const handleVisibilityChange = () => {
-        console.log({ workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
         socket?.emit(typeOfSocket.JOIN_CONVERSATION_ROOM, { workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
       }
 

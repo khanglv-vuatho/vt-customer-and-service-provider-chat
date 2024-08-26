@@ -11,7 +11,6 @@ import instance from '@/services/axiosConfig'
 import { TConversationInfo, TOrderDetail } from '@/types'
 import { postMessageCustom } from '@/utils'
 import OrderDetailHeader from './OrderDetailHeader'
-import ToastComponent from '@/components/ToastComponent'
 
 type THeaderProps = {
   workerId: number

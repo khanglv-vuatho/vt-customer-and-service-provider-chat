@@ -1,5 +1,4 @@
 import { ButtonOnlyIcon } from '@/components/Buttons'
-import ToastComponent from '@/components/ToastComponent'
 import { typeOfSocket } from '@/constants'
 import { useSocket } from '@/context/SocketProvider'
 import { translate } from '@/context/translationProvider'
@@ -136,26 +135,6 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
                             setInputOpenedTime(Date.now())
                           }}
                           onChange={async (e) => {
-                            console.log({ e })
-                            const currentTime = Date.now()
-                            const timeDifference = currentTime - inputOpenedTime
-                            const cameraUsageThreshold = 2000
-
-                            if (timeDifference > cameraUsageThreshold) {
-                              ToastComponent({
-                                type: 'info',
-                                message: 'Camera likely used'
-                              })
-                              console.log('Camera likely used')
-                            } else {
-                              ToastComponent({
-                                type: 'info',
-                                message: 'File selected from gallery'
-                              })
-
-                              console.log('File selected from gallery')
-                            }
-
                             onChange(e.target.files)
 
                             if (e?.target?.files && e?.target?.files?.length > 0) {

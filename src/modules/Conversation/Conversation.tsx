@@ -9,7 +9,6 @@ import { useSocket } from '@/context/SocketProvider'
 import { MessageGroup, TConversationInfo, TInfoTyping } from '@/types'
 import { formatLocalHoursTime, getLastSeenId, isStringWithoutEmoji } from '@/utils'
 import MessageImage from './MessageImage'
-import ToastComponent from '@/components/ToastComponent'
 
 type ConversationProps = {
   conversation: MessageGroup[]

@@ -5,6 +5,7 @@ import HomePage from './pages'
 
 const Redirect = lazy(() => import('./pages/redirect'))
 const InvalidPage = lazy(() => import('./pages/invalid'))
+
 let routes: {
   path: string
   element: JSX.Element
