@@ -37,13 +37,6 @@ const Header: React.FC<THeaderProps> = ({ workerId, conversationInfo }) => {
     })
   }, [conversationInfo])
 
-  const handleClearMessage = async () => {
-    const payload = {
-      worker_id: 429
-    }
-    await instance.post(`/webview/conversations/${orderId}/clear-message`, payload)
-  }
-
   const handleFetchingDetail = async () => {
     const result = await fetchingDetailOrder({ orderId: Number(orderId), worker_id: workerId })
     setOrderDetail(result)
@@ -90,9 +83,6 @@ const Header: React.FC<THeaderProps> = ({ workerId, conversationInfo }) => {
               <Call size={24} variant='Bold' />
             </ButtonOnlyIcon>
           )}
-          <ButtonOnlyIcon onClick={handleClearMessage} className='bg-primary-yellow text-white'>
-            <Refresh size={24} variant='Bold' />
-          </ButtonOnlyIcon>
         </div>
       </div>
 
