@@ -36,11 +36,11 @@ const MessageImage = ({ url }: MessageImageProps) => {
     <>
       <div onClick={isLoading ? undefined : handleZoomImage} className='max-w-[60%] overflow-hidden rounded-md'>
         {url.includes('blob') ? (
-          <Image onClick={handleZoomImage} removeWrapper src={url} alt={url} className={`size-full max-h-[400px] max-w-[400px] object-cover`} />
+          <Image onClick={handleZoomImage} removeWrapper src={url} alt={url} className={`size-full max-h-[440px] max-w-[440px] object-cover`} />
         ) : (
           <>
-            <Image removeWrapper height={400} width={400} src={handleAddResizeImage(url)} alt={url} className={`size-full min-w-[200px] object-cover blur-md ${isLoading ? 'block' : 'hidden'}`} />
-            <Image removeWrapper src={url + '?width=400&height=400'} alt={url} className={`size-full object-cover ${!isLoading ? 'block' : 'hidden'}`} onLoad={handleOnLoadImage} />
+            <Image removeWrapper height={440} width={440} src={handleAddResizeImage(url)} alt={url} className={`size-full min-w-[200px] object-cover blur-md ${isLoading ? 'block' : 'hidden'}`} />
+            <Image removeWrapper src={url + '?width=440&height=440'} alt={url} className={`size-full object-cover ${!isLoading ? 'block' : 'hidden'}`} onLoad={handleOnLoadImage} />
           </>
         )}
       </div>
@@ -53,18 +53,18 @@ const MessageImage = ({ url }: MessageImageProps) => {
           </div>
           <div className='flex max-h-[700px] w-full overflow-hidden rounded-lg px-16'>
             {url.includes('blob') ? (
-              <Image onClick={handleZoomImage} removeWrapper src={url} alt={url} className={`size-full max-h-[400px] max-w-[400px] object-cover`} />
+              <Image onClick={handleZoomImage} removeWrapper src={url} alt={url} className={`size-full max-h-[440px] max-w-[440px] object-cover`} />
             ) : (
               <>
                 <Image
                   removeWrapper
-                  height={400}
-                  width={400}
+                  height={440}
+                  width={440}
                   src={handleAddResizeImage(url)}
                   alt={url}
                   className={`size-full min-w-[200px] object-cover blur-md ${isLoadingInModal ? 'block' : 'hidden'}`}
                 />
-                <Image removeWrapper src={url + '?width=400&height=400'} alt={url} className={`size-full object-cover ${!isLoadingInModal ? 'block' : 'hidden'}`} onLoad={handleOnLoadImageModal} />
+                <Image removeWrapper src={url + '?width=440&height=440'} alt={url} className={`size-full object-cover ${!isLoadingInModal ? 'block' : 'hidden'}`} onLoad={handleOnLoadImageModal} />
               </>
             )}
           </div>

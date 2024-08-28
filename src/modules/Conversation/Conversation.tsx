@@ -255,7 +255,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
         <motion.div className='absolute bottom-20 left-1/2 z-50 -translate-x-1/2' initial={{ y: 50 }} animate={{ y: 0 }} exit={{ y: 50 }} transition={{ duration: 0.3, ease: 'easeInOut' }}>
           <ButtonOnlyIcon
             onClick={handleScrollToBottom}
-            className={`flex size-8 max-h-8 min-h-8 min-w-8 max-w-8 flex-shrink-0 rounded-full bg-white p-2 text-primary-black shadow-lg ${showScrollToBottom ? 'translate-y-0' : 'translate-y-20'}`}
+            className={`absolute flex size-8 max-h-8 min-h-8 min-w-8 max-w-8 flex-shrink-0 rounded-full bg-white p-2 text-primary-black shadow-lg ${showScrollToBottom ? '-translate-y-6 opacity-100' : 'translate-y-[100%] opacity-0'}`}
           >
             <ArrowDown className='size-4' />
           </ButtonOnlyIcon>
