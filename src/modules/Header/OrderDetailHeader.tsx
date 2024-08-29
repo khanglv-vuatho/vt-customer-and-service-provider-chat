@@ -1,7 +1,6 @@
 import { ButtonOnlyIcon, PrimaryButton } from '@/components/Buttons'
 import ImageCustom from '@/components/ImageCustom'
 import { DefaultModal } from '@/components/Modal'
-import ToastComponent from '@/components/ToastComponent'
 import { typeOfPriceOfOrderDetail } from '@/constants'
 import { translate } from '@/context/translationProvider'
 import RenderFireLottie from '@/lotties'
@@ -31,15 +30,6 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail, isHasPro
   const handleOpenExplainPrice = () => {
     setIsOpenExplainPrice(!isOpenExplainPrice)
   }
-
-  ToastComponent({
-    type: 'info',
-    message: JSON.stringify(detailOrderDisplay)
-  })
-  ToastComponent({
-    type: 'info',
-    message: JSON.stringify(orderDetail?.billing)
-  })
 
   return (
     <>
