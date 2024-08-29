@@ -19,7 +19,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
   const socket: any = useSocket()
   const [infoTyping, setInfoTyping] = useState<TInfoTyping | null>(null)
   const [showScrollToBottom, setShowScrollToBottom] = useState<boolean>(false)
-
+  console.log({ conversation })
   const queryParams = new URLSearchParams(location.search)
   const currentId: any = Number(queryParams.get('currentId'))
   const worker_id = Number(queryParams.get('worker_id'))
@@ -172,20 +172,16 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
               )}
               <div className={`flex flex-col gap-1 ${isMe ? 'items-end' : 'items-start'} `}>
                 {message?.messages?.map((item) => {
+                  console.log({ item })
                   const isLastMessage = item?.id === message?.messages?.[message?.messages?.length - 1]?.id
 
                   const isLastMesageByMe = isMe && isLastMessage && isLastItemInConversation
                   return (
                     <div key={`message-${item?.id}`} className='flex w-full items-end justify-between'>
-                      <div
-                        ref={conversation.length === index + 1 ? lastElementRef : undefined}
-                        key={`message-${item?.id}`}
-                        className={`flex w-full items-end ${isMe ? 'justify-end' : 'justify-start'} gap-0.5`}
-                      >
-                        {Number(item.type) === typeOfMessage.TEXT ? (
+                      <div ref={conversation.length === index + 1 ? lastElementRef : undefined} className={`flex w-full items-end ${isMe ? 'justify-end' : 'justify-start'} gap-0.5`}>
+                        {Number(item?.type) === typeOfMessage.TEXT ? (
                           // only text
-
-                          !isStringWithoutEmoji(item.content) && item?.content.length == 2 ? (
+                          !isStringWithoutEmoji(item?.content) && item?.content.length == 2 ? (
                             <motion.div
                               variants={item?.status === 'pending' ? messageAnimation() : { initial: { x: 0, y: 0 } }}
                               initial='initial'
@@ -217,7 +213,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
                         )}
                         {/* {isMe && shouldRenderIconStatus(item?.status)} */}
                         {/* hiển thị seen cuối cùng trong messages[] */}
-                        {isMe && shouldRenderIconStatus(item.status, !!isLastSeenMessageId && item.id === isLastSeenMessageId)}
+                        {isMe && shouldRenderIconStatus(item?.status, !!isLastSeenMessageId && item?.id === isLastSeenMessageId)}
                       </div>
                     </div>
                   )

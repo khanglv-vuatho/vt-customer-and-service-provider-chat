@@ -44,3 +44,10 @@ export const typeOfPriceOfOrderDetail = {
   frist_price: 0, // không có bảo hành
   final_price: 1
 } as const
+
+export const typeOfBlockMessage = {
+  cancelOrder: 'BLOCKED BY CANCEL ORDER',
+  acceptPrice: 'BLOCKED BY ACCEPT PRICE',
+  completeOrder: 'BLOCKED BY COMPLETED ORDER',
+  expressGuarantee: 'BLOCKED BY EXPRIED GUARANTEE'
+} as const

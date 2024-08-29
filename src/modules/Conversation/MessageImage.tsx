@@ -17,7 +17,7 @@ const MessageImage = ({ url }: MessageImageProps) => {
   }
 
   const handleAddResizeImage = (src: string) => {
-    return src.includes('blob') ? src : `${src}?width=10&height=10`
+    return src?.includes('blob') ? src : `${src}?width=10&height=10`
   }
 
   const handleOnLoadImage = () => {
@@ -35,7 +35,7 @@ const MessageImage = ({ url }: MessageImageProps) => {
   return (
     <>
       <div onClick={isLoading ? undefined : handleZoomImage} className='max-w-[60%] overflow-hidden rounded-md'>
-        {url.includes('blob') ? (
+        {url?.includes('blob') ? (
           <Image onClick={handleZoomImage} removeWrapper src={url} alt={url} className={`size-full max-h-[440px] max-w-[440px] object-cover`} />
         ) : (
           <>
@@ -52,7 +52,7 @@ const MessageImage = ({ url }: MessageImageProps) => {
             </Button>
           </div>
           <div className='flex max-h-[700px] w-full overflow-hidden rounded-lg px-16'>
-            {url.includes('blob') ? (
+            {url?.includes('blob') ? (
               <Image onClick={handleZoomImage} removeWrapper src={url} alt={url} className={`size-full max-h-[440px] max-w-[440px] object-cover`} />
             ) : (
               <>

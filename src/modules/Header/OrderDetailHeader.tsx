@@ -94,7 +94,7 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail, isHasPro
       </DefaultModal>
       <div className='z-50 flex flex-col gap-4 bg-primary-light-gray p-4'>
         <div className='flex items-center justify-between gap-10 text-sm font-bold'>
-          <p>{orderDetail?.problems?.[0]?.description}</p>
+          <p className='line-clamp-1'>{orderDetail?.problems?.[0]?.description}</p>
           <p className='whitespace-nowrap text-primary-yellow underline' onClick={handleToggleModal}>
             {od?.text5}
           </p>
