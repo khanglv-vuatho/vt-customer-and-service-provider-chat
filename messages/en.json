@@ -19,5 +19,11 @@
     "text4": "days",
     "text5": "View Details",
     "text6": "Remaining"
+  },
+  "MessageOfMessageBlock": {
+    "cancelOrder": "Order has been canceled",
+    "acceptPrice": "Found a suitable worker",
+    "completeOrder": "Order has been completed",
+    "expressGuarantee": "Order has expired guarantee"
   }
 }

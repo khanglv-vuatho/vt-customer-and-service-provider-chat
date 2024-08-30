@@ -19,5 +19,11 @@
     "text4": "ngày",
     "text5": "Xem chi tiết",
     "text6": "Còn lại"
+  },
+  "MessageOfMessageBlock": {
+    "cancelOrder": "Đơn hàng đã bị hủy",
+    "acceptPrice": "Đã tim được thợ phù hợp",
+    "completeOrder": "Đơn hàng đã hoàn tất",
+    "expressGuarantee": "Đơn hàng đã hết hạng bảo hành"
   }
 }

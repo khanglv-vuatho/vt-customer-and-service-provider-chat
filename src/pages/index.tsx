@@ -1,6 +1,6 @@
 import { fetchMessage, handlePostMessage } from '@/apis'
 import ToastComponent from '@/components/ToastComponent'
-import { typeOfRule, typeOfSocket } from '@/constants'
+import { typeOfBlockMessage, typeOfRule, typeOfSocket } from '@/constants'
 import ConverstaionsSkeleton from '@/modules/ConversationsSkeleton'
 import { Message, TConversationInfo, THandleSendMessage, THandleSendMessageApi, TPayloadHandleSendMessageApi } from '@/types'
 import { groupConsecutiveMessages } from '@/utils'
@@ -13,9 +13,11 @@ const Conversation = lazy(() => import('@/modules/Conversation/Conversation'))
 
 import { useSocket } from '@/context/SocketProvider'
 import { translate } from '@/context/translationProvider'
+type BlockType = keyof typeof typeOfBlockMessage
 
 const HomePage = () => {
   const o = translate('Order')
+  const m = translate('MessageOfMessageBlock')
 
   const queryParams = new URLSearchParams(location.search)
   const socket: any = useSocket()
@@ -31,6 +33,7 @@ const HomePage = () => {
   const [isSendingMessage, setIsSendingMessage] = useState(false)
   const [onReloadMessage, setOnReloadMessage] = useState<boolean>(false)
   const [isCancleOrder, setIsCancleOrder] = useState<boolean>(false)
+  const [messageBlock, setMessageBlock] = useState<string>('')
 
   const groupedMessages = useMemo(() => groupConsecutiveMessages(conversation), [conversation])
 
@@ -141,13 +144,29 @@ const HomePage = () => {
     setOnFetchingMessage(true)
   }, [])
 
+  const messageOfMessageBlock = {
+    cancelOrder: m?.cancelOrder,
+    acceptPrice: m?.acceptPrice,
+    completeOrder: m?.completeOrder,
+    expressGuarantee: m?.expressGuarantee
+  } as const
+
+  const getMessageByBlockType = (blockType: string): string | undefined => {
+    const entry = Object.entries(typeOfBlockMessage).find(([key, value]) => value === blockType)
+    console.log({ entry, messageOfMessageBlock })
+    return entry ? messageOfMessageBlock[entry[0] as keyof typeof messageOfMessageBlock] : undefined
+  }
+
+  // Ví dụ sử dụng
+  // const messageBlock = getMessageByBlockType('BLOCKED BY COMPLETED ORDER')
+
   useEffect(() => {
     if (!conversationInfo?.order_id || !conversationInfo?.worker_id || conversationInfo == null || network.online === false || documentVisible === false) return
 
     socket.emit(typeOfSocket.JOIN_CONVERSATION_ROOM, { workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
 
     socket.on(typeOfSocket.MESSAGE_BLOCK, (data: any) => {
-      console.log({ dataCancleOrder: data })
+      setMessageBlock(getMessageByBlockType(data?.status as string) || '')
       setIsCancleOrder(true)
     })
 
@@ -230,7 +249,7 @@ const HomePage = () => {
       </Suspense>
       <Suspense fallback={null}>{onFetchingMessage ? <ConverstaionsSkeleton /> : <Conversation conversation={groupedMessages} conversationInfo={conversationInfo} />}</Suspense>
       {isCancleOrder ? (
-        <p className='z-50 bg-white p-3 text-center text-sm text-primary-gray'>{o?.text1}.</p>
+        <p className='z-50 bg-white p-3 text-center text-sm text-primary-gray'>{messageBlock}.</p>
       ) : (
         <Suspense fallback={null}>
           <FooterInput
