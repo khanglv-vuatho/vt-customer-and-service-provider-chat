@@ -45,7 +45,8 @@ const Header: React.FC<THeaderProps> = ({ workerId, conversationInfo }) => {
 
   // postmessage to app for call
   const handleCall = () => {
-    const keyPhone = isClient ? 'client_phone' : 'worker_phone'
+    console.log({ isClient })
+    const keyPhone = isClient ? 'worker_phone' : 'client_phone'
     const phoneCode = orderDetail?.[keyPhone]?.phone?.phone_code || ''
     const phoneNumber = orderDetail?.[keyPhone]?.phone?.phone_number || ''
 
