@@ -1,7 +1,7 @@
 import { ButtonOnlyIcon, PrimaryButton } from '@/components/Buttons'
 import ImageCustom from '@/components/ImageCustom'
 import { DefaultModal } from '@/components/Modal'
-import { typeOfPriceOfOrderDetail } from '@/constants'
+import { typeOfGuarante, typeOfPriceOfOrderDetail } from '@/constants'
 import { translate } from '@/context/translationProvider'
 import RenderFireLottie from '@/lotties'
 import { TOrderDetail } from '@/types'
@@ -13,14 +13,15 @@ import React, { memo, useMemo, useState } from 'react'
 
 type TOrderDetailHeader = {
   orderDetail: TOrderDetail | null
-  isHasProcess: boolean
 }
-const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail, isHasProcess }) => {
+const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail }) => {
   const od = translate('OrderDetailHeader')
   const percent = 100 - Number(orderDetail?.guarantee?.percent) < 0 ? 0 : 100 - Number(orderDetail?.guarantee?.percent)
 
   const [isOpen, setIsOpen] = useState(false)
   const [isOpenExplainPrice, setIsOpenExplainPrice] = useState(false)
+
+  const isHasProcess = orderDetail?.guarantee.status == typeOfGuarante.active
 
   const detailOrderDisplay = useMemo(() => getPriceDetails(orderDetail as TOrderDetail), [orderDetail])
   const handleToggleModal = () => {
@@ -62,14 +63,16 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail, isHasPro
                 </span>
                 <p>{orderDetail?.location?.address}</p>
               </div>
-              <div className='flex items-center gap-2'>
-                <span>
-                  <ShieldTick size={20} className='text-primary-green' variant='Bold' />
-                </span>
-                <p>
-                  {od?.text3} {orderDetail?.guarantee?.duration} {od?.text4}
-                </p>
-              </div>
+              {orderDetail?.guarantee.status != typeOfGuarante.cancel && (
+                <div className='flex items-center gap-2'>
+                  <span>
+                    <ShieldTick size={20} className='text-primary-green' variant='Bold' />
+                  </span>
+                  <p>
+                    {od?.text3} {orderDetail?.guarantee?.duration || 0} {od?.text4}
+                  </p>
+                </div>
+              )}
             </div>
             {(orderDetail?.problems?.[0]?.attachments?.length as number) > 0 && (
               <div className='flex items-center gap-2'>
