@@ -7,7 +7,6 @@ type DrawerProps = {
 }
 const Drawer: React.FC<DrawerProps> = ({ children, onClose, isOpen }) => {
   const handleDragEnd = (_: any, info: any) => {
-    console.log({ _, info })
     const dragOffsetY = info.offset.y
     if (dragOffsetY > 60) {
       onClose()

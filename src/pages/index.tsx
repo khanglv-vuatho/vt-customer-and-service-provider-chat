@@ -58,8 +58,6 @@ const HomePage = () => {
         status: 'pending'
       }
 
-      console.log({ messageId: newMessage.id })
-
       // turn off typing
       socket.emit(typeOfSocket.MESSAGE_TYPING, {
         socketId: socket.id,
@@ -153,7 +151,6 @@ const HomePage = () => {
 
   const getMessageByBlockType = (blockType: string): string | undefined => {
     const entry = Object.entries(typeOfBlockMessage).find(([key, value]) => value === blockType)
-    console.log({ entry, messageOfMessageBlock })
     return entry ? messageOfMessageBlock[entry[0] as keyof typeof messageOfMessageBlock] : undefined
   }
 
@@ -173,7 +170,6 @@ const HomePage = () => {
     socket.on(typeOfSocket.MESSAGE_SEEN, (data: any) => {
       // seen all message in conversation when user get message
       if (data.status === 'SEEN MESSAGE') {
-        console.log('123', data)
         setConversation((prev) =>
           prev.map((message) => ({
             ...message,
@@ -181,7 +177,6 @@ const HomePage = () => {
           }))
         )
       } else {
-        console.log('123123', data)
       }
     })
 
@@ -196,15 +191,10 @@ const HomePage = () => {
     })
 
     socket.on(typeOfSocket.MESSAGE_ARRIVE, (data: any) => {
-      console.log({ data })
       if (data?.socket_id == socket?.id) {
-        console.log({ data })
-        console.log('chay vao day')
       } else {
-        console.log({ data123: data })
         setConversation((prevConversation) => [...prevConversation, data?.message])
         socket.emit(typeOfSocket.SEEN, { messageId: data?.message?.id, conversationId: conversationInfo?.conversation_id, orderId: conversationInfo?.order_id, workerId: conversationInfo?.worker_id })
-        console.log({ messageId: data?.message?.id, conversationId: conversationInfo?.conversation_id, orderId: conversationInfo?.order_id, workerId: conversationInfo?.worker_id })
 
         socket.emit(typeOfSocket.MESSAGE_SEEN, {
           workerId: conversationInfo?.worker_id,

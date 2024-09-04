@@ -19,7 +19,6 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
   const socket: any = useSocket()
   const [infoTyping, setInfoTyping] = useState<TInfoTyping | null>(null)
   const [showScrollToBottom, setShowScrollToBottom] = useState<boolean>(false)
-  console.log({ conversation })
   const queryParams = new URLSearchParams(location.search)
   const currentId: any = Number(queryParams.get('currentId'))
   const worker_id = Number(queryParams.get('worker_id'))
@@ -172,7 +171,6 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
               )}
               <div className={`flex flex-col gap-1 ${isMe ? 'items-end' : 'items-start'} `}>
                 {message?.messages?.map((item) => {
-                  console.log({ item })
                   const isLastMessage = item?.id === message?.messages?.[message?.messages?.length - 1]?.id
 
                   const isLastMesageByMe = isMe && isLastMessage && isLastItemInConversation

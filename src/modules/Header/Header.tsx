@@ -11,6 +11,7 @@ import instance from '@/services/axiosConfig'
 import { TConversationInfo, TOrderDetail } from '@/types'
 import { postMessageCustom } from '@/utils'
 import OrderDetailHeader from './OrderDetailHeader'
+import ToastComponent from '@/components/ToastComponent'
 
 type THeaderProps = {
   workerId: number
@@ -29,7 +30,6 @@ const Header: React.FC<THeaderProps> = ({ workerId, conversationInfo }) => {
   const isClient = !!worker_id
 
   const handleCloseWebview = useCallback(async () => {
-    console.log({ conversationInfo })
     await socket.emit(typeOfSocket.LEAVE_CONVERSATION_ROOM, { workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
 
     postMessageCustom({
@@ -45,7 +45,6 @@ const Header: React.FC<THeaderProps> = ({ workerId, conversationInfo }) => {
 
   // postmessage to app for call
   const handleCall = () => {
-    console.log({ isClient })
     const keyPhone = isClient ? 'worker_phone' : 'client_phone'
     const phoneCode = orderDetail?.[keyPhone]?.phone?.phone_code || ''
     const phoneNumber = orderDetail?.[keyPhone]?.phone?.phone_number || ''
@@ -66,6 +65,11 @@ const Header: React.FC<THeaderProps> = ({ workerId, conversationInfo }) => {
   useEffect(() => {
     isLoading && !!workerId && handleFetchingDetail()
   }, [isLoading, workerId])
+
+  ToastComponent({
+    type: 'error',
+    message: JSON.stringify(orderDetail?.guarantee.status)
+  })
 
   return (
     <motion.header initial={{ opacity: 0, y: -100 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.2 }} className='sticky left-0 right-0 top-0 z-50 flex flex-col bg-white'>

@@ -12,7 +12,6 @@ const fetchMessage = async ({ orderId, worker_id }: { orderId: number; worker_id
 
 const handlePostMessage = async ({ orderId, payload, rule }: THandlePostMessage) => {
   const endpoint = rule === typeOfRule.CLIENT ? '/webview/conversations' : '/webview-worker/conversations'
-  console.log({ payload })
   const response = await instance.post(`${endpoint}/${orderId}`, objectToFormData(payload))
   return response.data
 }
