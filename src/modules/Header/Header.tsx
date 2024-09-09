@@ -75,15 +75,17 @@ const Header: React.FC<THeaderProps> = ({ workerId, conversationInfo }) => {
           </ButtonOnlyIcon>
           <p className='text-sm'>{h?.title}</p>
         </div>
-        <div className='flex gap-2'>
-          {isLoading ? (
-            ''
-          ) : (
-            <ButtonOnlyIcon className='bg-primary-blue text-white' onClick={handleCall}>
-              <Call size={24} variant='Bold' />
-            </ButtonOnlyIcon>
-          )}
-        </div>
+        {orderDetail?.status !== 0 && (
+          <div className='flex gap-2'>
+            {isLoading ? (
+              ''
+            ) : (
+              <ButtonOnlyIcon className='bg-primary-blue text-white' onClick={handleCall}>
+                <Call size={24} variant='Bold' />
+              </ButtonOnlyIcon>
+            )}
+          </div>
+        )}
       </div>
 
       <OrderDetailHeader orderDetail={orderDetail} />
