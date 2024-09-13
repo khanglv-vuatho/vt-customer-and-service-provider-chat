@@ -80,7 +80,7 @@ const Header: React.FC<THeaderProps> = ({ workerId, conversationInfo }) => {
             {isLoading ? (
               ''
             ) : (
-              <ButtonOnlyIcon className='bg-primary-blue text-white' onClick={handleCall}>
+              <ButtonOnlyIcon className={`${isClient ? 'bg-primary-yellow' : 'bg-primary-blue'} text-white`} onClick={handleCall}>
                 <Call size={24} variant='Bold' />
               </ButtonOnlyIcon>
             )}

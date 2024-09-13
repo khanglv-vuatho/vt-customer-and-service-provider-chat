@@ -21,7 +21,6 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
   const f = translate('Footer')
 
   const queryParams = new URLSearchParams(location.search)
-  const [inputOpenedTime, setInputOpenedTime] = useState<number>(0)
 
   const sendRef = useRef<HTMLButtonElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
@@ -29,6 +28,9 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
   const socket: any = useSocket()
 
   const currentId = Number(queryParams.get('currentId'))
+  const worker_id = Number(queryParams.get('worker_id'))
+  const isClient = !!worker_id
+
   const { control, handleSubmit, reset } = useForm<MessageProps & { files: File[] }>({
     defaultValues: {
       message: '',
@@ -130,9 +132,6 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
                             display: 'none'
                           }}
                           ref={uploadRef}
-                          onClick={() => {
-                            setInputOpenedTime(Date.now())
-                          }}
                           onChange={async (e) => {
                             onChange(e.target.files)
 
@@ -147,7 +146,7 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
                           }}
                         />
                         <ButtonOnlyIcon name='upload-file-button' onClick={handleClickInputFile}>
-                          <DocumentUpload variant='Bold' className='text-primary-blue' />
+                          <DocumentUpload variant='Bold' className={isClient ? 'text-primary-yellow' : 'text-primary-blue'} />
                         </ButtonOnlyIcon>
                       </>
                     )}
