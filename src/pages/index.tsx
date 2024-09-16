@@ -13,7 +13,6 @@ const Conversation = lazy(() => import('@/modules/Conversation/Conversation'))
 
 import { useSocket } from '@/context/SocketProvider'
 import { translate } from '@/context/translationProvider'
-type BlockType = keyof typeof typeOfBlockMessage
 
 const HomePage = () => {
   const o = translate('Order')
@@ -36,7 +35,7 @@ const HomePage = () => {
   const [messageBlock, setMessageBlock] = useState<string>('')
 
   const groupedMessages = useMemo(() => groupConsecutiveMessages(conversation), [conversation])
-
+  console.log({ groupedMessages })
   const documentVisible = useVisibilityChange()
   const network = useNetworkState()
   const handleSendMessage = useCallback(
@@ -231,6 +230,8 @@ const HomePage = () => {
     if (onFetchingMessage) return
     onReloadMessage && handleGetMessage()
   }, [onReloadMessage])
+
+  console.log({ groupedMessages })
 
   return (
     <div className={`relative flex h-dvh flex-col`}>

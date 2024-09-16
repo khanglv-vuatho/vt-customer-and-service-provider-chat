@@ -49,6 +49,7 @@ export type Message = {
   first?: boolean // Added field
   last?: boolean // Added field
   status: 'sent' | 'pending' | 'failed' | 'seen'
+  isOneGroup?: boolean
 }
 
 export type MessageGroup = {

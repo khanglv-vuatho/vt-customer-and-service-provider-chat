@@ -174,7 +174,7 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
                         isDisabled={onFetchingMessage || onReloadMessage}
                         isIconOnly
                         radius='full'
-                        className={`flex items-center justify-center bg-transparent text-primary-blue transition`}
+                        className={`flex items-center justify-center bg-transparent ${isClient ? 'text-primary-yellow' : 'text-primary-blue'} transition`}
                         onClick={handleSubmit(handleSend)}
                       >
                         <Send2 variant='Bold' className='rotate-45 transition' />

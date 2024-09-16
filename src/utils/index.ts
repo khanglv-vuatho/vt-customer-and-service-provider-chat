@@ -154,9 +154,13 @@ const groupConsecutiveMessages = (messages: Message[]): MessageGroup[] => {
   const groupedMessages: MessageGroup[] = []
   let currentGroup: Message[] = [messages[0]]
   let currentUserId = messages[0].by.id
+  let lastMessageTime = new Date(messages[0].created_at).getTime()
 
   for (let i = 1; i < messages.length; i++) {
-    if (messages[i].by.id === currentUserId) {
+    const currentMessageTime = new Date(messages[i].created_at).getTime()
+    const timeDifference = (currentMessageTime - lastMessageTime) / (1000 * 60) // difference in minutes
+
+    if (messages[i].by.id === currentUserId && timeDifference <= 1) {
       currentGroup.push(messages[i])
     } else {
       // Mark first and last messages in the current group if there are 2 or more messages
@@ -167,7 +171,14 @@ const groupConsecutiveMessages = (messages: Message[]): MessageGroup[] => {
       groupedMessages.push({ userId: currentUserId, messages: currentGroup })
       currentGroup = [messages[i]]
       currentUserId = messages[i].by.id
+
+      // Add isOneGroup: true if timeDifference > 1
+      if (timeDifference > 1) {
+        currentGroup[0].isOneGroup = true
+      }
     }
+
+    lastMessageTime = currentMessageTime
   }
 
   // Mark first and last messages in the last group if there are 2 or more messages
@@ -188,7 +199,7 @@ const getLastSeenId = (data: Message[]) => {
 
   return lastSeenItem ? lastSeenItem.id : null
 }
-function isStringWithoutEmoji(value: string) {
+const isStringWithoutEmoji = (value: string) => {
   if (typeof value !== 'string') {
     return false
   }
@@ -200,9 +211,6 @@ function isStringWithoutEmoji(value: string) {
   return !emojiRegex.test(value)
 }
 
-const handle = () => {
-  //
-}
 const getPriceDetails = (orderDetail: TOrderDetail) => {
   const { final_price, first_price } = orderDetail?.billing || {}
   const isFinalPrice = final_price !== 0

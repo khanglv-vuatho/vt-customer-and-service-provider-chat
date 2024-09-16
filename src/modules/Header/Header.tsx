@@ -10,6 +10,7 @@ import { translate } from '@/context/translationProvider'
 import { TConversationInfo, TOrderDetail } from '@/types'
 import { postMessageCustom } from '@/utils'
 import OrderDetailHeader from './OrderDetailHeader'
+import instance from '@/services/axiosConfig'
 
 type THeaderProps = {
   workerId: number
@@ -55,6 +56,12 @@ const Header: React.FC<THeaderProps> = ({ workerId, conversationInfo }) => {
       }
     })
   }
+  const handleClearMessage = async () => {
+    const payload = {
+      worker_id: 429
+    }
+    await instance.post(`/webview/conversations/${orderId}/clear-message`, payload)
+  }
 
   useEffect(() => {
     setIsLoading(true)
@@ -82,6 +89,9 @@ const Header: React.FC<THeaderProps> = ({ workerId, conversationInfo }) => {
                 <Call size={24} variant='Bold' />
               </ButtonOnlyIcon>
             )}
+            <ButtonOnlyIcon onClick={handleClearMessage} className='bg-primary-yellow text-white'>
+              <Refresh size={24} variant='Bold' />
+            </ButtonOnlyIcon>
           </div>
         )}
       </div>
