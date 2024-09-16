@@ -186,9 +186,9 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
                               animate='animate'
                               transition={{ duration: 0.2 }}
                               viewport={{ once: true }}
-                              className={`max-w-[80%] p-3.5`}
+                              className={`max-w-[80%] p-3`}
                             >
-                              <pre className={`font-inter break-words text-sm ${item?.content.length == 2 ? 'scale-[2.5]' : ''}`} style={{ whiteSpace: 'pre-wrap' }}>
+                              <pre className={`font-inter break-words text-base ${item?.content.length == 2 ? 'scale-[2.5]' : ''}`} style={{ whiteSpace: 'pre-wrap' }}>
                                 {item?.content}
                               </pre>
                             </motion.div>
@@ -199,9 +199,9 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
                               animate='animate'
                               transition={{ duration: 0.2 }}
                               viewport={{ once: true }}
-                              className={`max-w-[80%] rounded-lg border-1 p-3.5 ${isMe ? 'border-transparent bg-primary-light-blue' : 'border-primary-yellow bg-transparent'}`}
+                              className={`max-w-[80%] rounded-lg border-1 p-3 ${isMe ? 'border-transparent bg-primary-light-blue' : 'border-primary-yellow bg-transparent'}`}
                             >
-                              <pre className='font-inter break-words text-sm' style={{ whiteSpace: 'pre-wrap' }}>
+                              <pre className='font-inter break-words text-base' style={{ whiteSpace: 'pre-wrap' }}>
                                 {item?.content}
                               </pre>
                             </motion.div>
