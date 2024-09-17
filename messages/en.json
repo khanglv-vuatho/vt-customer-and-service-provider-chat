@@ -25,5 +25,11 @@
     "acceptPrice": "Found a suitable worker",
     "completeOrder": "Order has been completed",
     "expressGuarantee": "Order has expired guarantee"
+  },
+  "StatsusText": {
+    "sending": "Sending",
+    "sent": "Sent",
+    "failed": "Failed",
+    "seen": "Seen"
   }
 }

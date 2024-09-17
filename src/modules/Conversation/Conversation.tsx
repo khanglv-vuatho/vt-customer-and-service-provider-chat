@@ -9,6 +9,7 @@ import { useSocket } from '@/context/SocketProvider'
 import { MessageGroup, TConversationInfo, TInfoTyping } from '@/types'
 import { formatLocalHoursTime, getLastSeenId, isStringWithoutEmoji } from '@/utils'
 import MessageImage from './MessageImage'
+import { translate } from '@/context/translationProvider'
 
 type ConversationProps = {
   conversation: MessageGroup[]
@@ -17,6 +18,7 @@ type ConversationProps = {
 
 const Conversation: React.FC<ConversationProps> = ({ conversation, conversationInfo }) => {
   const socket: any = useSocket()
+  const t = translate('StatsusText')
 
   const queryParams = new URLSearchParams(location.search)
   const currentId: any = Number(queryParams.get('currentId'))
@@ -91,16 +93,16 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
 
       switch (status) {
         case 'pending':
-          textStatus = <p className='text-xs text-primary-gray'>Đang gửi</p>
+          textStatus = <p className='text-xs text-primary-gray'>{t?.sending}</p>
           break
         case 'sent':
-          textStatus = <p className='text-xs text-primary-gray'>Đã gửi</p>
+          textStatus = <p className='text-xs text-primary-gray'>{t?.sent}</p>
           break
         case 'failed':
-          textStatus = <p className='text-xs text-primary-gray'>Gửi thất bại</p>
+          textStatus = <p className='text-xs text-primary-gray'>{t?.failed}</p>
           break
         case 'seen':
-          textStatus = <p className='text-xs text-primary-gray'>Đã xem</p>
+          textStatus = <Avatar src={avatar} alt={avatar} className={`size-4 max-h-4 max-w-4 duration-0 ${display ? 'opacity-100' : 'opacity-0'}`} />
           break
 
         default:
@@ -134,6 +136,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
     }
 
     const refCurrent = containerRef.current
+
     if (refCurrent) {
       refCurrent.addEventListener('scroll', handleScroll)
     }
@@ -180,10 +183,10 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
     }
   }, [])
 
-  const handleClickMessage = (id: number | null) => {
+  const handleClickMessage = useCallback((id: number | null) => {
     if (!id) return
     setCurrentMessage((prev) => (prev === id ? 0 : id))
-  }
+  }, [])
 
   return (
     <motion.div
@@ -207,15 +210,18 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
                   <time className='text-xs text-primary-gray'>{formatLocalHoursTime(message?.messages?.[0]?.created_at)}</time>
                 </div>
               )}
-              <div className={`flex flex-col gap-1 ${isMe ? 'items-end' : 'items-start'} `}>
+              <div className={`flex flex-col gap-2 ${isMe ? 'items-end' : 'items-start'} `}>
                 {message?.messages?.map((item) => {
                   const isLastMessage = item?.id === message?.messages?.[message?.messages?.length - 1]?.id
 
                   const isLastMesageByMe = isMe && isLastMessage && isLastItemInConversation
+                  const isEmoji = !isStringWithoutEmoji(item?.content) && item?.content.length === 2
+                  const isActiveMessage = currentMessage === item?.id
+
                   return (
-                    <div className={`flex w-full flex-col gap-2 ${isMe ? 'items-end' : 'items-start'}`}>
-                      {currentMessage === item?.id && (
-                        <motion.time
+                    <div className={`flex w-full flex-col gap-1 ${isMe ? 'items-end' : 'items-start'}`}>
+                      {isActiveMessage && (
+                        <motion.p
                           key={item?.created_at}
                           initial={{ opacity: 0, scaleY: 0 }}
                           animate={{ opacity: 1, scaleY: 1 }}
@@ -228,42 +234,26 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
                           className='w-full origin-top overflow-hidden py-2 text-center text-xs text-primary-gray'
                         >
                           {formatLocalHoursTime(item?.created_at)}
-                        </motion.time>
+                        </motion.p>
                       )}
                       <div ref={conversation.length === index + 1 ? lastElementRef : undefined} key={`message-${item?.id}`} className='flex w-full items-end justify-between'>
-                        <div
-                          onClick={() => handleClickMessage(Number(item?.type) === typeOfMessage.TEXT ? item?.id : null)}
-                          className={`flex w-full items-end ${isMe ? 'justify-end' : 'justify-start'} gap-0.5`}
-                        >
+                        <div className={`flex w-full items-end ${isMe ? 'justify-end' : 'justify-start'} gap-0.5`}>
                           {Number(item?.type) === typeOfMessage.TEXT ? (
-                            // only text
-                            !isStringWithoutEmoji(item?.content) && item?.content.length == 2 ? (
-                              <motion.div
-                                variants={item?.status === 'pending' ? messageAnimation() : { initial: { x: 0, y: 0 } }}
-                                initial='initial'
-                                animate='animate'
-                                transition={{ duration: 0.2 }}
-                                viewport={{ once: true }}
-                                className={`max-w-[80%] p-2 px-3`}
-                              >
-                                <pre className={`font-inter break-words text-base ${item?.content.length == 2 ? 'scale-[2.5]' : ''}`} style={{ whiteSpace: 'pre-wrap' }}>
-                                  {item?.content}
-                                </pre>
-                              </motion.div>
-                            ) : (
-                              <motion.div
-                                variants={item?.status === 'pending' ? messageAnimation() : { initial: { x: 0, y: 0 } }}
-                                initial='initial'
-                                animate='animate'
-                                transition={{ duration: 0.2 }}
-                                viewport={{ once: true }}
-                                className={`max-w-[80%] rounded-lg border-1 p-2 px-3 ${isMe ? 'border-transparent bg-primary-light-blue' : 'border-primary-yellow bg-transparent'}`}
-                              >
-                                <pre className='font-inter break-words text-base' style={{ whiteSpace: 'pre-wrap' }}>
-                                  {item?.content}
-                                </pre>
-                              </motion.div>
-                            )
+                            <motion.div
+                              variants={item?.status === 'pending' ? messageAnimation() : { initial: { x: 0, y: 0 } }}
+                              initial='initial'
+                              animate='animate'
+                              transition={{ duration: 0.2 }}
+                              viewport={{ once: true }}
+                              className={`max-w-[80%] ${
+                                isEmoji ? 'my-2 p-2 px-3' : `rounded-lg border-1 p-2 px-3 ${isMe ? 'border-transparent bg-primary-light-blue' : 'border-primary-yellow bg-transparent'}`
+                              }`}
+                              onClick={() => handleClickMessage(item?.id)}
+                            >
+                              <pre className={`font-inter break-words text-base ${isEmoji ? 'scale-[2.5]' : ''}`} style={{ whiteSpace: 'pre-wrap' }}>
+                                {item?.content}
+                              </pre>
+                            </motion.div>
                           ) : (
                             <MessageImage key={`message-${item?.attachments?.[0]?.url}`} url={item?.attachments?.[0]?.url as string} />
                           )}
@@ -272,20 +262,22 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
                           {/* {isMe && shouldRenderIconStatus(item?.status, !!isLastSeenMessageId && item?.id === isLastSeenMessageId)} */}
                         </div>
                       </div>
-                      {/* <AnimatePresence>
-                        {currentMessage === item?.id && !isLastMesageByMe && (
-                          <motion.p
-                            className='text-sm text-primary-gray'
-                            key={item?.created_at}
-                            initial={{ height: 0 }}
-                            animate={{ height: 'auto' }}
-                            exit={{ height: 0 }}
-                            transition={{ duration: 0.1, delay: 0.1, ease: 'easeInOut' }}
-                          >
-                            {shouldRenderTextStatus(item?.status, !!isLastSeenMessageId && item?.id === isLastSeenMessageId)}
-                          </motion.p>
-                        )}
-                      </AnimatePresence> */}
+                      {/* {isActiveMessage && !isLastMesageByMe && (
+                        <motion.p
+                          className='origin-top text-sm text-primary-gray'
+                          key={item?.created_at}
+                          initial={{ opacity: 0, scaleY: 0 }}
+                          animate={{ opacity: 1, scaleY: 1 }}
+                          exit={{ opacity: 0, scaleY: 0 }}
+                          transition={{
+                            duration: 0.2,
+                            ease: 'easeInOut',
+                            delay: 0.1
+                          }}
+                        >
+                          {shouldRenderTextStatus(item?.status, !!isLastSeenMessageId && item?.id === isLastSeenMessageId)}
+                        </motion.p>
+                      )} */}
                       {isMe && isLastMesageByMe && shouldRenderTextStatus(item?.status, !!isLastSeenMessageId && item?.id === isLastSeenMessageId)}
                     </div>
                   )

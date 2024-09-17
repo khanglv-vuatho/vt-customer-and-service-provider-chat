@@ -25,5 +25,11 @@
     "acceptPrice": "Đã tim được thợ phù hợp",
     "completeOrder": "Đơn hàng đã hoàn tất",
     "expressGuarantee": "Đơn hàng đã hết hạn bảo hành"
+  },
+  "StatsusText": {
+    "sending": "Đang gửi",
+    "sent": "Đã gửi",
+    "failed": "Gửi thất bại",
+    "seen": "Đã xem"
   }
 }
