@@ -1,4 +1,4 @@
-import { Avatar } from '@nextui-org/react'
+import { Avatar, CircularProgress } from '@nextui-org/react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { AddCircle, ArrowDown, TickCircle } from 'iconsax-react'
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react'
@@ -6,7 +6,7 @@ import React, { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { ButtonOnlyIcon } from '@/components/Buttons'
 import { typeOfMessage, typeOfSocket } from '@/constants'
 import { useSocket } from '@/context/SocketProvider'
-import { MessageGroup, TConversationInfo, TInfoTyping } from '@/types'
+import { MessageGroup, TConversationInfo, TInfoTyping, TMeta } from '@/types'
 import { formatLocalHoursTime, getLastSeenId, isStringWithoutEmoji } from '@/utils'
 import MessageImage from './MessageImage'
 import { translate } from '@/context/translationProvider'
@@ -14,9 +14,11 @@ import { translate } from '@/context/translationProvider'
 type ConversationProps = {
   conversation: MessageGroup[]
   conversationInfo: TConversationInfo | null
+
+  meta: TMeta | null
 }
 
-const Conversation: React.FC<ConversationProps> = ({ conversation, conversationInfo }) => {
+const Conversation: React.FC<ConversationProps> = ({ conversation, conversationInfo, meta }) => {
   const socket: any = useSocket()
   const t = translate('StatsusText')
 
@@ -32,6 +34,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
 
   const containerRef = useRef<HTMLDivElement>(null)
   const lastElementRef = useRef<HTMLDivElement>(null)
+  const fristElementRef = useRef<HTMLDivElement>(null)
 
   const isAnotherUserTyping = infoTyping?.user_id === currentId
 
@@ -56,34 +59,34 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
     }
   }, [])
 
-  const shouldRenderIconStatus = useCallback(
-    (status: 'pending' | 'sent' | 'failed' | 'seen', display: boolean): React.ReactNode => {
-      if (conversationInfo === null) return null
-      let tickIcon
-      const avatar = isClient ? conversationInfo?.worker_picture : conversationInfo?.client_picture
+  // const shouldRenderIconStatus = useCallback(
+  //   (status: 'pending' | 'sent' | 'failed' | 'seen', display: boolean): React.ReactNode => {
+  //     if (conversationInfo === null) return null
+  //     let tickIcon
+  //     const avatar = isClient ? conversationInfo?.worker_picture : conversationInfo?.client_picture
 
-      switch (status) {
-        case 'pending':
-          tickIcon = <div className='size-4 rounded-full ring-1 ring-inset ring-primary-blue transition' />
-          break
-        case 'sent':
-          tickIcon = <TickCircle className='size-4 text-primary-blue transition' />
-          break
-        case 'failed':
-          tickIcon = <AddCircle className='size-4 rotate-45 text-primary-red transition' />
-          break
-        case 'seen':
-          tickIcon = <Avatar src={avatar} alt={avatar} className={`size-4 max-h-4 max-w-4 duration-0 ${display ? 'opacity-100' : 'opacity-0'}`} />
-          break
+  //     switch (status) {
+  //       case 'pending':
+  //         tickIcon = <div className='size-4 rounded-full ring-1 ring-inset ring-primary-blue transition' />
+  //         break
+  //       case 'sent':
+  //         tickIcon = <TickCircle className='size-4 text-primary-blue transition' />
+  //         break
+  //       case 'failed':
+  //         tickIcon = <AddCircle className='size-4 rotate-45 text-primary-red transition' />
+  //         break
+  //       case 'seen':
+  //         tickIcon = <Avatar src={avatar} alt={avatar} className={`size-4 max-h-4 max-w-4 duration-0 ${display ? 'opacity-100' : 'opacity-0'}`} />
+  //         break
 
-        default:
-          break
-      }
+  //       default:
+  //         break
+  //     }
 
-      return tickIcon
-    },
-    [conversationInfo]
-  )
+  //     return tickIcon
+  //   },
+  //   [conversationInfo]
+  // )
 
   const shouldRenderTextStatus = useCallback(
     (status: 'pending' | 'sent' | 'failed' | 'seen', display: boolean): React.ReactNode => {
@@ -124,14 +127,15 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
     }
   }, [])
 
+  console.log({ meta })
   useEffect(() => {
     const handleScroll = () => {
       if (containerRef.current) {
-        if (containerRef.current) {
-          const { scrollTop, scrollHeight, clientHeight } = containerRef.current
-          const distanceFromBottom = scrollHeight - (scrollTop + clientHeight)
-          setShowScrollToBottom(distanceFromBottom > 200)
-        }
+        const { scrollTop, scrollHeight, clientHeight } = containerRef.current
+        const distanceFromBottom = scrollHeight - (scrollTop + clientHeight)
+        setShowScrollToBottom(distanceFromBottom > 200)
+
+        // Log when scrolled to top
       }
     }
 
@@ -146,23 +150,13 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
         refCurrent.removeEventListener('scroll', handleScroll)
       }
     }
-  }, [containerRef])
+  }, [containerRef, fristElementRef])
 
   useEffect(() => {
     if (containerRef.current) {
-      containerRef.current.scrollTo({ top: containerRef.current.scrollHeight, behavior: 'instant' })
+      handleScrollToBottom()
     }
-  }, [conversation, infoTyping, isAnotherUserTyping])
-
-  useEffect(() => {
-    let timer = setTimeout(() => {
-      if (containerRef.current) {
-        containerRef.current.scrollTo({ top: containerRef.current.scrollHeight, behavior: 'instant' })
-      }
-    }, 1500)
-
-    return () => clearTimeout(timer)
-  }, [])
+  }, [infoTyping, isAnotherUserTyping])
 
   useEffect(() => {
     let timer: any
@@ -211,7 +205,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
                 </div>
               )}
               <div className={`flex flex-col gap-2 ${isMe ? 'items-end' : 'items-start'} `}>
-                {message?.messages?.map((item) => {
+                {message?.messages?.map((item, indexGroup) => {
                   const isLastMessage = item?.id === message?.messages?.[message?.messages?.length - 1]?.id
 
                   const isLastMesageByMe = isMe && isLastMessage && isLastItemInConversation
@@ -237,7 +231,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
                         </motion.p>
                       )}
                       <div ref={conversation.length === index + 1 ? lastElementRef : undefined} key={`message-${item?.id}`} className='flex w-full items-end justify-between'>
-                        <div className={`flex w-full items-end ${isMe ? 'justify-end' : 'justify-start'} gap-0.5`}>
+                        <div ref={indexGroup === 0 && index === 0 ? fristElementRef : undefined} className={`flex w-full items-end ${isMe ? 'justify-end' : 'justify-start'} gap-0.5`}>
                           {Number(item?.type) === typeOfMessage.TEXT ? (
                             <motion.div
                               variants={item?.status === 'pending' ? messageAnimation() : { initial: { x: 0, y: 0 } }}

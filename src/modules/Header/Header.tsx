@@ -89,11 +89,11 @@ const Header: React.FC<THeaderProps> = ({ workerId, conversationInfo }) => {
                 <Call size={24} variant='Bold' />
               </ButtonOnlyIcon>
             )}
-            <ButtonOnlyIcon onClick={handleClearMessage} className='bg-primary-yellow text-white'>
-              <Refresh size={24} variant='Bold' />
-            </ButtonOnlyIcon>
           </div>
         )}
+        <ButtonOnlyIcon onClick={handleClearMessage} className='bg-primary-yellow text-white'>
+          <Refresh size={24} variant='Bold' />
+        </ButtonOnlyIcon>
       </div>
 
       <OrderDetailHeader orderDetail={orderDetail} />

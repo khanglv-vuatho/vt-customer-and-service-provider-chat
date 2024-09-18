@@ -225,3 +225,10 @@ export type TInfoTyping = {
   user_id: number
   socket_id: string
 }
+
+export type TMeta = {
+  total_pages: number
+  total_item: number
+  page: number
+  limit: number
+}
