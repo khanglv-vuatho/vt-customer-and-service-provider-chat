@@ -210,7 +210,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
 
                   const isLastMesageByMe = isMe && isLastMessage && isLastItemInConversation
                   const isEmoji = !isStringWithoutEmoji(item?.content) && item?.content.length === 2
-                  const isActiveMessage = currentMessage === item?.id
+                  const isActiveMessage = currentMessage === item?.id && indexGroup !== 0
 
                   return (
                     <div className={`flex w-full flex-col gap-1 ${isMe ? 'items-end' : 'items-start'}`}>
