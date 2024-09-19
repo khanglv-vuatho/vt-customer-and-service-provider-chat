@@ -300,16 +300,14 @@ const HomePage = () => {
               inverse={true}
               hasMore={meta ? currentPage < meta.total_pages : false}
               loader={
-                isLoadMoreMessage && (
-                  <div className='flex w-full items-center justify-center py-2'>
-                    <CircularProgress
-                      size='md'
-                      classNames={{
-                        svg: 'h-6 w-6 text-primary-blue'
-                      }}
-                    />
-                  </div>
-                )
+                <div className='flex w-full items-center justify-center py-2'>
+                  <CircularProgress
+                    size='md'
+                    classNames={{
+                      svg: 'h-6 w-6 text-primary-blue'
+                    }}
+                  />
+                </div>
               }
               scrollableTarget='scrollableDiv'
             >
