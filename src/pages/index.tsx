@@ -38,6 +38,7 @@ const HomePage = () => {
   const [meta, setMeta] = useState<TMeta | null>(null)
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [isLoadMoreMessage, setIsLoadMoreMessage] = useState<boolean>(false)
+  const [scrollOfHeight, setScrollOfHeight] = useState<number[]>([])
 
   const groupedMessages = useMemo(() => groupConsecutiveMessages(conversation), [conversation])
   const documentVisible = useVisibilityChange()
@@ -128,7 +129,6 @@ const HomePage = () => {
             message: 'Lỗi mạng vui lòng kiểm tra lại'
           })
         }
-
         if (isLoadMore) {
           setConversation((prevConversation) => [...data?.data, ...prevConversation])
         } else {
@@ -136,11 +136,10 @@ const HomePage = () => {
         }
 
         // scroll to top
-
         if (isLoadMore) {
           if (scrollableRef.current) {
-            console.log(scrollableRef.current?.offsetHeight, scrollableRef.current.scrollTop)
-            scrollableRef.current.scrollTop = -10
+            // console.log(scrollableRef.current?.offsetHeight, scrollableRef.current.scrollTop)
+            scrollableRef.current.scrollTop = scrollOfHeight?.[currentPage - 3] || scrollOfHeight?.[0]
           }
         }
         setMeta(data?.meta)
@@ -156,8 +155,11 @@ const HomePage = () => {
   )
 
   const loadMoreMessages = useCallback(() => {
-    console.log('first')
+    if (scrollableRef.current) {
+      console.log(scrollableRef.current.scrollTop)
+    }
     if (meta && currentPage < meta.total_pages) {
+      setScrollOfHeight((prev) => [...prev, Number(scrollableRef.current?.scrollTop)])
       setCurrentPage((prevPage) => prevPage + 1)
       setIsLoadMoreMessage(true)
     }
