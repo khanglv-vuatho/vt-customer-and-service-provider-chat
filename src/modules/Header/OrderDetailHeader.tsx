@@ -5,7 +5,7 @@ import { typeOfGuarante, typeOfPriceOfOrderDetail } from '@/constants'
 import { translate } from '@/context/translationProvider'
 import RenderFireLottie from '@/lotties'
 import { TOrderDetail } from '@/types'
-import { formatDDMMYYYY, formatLocalTime, getPriceDetails } from '@/utils'
+import { formatDDMMYYYY, formatLocalTime, getPriceDetails, haversineDistance } from '@/utils'
 
 import { Progress } from '@nextui-org/react'
 import { Add, Clock, Location, MessageQuestion, ShieldTick } from 'iconsax-react'
@@ -17,6 +17,15 @@ type TOrderDetailHeader = {
 const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail }) => {
   const od = translate('OrderDetailHeader')
   const percent = 100 - Number(orderDetail?.guarantee?.percent) < 0 ? 0 : 100 - Number(orderDetail?.guarantee?.percent)
+
+  const queryParams = new URLSearchParams(location.search)
+  const worker_id = Number(queryParams.get('worker_id'))
+  const currentId = Number(queryParams.get('currentId'))
+  const isClient = !!worker_id
+  const coord1 = { lat: Number(orderDetail?.location?.lat), lng: Number(orderDetail?.location?.lng) }
+  const coord2: any = orderDetail?.worker_list.find((worker) => worker?.id === (isClient ? worker_id : currentId))?.location
+  //caculate km between client and worker
+  const distance = haversineDistance(coord2, coord1)
 
   const [isOpen, setIsOpen] = useState(false)
   const [isOpenExplainPrice, setIsOpenExplainPrice] = useState(false)
@@ -61,7 +70,7 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail }) => {
                 <span>
                   <Location size={20} className='text-primary-gray' />
                 </span>
-                <p>{orderDetail?.location?.address}</p>
+                <p>{orderDetail?.status === 2 ? orderDetail?.location?.address : `${distance} Km`}</p>
               </div>
               {orderDetail?.guarantee.status != typeOfGuarante.cancel && (
                 <div className='flex items-center gap-2'>

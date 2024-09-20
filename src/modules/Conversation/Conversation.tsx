@@ -11,6 +11,7 @@ import { MessageGroup, TConversationInfo, TInfoTyping, TMeta } from '@/types'
 import { formatLocalHoursTime, getLastSeenId, isStringWithoutEmoji } from '@/utils'
 import MessageImage from './MessageImage'
 import { translate } from '@/context/translationProvider'
+import { useSearchParams } from 'react-router-dom'
 
 type ConversationProps = {
   conversation: MessageGroup[]
@@ -162,10 +163,10 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
 
   useEffect(() => {
     let timer: any
+
     socket.on(typeOfSocket.MESSAGE_TYPING, (data: TInfoTyping) => {
       if (socket.id === data?.socket_id) return
       setInfoTyping(data)
-      play()
 
       // Xóa timer cũ trước khi đặt timer mới
       clearTimeout(timer)
@@ -183,6 +184,12 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
   const handleClickMessage = useCallback((id: number | null) => {
     if (!id) return
     setCurrentMessage((prev) => (prev === id ? 0 : id))
+  }, [])
+  useEffect(() => {
+    if (isAnotherUserTyping) {
+      play()
+      console.log('play')
+    }
   }, [])
 
   return (

@@ -220,6 +220,26 @@ const getPriceDetails = (orderDetail: TOrderDetail) => {
     status: isFinalPrice ? typeOfPriceOfOrderDetail.final_price : typeOfPriceOfOrderDetail.frist_price
   }
 }
+
+const haversineDistance = (coords1: { lat: number; lng: number }, coords2: { lat: number; lng: number }) => {
+  if (coords1 === undefined || coords2 === undefined) return
+  const toRad = (x: number) => (x * Math.PI) / 180
+
+  const lat1 = coords1.lat
+  const lon1 = coords1.lng
+  const lat2 = coords2.lat
+  const lon2 = coords2.lng
+
+  const R = 6371 // Bán kính Trái Đất tính bằng km
+  const dLat = toRad(lat2 - lat1)
+  const dLon = toRad(lon2 - lon1)
+  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2)
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+  const distance = R * c // Khoảng cách tính bằng km
+
+  return Number(distance.toFixed(2)) // Làm tròn 2 chữ số thập phân
+}
+
 export {
   capitalizeWords,
   formatDDMMYYYY,
@@ -235,5 +255,6 @@ export {
   formatTimestamp,
   getLastSeenId,
   isStringWithoutEmoji,
-  getPriceDetails
+  getPriceDetails,
+  haversineDistance
 }

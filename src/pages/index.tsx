@@ -3,7 +3,7 @@ import ToastComponent from '@/components/ToastComponent'
 import { typeOfBlockMessage, typeOfRule, typeOfSocket } from '@/constants'
 import ConverstaionsSkeleton from '@/modules/ConversationsSkeleton'
 import { Message, TConversationInfo, THandleSendMessage, THandleSendMessageApi, TMeta, TPayloadHandleSendMessageApi } from '@/types'
-import { groupConsecutiveMessages } from '@/utils'
+import { groupConsecutiveMessages, haversineDistance } from '@/utils'
 import { useNetworkState, useVisibilityChange } from '@uidotdev/usehooks'
 import { lazy, memo, Suspense, useCallback, useEffect, useMemo, useState, useRef } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
@@ -203,6 +203,7 @@ const HomePage = () => {
   // const messageBlock = getMessageByBlockType('BLOCKED BY COMPLETED ORDER')
 
   useEffect(() => {
+    let fristTime = true
     if (!conversationInfo?.order_id || !conversationInfo?.worker_id || conversationInfo == null || network.online === false || documentVisible === false) return
 
     socket.emit(typeOfSocket.JOIN_CONVERSATION_ROOM, { workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
@@ -213,6 +214,8 @@ const HomePage = () => {
     })
 
     socket.on(typeOfSocket.MESSAGE_SEEN, (data: any) => {
+      if (conversation.length === 0) return
+
       // seen all message in conversation when user get message
       if (data.status === 'SEEN MESSAGE') {
         setConversation((prev) =>
@@ -221,7 +224,11 @@ const HomePage = () => {
             status: 'seen'
           }))
         )
-        play()
+        if (isLoadMoreMessage) return
+        if (fristTime) {
+          play()
+          fristTime = false
+        }
       } else {
       }
     })
@@ -234,6 +241,10 @@ const HomePage = () => {
           status: 'seen'
         }))
       )
+      if (fristTime) {
+        play()
+        fristTime = false
+      }
     })
 
     socket.on(typeOfSocket.MESSAGE_ARRIVE, (data: any) => {
@@ -253,6 +264,7 @@ const HomePage = () => {
       }
     })
 
+    fristTime = true
     return () => {
       socket.emit(typeOfSocket.LEAVE_CONVERSATION_ROOM, { workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
       socket.off(typeOfSocket.MESSAGE_ARRIVE)
@@ -323,7 +335,7 @@ const HomePage = () => {
       </Suspense>
 
       {isCancleOrder ? (
-        <p className='z-50 bg-white p-3 text-center text-sm text-primary-gray'>{messageBlock}.</p>
+        <p className='-gray z-50 bg-white p-3 text-center text-sm text-primary'>{messageBlock}.</p>
       ) : (
         <Suspense fallback={null}>
           <FooterInput
