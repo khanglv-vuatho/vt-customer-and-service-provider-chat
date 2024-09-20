@@ -2,7 +2,8 @@ import { Avatar, CircularProgress } from '@nextui-org/react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { AddCircle, ArrowDown, TickCircle } from 'iconsax-react'
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react'
-
+import useSound from 'use-sound'
+import typingSound from '../../../public/typingSound.mp4'
 import { ButtonOnlyIcon } from '@/components/Buttons'
 import { typeOfMessage, typeOfSocket } from '@/constants'
 import { useSocket } from '@/context/SocketProvider'
@@ -35,6 +36,8 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
   const containerRef = useRef<HTMLDivElement>(null)
   const lastElementRef = useRef<HTMLDivElement>(null)
   const fristElementRef = useRef<HTMLDivElement>(null)
+
+  const [play] = useSound(typingSound)
 
   const isAnotherUserTyping = infoTyping?.user_id === currentId
 
@@ -127,7 +130,6 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
     }
   }, [])
 
-  console.log({ meta })
   useEffect(() => {
     const handleScroll = () => {
       if (containerRef.current) {
@@ -163,6 +165,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
     socket.on(typeOfSocket.MESSAGE_TYPING, (data: TInfoTyping) => {
       if (socket.id === data?.socket_id) return
       setInfoTyping(data)
+      play()
 
       // Xóa timer cũ trước khi đặt timer mới
       clearTimeout(timer)

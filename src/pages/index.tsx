@@ -7,6 +7,8 @@ import { groupConsecutiveMessages } from '@/utils'
 import { useNetworkState, useVisibilityChange } from '@uidotdev/usehooks'
 import { lazy, memo, Suspense, useCallback, useEffect, useMemo, useState, useRef } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
+import useSound from 'use-sound'
+import seenSound from '../../public/seen.mp4'
 
 const Header = lazy(() => import('@/modules/Header/Header'))
 const FooterInput = lazy(() => import('@/modules/FooterInput/FooterInput'))
@@ -26,6 +28,8 @@ const HomePage = () => {
   const currentId = Number(queryParams.get('currentId'))
   const worker_id = Number(queryParams.get('worker_id'))
 
+  //sound
+  const [play] = useSound(seenSound)
   const isClient = !!worker_id
 
   const [onFetchingMessage, setOnFetchingMessage] = useState<boolean>(false)
@@ -217,6 +221,7 @@ const HomePage = () => {
             status: 'seen'
           }))
         )
+        play()
       } else {
       }
     })
