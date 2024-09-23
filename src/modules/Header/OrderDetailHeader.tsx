@@ -32,6 +32,10 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail }) => {
 
   const isHasProcess = orderDetail?.guarantee.status == typeOfGuarante.active
 
+  const conditionsShowAddress = useMemo(() => {
+    return Number(orderDetail?.status) >= 2 && Number(orderDetail?.status) <= 9
+  }, [orderDetail])
+
   const detailOrderDisplay = useMemo(() => getPriceDetails(orderDetail as TOrderDetail), [orderDetail])
   const handleToggleModal = () => {
     setIsOpen(!isOpen)
@@ -70,7 +74,8 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail }) => {
                 <span>
                   <Location size={20} className='text-primary-gray' />
                 </span>
-                <p>{orderDetail?.status === 2 ? orderDetail?.location?.address : `${distance} Km`}</p>
+                {/* if client show address, if not client show distance */}
+                <p>{isClient ? orderDetail?.location?.address : conditionsShowAddress ? orderDetail?.location?.address : `${distance} Km`}</p>
               </div>
               {orderDetail?.guarantee.status != typeOfGuarante.cancel && (
                 <div className='flex items-center gap-2'>
