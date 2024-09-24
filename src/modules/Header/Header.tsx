@@ -91,9 +91,11 @@ const Header: React.FC<THeaderProps> = ({ workerId, conversationInfo }) => {
             ) : null}
           </div>
         )}
-        <ButtonOnlyIcon onClick={handleClearMessage} className='bg-primary-yellow text-white'>
-          <Refresh size={24} variant='Bold' />
-        </ButtonOnlyIcon>
+        {import.meta.env.VITE_TEST === 'local' && (
+          <ButtonOnlyIcon onClick={handleClearMessage} className='bg-primary-yellow text-white'>
+            <Refresh size={24} variant='Bold' />
+          </ButtonOnlyIcon>
+        )}
       </div>
 
       <OrderDetailHeader orderDetail={orderDetail} />
