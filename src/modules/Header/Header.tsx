@@ -84,11 +84,11 @@ const Header: React.FC<THeaderProps> = ({ workerId, conversationInfo }) => {
           <div className='flex gap-2'>
             {isLoading ? (
               ''
-            ) : import.meta.env.VITE_MODE === 'local' ? (
+            ) : (
               <ButtonOnlyIcon className={`${isClient ? 'bg-primary-yellow' : 'bg-primary-blue'} text-white`} onClick={handleCall}>
                 <Call size={24} variant='Bold' />
               </ButtonOnlyIcon>
-            ) : null}
+            )}
           </div>
         )}
         {import.meta.env.VITE_TEST === 'local' && (
