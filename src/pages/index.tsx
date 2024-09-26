@@ -3,9 +3,10 @@ import ToastComponent from '@/components/ToastComponent'
 import { typeOfBlockMessage, typeOfRule, typeOfSocket } from '@/constants'
 import ConverstaionsSkeleton from '@/modules/ConversationsSkeleton'
 import { Message, TConversationInfo, THandleSendMessage, THandleSendMessageApi, TMeta, TPayloadHandleSendMessageApi } from '@/types'
-import { groupConsecutiveMessages, haversineDistance } from '@/utils'
+import { groupConsecutiveMessages } from '@/utils'
 import { useNetworkState, useVisibilityChange } from '@uidotdev/usehooks'
-import { lazy, memo, Suspense, useCallback, useEffect, useMemo, useState, useRef } from 'react'
+import { AnimatePresence } from 'framer-motion'
+import { lazy, memo, Suspense, useCallback, useEffect, useRef, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import useSound from 'use-sound'
 import seenSound from '../../public/seen.mp4'
@@ -14,9 +15,11 @@ const Header = lazy(() => import('@/modules/Header/Header'))
 const FooterInput = lazy(() => import('@/modules/FooterInput/FooterInput'))
 const Conversation = lazy(() => import('@/modules/Conversation/Conversation'))
 
+import { ButtonOnlyIcon } from '@/components/Buttons'
 import { useSocket } from '@/context/SocketProvider'
 import { translate } from '@/context/translationProvider'
 import { CircularProgress } from '@nextui-org/react'
+import { ArrowDown } from 'iconsax-react'
 
 const HomePage = () => {
   const o = translate('Order')
@@ -42,12 +45,14 @@ const HomePage = () => {
   const [meta, setMeta] = useState<TMeta | null>(null)
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [isLoadMoreMessage, setIsLoadMoreMessage] = useState<boolean>(false)
-  const [scrollOfHeight, setScrollOfHeight] = useState<number[]>([])
 
-  const groupedMessages = useMemo(() => groupConsecutiveMessages(conversation), [conversation])
+  const groupedMessages = groupConsecutiveMessages(conversation).reverse()
+
+  const isCanLoadMore = meta ? currentPage < meta?.total_pages : false
+  const [showScrollToBottom, setShowScrollToBottom] = useState<boolean>(false)
+
   const documentVisible = useVisibilityChange()
   const network = useNetworkState()
-  const scrollableRef = useRef<HTMLDivElement>(null)
 
   const handleSendMessage = useCallback(
     async ({ message, type = 0, attachment }: THandleSendMessage) => {
@@ -134,18 +139,13 @@ const HomePage = () => {
           })
         }
         if (isLoadMore) {
+          // setItems((prevItems) => prevItems.concat(Array.from({ length: 20 })))
+          // setConversation((prevConversation) => prevConversation.concat(data?.data))
           setConversation((prevConversation) => [...data?.data, ...prevConversation])
         } else {
           setConversation(data?.data)
         }
 
-        // scroll to top
-        if (isLoadMore) {
-          if (scrollableRef.current) {
-            // console.log(scrollableRef.current?.offsetHeight, scrollableRef.current.scrollTop)
-            scrollableRef.current.scrollTop = scrollOfHeight?.[currentPage - 3] || scrollOfHeight?.[0]
-          }
-        }
         setMeta(data?.meta)
       } catch (error) {
         console.error(error)
@@ -159,11 +159,7 @@ const HomePage = () => {
   )
 
   const loadMoreMessages = useCallback(() => {
-    if (scrollableRef.current) {
-      console.log(scrollableRef.current.scrollTop)
-    }
     if (meta && currentPage < meta.total_pages) {
-      setScrollOfHeight((prev) => [...prev, Number(scrollableRef.current?.scrollTop)])
       setCurrentPage((prevPage) => prevPage + 1)
       setIsLoadMoreMessage(true)
     }
@@ -291,6 +287,72 @@ const HomePage = () => {
     onReloadMessage && handleGetMessage()
   }, [onReloadMessage, handleGetMessage, onFetchingMessage])
 
+  useEffect(() => {
+    const scrollDivEvent = document.querySelector('.scrollable-div-class')
+
+    if (!scrollDivEvent) {
+      setTimeout(() => {
+        const scrollDivEvent = document.querySelector('.scrollable-div-class')
+        if (scrollDivEvent) {
+          const handleScroll = () => {
+            const { scrollTop, scrollHeight, clientHeight } = scrollDivEvent
+            console.log({ scrollTop, scrollHeight, clientHeight })
+            const distanceFromBottom = scrollHeight - (scrollTop + clientHeight)
+            setShowScrollToBottom(distanceFromBottom > 100)
+          }
+
+          scrollDivEvent.addEventListener('scroll', handleScroll)
+
+          return () => {
+            scrollDivEvent.removeEventListener('scroll', handleScroll)
+          }
+        }
+      }, 500) // Đợi 500ms để đảm bảo phần tử DOM đã được render
+    } else {
+      const handleScroll = () => {
+        const { scrollTop, scrollHeight, clientHeight } = scrollDivEvent
+        console.log({ scrollTop, scrollHeight, clientHeight })
+        const distanceFromBottom = scrollHeight - (scrollTop + clientHeight)
+        setShowScrollToBottom(distanceFromBottom > 100)
+      }
+
+      scrollDivEvent.addEventListener('scroll', handleScroll)
+
+      return () => {
+        scrollDivEvent.removeEventListener('scroll', handleScroll)
+      }
+    }
+  }, [])
+
+  // const handleAutoSendMessage = async () => {
+  //   if (true) return
+  //   for (let i = 1; i <= 50; i++) {
+  //     await handleSendMessage({ message: `Message ${i}` })
+  //   }
+  // }
+
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     handleAutoSendMessage()
+  //   }, 2000)
+  // }, [])
+
+  const handleScroll = (e: any) => {
+    const scrollTop = e.target.scrollTop // How much the user has scrolled vertically
+
+    setShowScrollToBottom(scrollTop < -200)
+  }
+
+  const handleScrollToBottom = () => {
+    const scrollableDiv = document.getElementById('scrollableDiv')
+    if (scrollableDiv) {
+      scrollableDiv.scrollTo({
+        top: scrollableDiv.scrollHeight,
+        behavior: currentPage <= 5 ? 'smooth' : 'instant' // This enables smooth scrolling
+      })
+    }
+  }
+
   return (
     <div className={`relative flex h-dvh flex-col`}>
       <Suspense fallback={null}>
@@ -302,7 +364,6 @@ const HomePage = () => {
         ) : (
           <div
             id='scrollableDiv'
-            ref={scrollableRef}
             style={{
               height: '100%',
               overflow: 'auto',
@@ -313,22 +374,33 @@ const HomePage = () => {
             <InfiniteScroll
               dataLength={conversation.length}
               next={loadMoreMessages}
-              style={{ display: 'flex', flexDirection: 'column-reverse' }}
+              style={{ display: 'flex', flexDirection: 'column-reverse', padding: '0 8px 10px 8px', gap: 12 }}
               inverse={true}
-              hasMore={meta ? currentPage < meta.total_pages : false}
+              hasMore={isCanLoadMore}
+              onScroll={handleScroll}
               loader={
-                <div className='flex w-full items-center justify-center py-2'>
-                  <CircularProgress
-                    size='md'
-                    classNames={{
-                      svg: 'h-6 w-6 text-primary-blue'
-                    }}
-                  />
-                </div>
+                isLoadMoreMessage && (
+                  <div className='flex w-full items-center justify-center py-2'>
+                    <CircularProgress
+                      size='md'
+                      classNames={{
+                        svg: 'h-6 w-6 text-primary-blue'
+                      }}
+                    />
+                  </div>
+                )
               }
               scrollableTarget='scrollableDiv'
             >
-              <Conversation meta={meta} conversation={groupedMessages} conversationInfo={conversationInfo} />
+              {/* <AnimatePresence>
+                <ButtonOnlyIcon
+                  onClick={handleScrollToBottom}
+                  className={`absolute bottom-20 left-1/2 flex size-8 max-h-8 min-h-8 min-w-8 max-w-8 flex-shrink-0 -translate-x-1/2 transition-all duration-300 ${showScrollToBottom ? 'translate-y-0 opacity-100' : 'translate-y-[120px]'} rounded-full bg-white p-2 text-primary-black shadow-lg`}
+                >
+                  <ArrowDown className='size-4' />
+                </ButtonOnlyIcon>
+              </AnimatePresence> */}
+              <Conversation conversation={groupedMessages} conversationInfo={conversationInfo} />
             </InfiniteScroll>
           </div>
         )}

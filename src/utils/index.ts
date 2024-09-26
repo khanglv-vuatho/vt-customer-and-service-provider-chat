@@ -190,14 +190,26 @@ const groupConsecutiveMessages = (messages: Message[]): MessageGroup[] => {
 
   return groupedMessages
 }
+const getLastSeenMessageId = (data: MessageGroup[]) => {
+  // Duyệt qua tất cả người dùng
+  const seenMessages: any[] = []
 
-const getLastSeenId = (data: Message[]) => {
-  const lastSeenItem = data
-    .slice()
-    .reverse()
-    .find((item) => item.status === 'seen')
+  data.reverse().forEach((user) => {
+    user.messages.forEach((message) => {
+      // Kiểm tra nếu tin nhắn đã được seen
+      if (message.seen) {
+        seenMessages.push(message)
+      }
+    })
+  })
 
-  return lastSeenItem ? lastSeenItem.id : null
+  // Lấy ra message cuối cùng đã được seen
+  if (seenMessages.length > 0) {
+    const lastSeenMessage = seenMessages[seenMessages.length - 1]
+    return lastSeenMessage.id
+  }
+
+  return null // Không có tin nhắn nào được seen
 }
 const isStringWithoutEmoji = (value: string) => {
   if (typeof value !== 'string') {
@@ -239,7 +251,9 @@ const haversineDistance = (coords1: { lat: number; lng: number }, coords2: { lat
 
   return Number(distance.toFixed(2)) // Làm tròn 2 chữ số thập phân
 }
-
+const isMobileWithUserAgent = () => {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+}
 export {
   capitalizeWords,
   formatDDMMYYYY,
@@ -253,8 +267,9 @@ export {
   useDebounce,
   useUnfocusItem,
   formatTimestamp,
-  getLastSeenId,
+  getLastSeenMessageId,
   isStringWithoutEmoji,
   getPriceDetails,
-  haversineDistance
+  haversineDistance,
+  isMobileWithUserAgent
 }
