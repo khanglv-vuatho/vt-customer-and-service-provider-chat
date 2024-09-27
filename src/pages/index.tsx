@@ -18,7 +18,7 @@ const Conversation = lazy(() => import('@/modules/Conversation/Conversation'))
 import { ButtonOnlyIcon } from '@/components/Buttons'
 import { useSocket } from '@/context/SocketProvider'
 import { translate } from '@/context/translationProvider'
-import { CircularProgress } from '@nextui-org/react'
+import { Button, CircularProgress } from '@nextui-org/react'
 import { ArrowDown } from 'iconsax-react'
 
 const HomePage = () => {
@@ -50,6 +50,10 @@ const HomePage = () => {
 
   const isCanLoadMore = meta ? currentPage < meta?.total_pages : false
   const [showScrollToBottom, setShowScrollToBottom] = useState<boolean>(false)
+
+  //test zone
+  const [isAutoSendMessage, setIsAutoSendMessage] = useState<boolean>(false)
+  const [condition, setCondition] = useState<boolean>(false)
 
   const documentVisible = useVisibilityChange()
   const network = useNetworkState()
@@ -324,18 +328,18 @@ const HomePage = () => {
     }
   }, [])
 
-  // const handleAutoSendMessage = async () => {
-  //   if (true) return
-  //   for (let i = 1; i <= 50; i++) {
-  //     await handleSendMessage({ message: `Message ${i}` })
-  //   }
-  // }
+  const handleAutoSendMessage = async () => {
+    if (condition) return
+    for (let i = 1; i <= 50; i++) {
+      await handleSendMessage({ message: `Message ${i}` })
+    }
+  }
 
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     handleAutoSendMessage()
-  //   }, 2000)
-  // }, [])
+  useEffect(() => {
+    setTimeout(() => {
+      handleAutoSendMessage()
+    }, 2000)
+  }, [isAutoSendMessage, condition])
 
   const handleScroll = (e: any) => {
     const scrollTop = e.target.scrollTop // How much the user has scrolled vertically
@@ -357,6 +361,23 @@ const HomePage = () => {
     <div className={`relative flex h-dvh flex-col`}>
       <Suspense fallback={null}>
         <Header workerId={Number(conversationInfo?.worker_id)} conversationInfo={conversationInfo} />
+        <Button
+          onClick={() => {
+            setIsAutoSendMessage(true)
+            setCondition(!!worker_id)
+          }}
+        >
+          Auto send client
+        </Button>
+        <Button
+          className='mt-4'
+          onClick={() => {
+            setIsAutoSendMessage(true)
+            setCondition(!worker_id)
+          }}
+        >
+          Auto send worker
+        </Button>
       </Suspense>
       <Suspense fallback={null}>
         {onFetchingMessage ? (
