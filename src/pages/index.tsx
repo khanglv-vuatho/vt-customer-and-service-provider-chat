@@ -51,10 +51,6 @@ const HomePage = () => {
   const isCanLoadMore = meta ? currentPage < meta?.total_pages : false
   const [showScrollToBottom, setShowScrollToBottom] = useState<boolean>(false)
 
-  //test zone
-  const [isAutoSendMessage, setIsAutoSendMessage] = useState<boolean>(false)
-  const [condition, setCondition] = useState<boolean>(false)
-
   const documentVisible = useVisibilityChange()
   const network = useNetworkState()
 
@@ -329,7 +325,7 @@ const HomePage = () => {
   }, [])
 
   const handleAutoSendMessage = async () => {
-    if (condition) return
+    if (true) return
     for (let i = 1; i <= 50; i++) {
       await handleSendMessage({ message: `Message ${i}` })
     }
@@ -339,7 +335,7 @@ const HomePage = () => {
     setTimeout(() => {
       handleAutoSendMessage()
     }, 2000)
-  }, [isAutoSendMessage, condition])
+  }, [])
 
   const handleScroll = (e: any) => {
     const scrollTop = e.target.scrollTop // How much the user has scrolled vertically
@@ -361,7 +357,7 @@ const HomePage = () => {
     <div className={`relative flex h-dvh flex-col`}>
       <Suspense fallback={null}>
         <Header workerId={Number(conversationInfo?.worker_id)} conversationInfo={conversationInfo} />
-        <Button
+        {/* <Button
           onClick={() => {
             setIsAutoSendMessage(true)
             setCondition(!!worker_id)
@@ -377,7 +373,7 @@ const HomePage = () => {
           }}
         >
           Auto send worker
-        </Button>
+        </Button> */}
       </Suspense>
       <Suspense fallback={null}>
         {onFetchingMessage ? (
