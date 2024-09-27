@@ -5,8 +5,7 @@ import ConverstaionsSkeleton from '@/modules/ConversationsSkeleton'
 import { Message, TConversationInfo, THandleSendMessage, THandleSendMessageApi, TMeta, TPayloadHandleSendMessageApi } from '@/types'
 import { groupConsecutiveMessages } from '@/utils'
 import { useNetworkState, useVisibilityChange } from '@uidotdev/usehooks'
-import { AnimatePresence } from 'framer-motion'
-import { lazy, memo, Suspense, useCallback, useEffect, useRef, useState } from 'react'
+import { lazy, memo, Suspense, useCallback, useEffect, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import useSound from 'use-sound'
 import seenSound from '../../public/seen.mp4'
@@ -15,11 +14,9 @@ const Header = lazy(() => import('@/modules/Header/Header'))
 const FooterInput = lazy(() => import('@/modules/FooterInput/FooterInput'))
 const Conversation = lazy(() => import('@/modules/Conversation/Conversation'))
 
-import { ButtonOnlyIcon } from '@/components/Buttons'
 import { useSocket } from '@/context/SocketProvider'
 import { translate } from '@/context/translationProvider'
-import { Button, CircularProgress } from '@nextui-org/react'
-import { ArrowDown } from 'iconsax-react'
+import { CircularProgress } from '@nextui-org/react'
 
 const HomePage = () => {
   const o = translate('Order')
@@ -46,7 +43,7 @@ const HomePage = () => {
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [isLoadMoreMessage, setIsLoadMoreMessage] = useState<boolean>(false)
 
-  const groupedMessages = groupConsecutiveMessages(conversation).reverse()
+  const groupedMessages = groupConsecutiveMessages(conversation)
 
   const isCanLoadMore = meta ? currentPage < meta?.total_pages : false
   const [showScrollToBottom, setShowScrollToBottom] = useState<boolean>(false)
