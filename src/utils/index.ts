@@ -193,8 +193,9 @@ const groupConsecutiveMessages = (messages: Message[]): MessageGroup[] => {
 const getLastSeenMessageId = (data: MessageGroup[]) => {
   // Duyệt qua tất cả người dùng
   const seenMessages: any[] = []
+  const cloneData = [...data]
 
-  data.reverse().forEach((user) => {
+  cloneData.reverse().forEach((user) => {
     user.messages.forEach((message) => {
       // Kiểm tra nếu tin nhắn đã được seen
       if (message.seen) {
@@ -211,6 +212,7 @@ const getLastSeenMessageId = (data: MessageGroup[]) => {
 
   return null // Không có tin nhắn nào được seen
 }
+
 const isStringWithoutEmoji = (value: string) => {
   if (typeof value !== 'string') {
     return false

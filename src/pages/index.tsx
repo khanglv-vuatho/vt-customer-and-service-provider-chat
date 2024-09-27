@@ -44,7 +44,8 @@ const HomePage = () => {
   const [isLoadMoreMessage, setIsLoadMoreMessage] = useState<boolean>(false)
 
   const groupedMessages = groupConsecutiveMessages(conversation)
-
+  const groupedMessagesClone = [...groupedMessages]
+  const groupedMessagesCloneReverse = [...groupedMessagesClone].reverse()
   const isCanLoadMore = meta ? currentPage < meta?.total_pages : false
   const [showScrollToBottom, setShowScrollToBottom] = useState<boolean>(false)
 
@@ -414,7 +415,7 @@ const HomePage = () => {
                   <ArrowDown className='size-4' />
                 </ButtonOnlyIcon>
               </AnimatePresence> */}
-              <Conversation conversation={groupedMessages} conversationInfo={conversationInfo} />
+              <Conversation conversation={groupedMessagesCloneReverse} conversationInfo={conversationInfo} />
             </InfiniteScroll>
           </div>
         )}
