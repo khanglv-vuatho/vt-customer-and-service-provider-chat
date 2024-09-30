@@ -34,6 +34,11 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
 
   const lastSeenMessageId = useMemo(() => getLastSeenMessageId(conversation), [conversation])
 
+  const conversationClone = [...conversation]
+  const conversationCloneReverse = [...conversationClone].reverse()
+
+  const lastGroupInConversatioReverse = conversationCloneReverse?.[conversationCloneReverse?.length - 1]
+  const lastMessageInLastGroupConversatioReverse = lastGroupInConversatioReverse?.messages?.[lastGroupInConversatioReverse?.messages?.length - 1]
   const [play] = useSound(typingSound)
 
   const isAnotherUserTyping = infoTyping?.user_id === currentId
@@ -82,7 +87,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
   // )
 
   const shouldRenderTextStatus = useCallback(
-    (status: 'pending' | 'sent' | 'failed' | 'seen', display: boolean): React.ReactNode => {
+    (status: 'pending' | 'sent' | 'failed' | 'seen', display: boolean = true): React.ReactNode => {
       if (conversationInfo === null) return null
       let textStatus
       const avatar = isClient ? conversationInfo?.worker_picture : conversationInfo?.client_picture
@@ -146,7 +151,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
   }, [])
 
   useEffect(() => {
-    if (isAnotherUserTyping) {
+    if (isAnotherUserTyping && infoTyping?.is_typing) {
       play()
       console.log('play')
     }
@@ -155,6 +160,10 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
   // console.log({ id: findLastSeenMessageId(conversation) })
 
   console.log({ conversation })
+
+  const handleCheckConditionsToShowStatsus = useCallback((id: number) => {
+    return lastMessageInLastGroupConversatioReverse?.id === id
+  }, [])
 
   return (
     <>
@@ -188,6 +197,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
         const isLastItemInConversation = index === conversation.length - 1
         const isMe = message?.userId === currentId
 
+        console.log({ lastGroupInConversatioReverse, lastMessageInLastGroupConversatioReverse, conversation })
         //index is 0 because arr has reverse
         const isLastItemInConversationByMe = conversation[0].messages?.[0].by?.id === currentId
         return (
@@ -207,8 +217,10 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
                   const isEmoji = !isStringWithoutEmoji(item?.content) && item?.content.length === 2
                   const isActiveMessage = currentMessage === item?.id && indexGroup !== 0
 
+                  const isLastIndex = message?.messages?.length - 1 === indexGroup
                   const isDisplaySeen = isLastItemInConversationByMe
                   const isDisplayStatusMessage = isLastMessageInGroupMessage && isLastItemInConversationByMe && isFirstItemInConversation
+                  console.log({ lastMessageInLastGroupConversatioReverse, item })
                   return (
                     <div key={item?.id} className={`flex w-full flex-col gap-1 ${isMe ? 'items-end' : 'items-start'}`}>
                       {isActiveMessage && (
@@ -270,7 +282,8 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
                     </motion.p>
                   )} */}
                       {/* khang */}
-                      {/* {isMe && shouldRenderTextStatus(item?.status, isLastMessageInGroupMessage && isFirstItemInConversation)} */}
+                      {/* {isMe && shouldRenderTextStatus(item?.status, handleCheckConditionsToShowStatsus(item?.id))} */}
+                      {isMe && handleCheckConditionsToShowStatsus(item?.id) && shouldRenderTextStatus(item?.status)}
                       {/* {isMe && shouldRenderTextStatus(item?.status, item.status === 'seen' ? isDisplaySeen : isDisplayStatusMessage)} */}
                     </div>
                   )

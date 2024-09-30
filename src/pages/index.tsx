@@ -84,7 +84,7 @@ const HomePage = () => {
         newMessage.attachments = [{ url: URL.createObjectURL(attachment) }] as any
       }
 
-      setConversation((prevConversation) => [...prevConversation, newMessage])
+      setConversation((prevConversation) => [newMessage, ...prevConversation])
 
       try {
         await handleSendMessageApi({ message, messageId: newMessage.id, type, attachment, socket_id: socket.id })
@@ -395,7 +395,12 @@ const HomePage = () => {
               onScroll={handleScroll}
               loader={
                 isLoadMoreMessage && (
-                  <div className='flex w-full items-center justify-center py-2'>
+                  <div
+                    style={{
+                      display: isLoadMoreMessage ? 'flex' : 'none'
+                    }}
+                    className='flex w-full items-center justify-center py-2'
+                  >
                     <CircularProgress
                       size='md'
                       classNames={{
