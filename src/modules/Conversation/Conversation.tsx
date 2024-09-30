@@ -157,8 +157,6 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
     }
   }, [infoTyping])
 
-  // console.log({ id: findLastSeenMessageId(conversation) })
-
   console.log({ conversation })
 
   const handleCheckConditionsToShowStatsus = useCallback(
@@ -167,6 +165,17 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
     },
     [lastMessageInLastGroupConversatioReverse]
   )
+
+  const handleGetLastMessageInLastGroup = (id: number) => {
+    const allMessages = conversationCloneReverse.flatMap((group) => group.messages)
+
+    // Lọc ra những tin nhắn có trạng thái 'seen'
+    const seenMessages = allMessages.filter((message) => message.seen !== null)
+
+    // Lấy tin nhắn cuối cùng đã được seen
+    const lastSeenMessage = seenMessages[seenMessages.length - 1]
+    return lastSeenMessage.id === id
+  }
 
   return (
     <>
@@ -196,13 +205,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
       )}
       {conversation?.map((message, index) => {
         // last item in conversation, but has received array conversation so need to get isFirstItemInConversation
-        const isFirstItemInConversation = index === 0
-        const isLastItemInConversation = index === conversation.length - 1
         const isMe = message?.userId === currentId
-
-        console.log({ lastGroupInConversatioReverse, lastMessageInLastGroupConversatioReverse, conversation })
-        //index is 0 because arr has reverse
-        const isLastItemInConversationByMe = conversation[0].messages?.[0].by?.id === currentId
         return (
           <div key={`message-${message?.userId}-${index}`} className={`flex ${isMe ? 'justify-end' : 'justify-start'} gap-2`}>
             <div className='flex w-full flex-col gap-3'>
@@ -214,16 +217,9 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
               )}
               <div className={`flex flex-col gap-2 ${isMe ? 'items-end' : 'items-start'} `}>
                 {message?.messages?.map((item, indexGroup) => {
-                  const isLastMessageInGroupMessage = item?.id === message?.messages?.[message?.messages?.length - 1]?.id
-                  const isLastMessage = item?.id === message?.messages?.[message?.messages?.length - 1]?.id
-                  const isLastMesageByMe = isMe && isLastMessage && isLastItemInConversation
                   const isEmoji = !isStringWithoutEmoji(item?.content) && item?.content.length === 2
                   const isActiveMessage = currentMessage === item?.id && indexGroup !== 0
 
-                  const isLastIndex = message?.messages?.length - 1 === indexGroup
-                  const isDisplaySeen = isLastItemInConversationByMe
-                  const isDisplayStatusMessage = isLastMessageInGroupMessage && isLastItemInConversationByMe && isFirstItemInConversation
-                  console.log({ lastMessageInLastGroupConversatioReverse, item })
                   return (
                     <div key={item?.id} className={`flex w-full flex-col gap-1 ${isMe ? 'items-end' : 'items-start'}`}>
                       {isActiveMessage && (
@@ -263,31 +259,10 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
                           ) : (
                             <MessageImage key={`message-${item?.attachments?.[0]?.url}`} url={item?.attachments?.[0]?.url as string} />
                           )}
-                          {/* {isMe && shouldRenderIconStatus(item?.status)} */}
-                          {/* hiển thị seen cuối cùng trong messages[] */}
-                          {/* {isMe && shouldRenderIconStatus(item?.status, !!isLastSeenMessageId && item?.id === isLastSeenMessageId)} */}
                         </div>
                       </div>
-                      {/* {isActiveMessage && !isLastMesageByMe && (
-                    <motion.p
-                      className='origin-top text-sm text-primary-gray'
-                      key={item?.created_at}
-                      initial={{ opacity: 0, scaleY: 0 }}
-                      animate={{ opacity: 1, scaleY: 1 }}
-                      exit={{ opacity: 0, scaleY: 0 }}
-                      transition={{
-                        duration: 0.2,
-                        ease: 'easeInOut',
-                        delay: 0.1
-                      }}
-                    >
-                      {shouldRenderTextStatus(item?.status, !!isLastSeenMessageId && item?.id === isLastSeenMessageId)}
-                    </motion.p>
-                  )} */}
-                      {/* khang */}
-                      {/* {isMe && shouldRenderTextStatus(item?.status, handleCheckConditionsToShowStatsus(item?.id))} */}
-                      {isMe && handleCheckConditionsToShowStatsus(item?.id) && shouldRenderTextStatus(item?.status)}
-                      {/* {isMe && shouldRenderTextStatus(item?.status, item.status === 'seen' ? isDisplaySeen : isDisplayStatusMessage)} */}
+
+                      {isMe && (handleCheckConditionsToShowStatsus(item?.id) || handleGetLastMessageInLastGroup(item?.id)) && shouldRenderTextStatus(item?.status)}
                     </div>
                   )
                 })}
