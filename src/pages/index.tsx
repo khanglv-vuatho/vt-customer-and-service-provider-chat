@@ -126,7 +126,7 @@ const HomePage = () => {
   const handleGetMessage = useCallback(
     async (isLoadMore: boolean = false) => {
       try {
-        const data = await fetchMessage({ orderId, ...(isClient && { worker_id }), page: currentPage, limit: 20 })
+        const data = await fetchMessage({ orderId, socket_id: socket?.id, ...(isClient && { worker_id }), page: currentPage, limit: 20 })
 
         setConversationInfo(data)
 
@@ -212,6 +212,8 @@ const HomePage = () => {
 
       // seen all message in conversation when user get message
       if (data.status === 'SEEN MESSAGE') {
+        if (data?.socket_id == socket?.id) return
+
         setConversation((prev) =>
           prev.map((message) => ({
             ...message,
@@ -242,7 +244,6 @@ const HomePage = () => {
     })
 
     socket.on(typeOfSocket.MESSAGE_ARRIVE, (data: any) => {
-      console.log({ data })
       if (data?.socket_id == socket?.id) {
       } else {
         setConversation((prevConversation) => [...prevConversation, data?.message])
@@ -253,7 +254,8 @@ const HomePage = () => {
           orderId: conversationInfo?.order_id,
           currentId,
           message_id: data?.message?.id,
-          conversationId: conversationInfo?.conversation_id
+          conversationId: conversationInfo?.conversation_id,
+          socketId: socket?.id
         })
       }
     })
@@ -285,43 +287,6 @@ const HomePage = () => {
     onReloadMessage && handleGetMessage()
   }, [onReloadMessage, handleGetMessage, onFetchingMessage])
 
-  useEffect(() => {
-    const scrollDivEvent = document.querySelector('.scrollable-div-class')
-
-    if (!scrollDivEvent) {
-      setTimeout(() => {
-        const scrollDivEvent = document.querySelector('.scrollable-div-class')
-        if (scrollDivEvent) {
-          const handleScroll = () => {
-            const { scrollTop, scrollHeight, clientHeight } = scrollDivEvent
-            console.log({ scrollTop, scrollHeight, clientHeight })
-            const distanceFromBottom = scrollHeight - (scrollTop + clientHeight)
-            setShowScrollToBottom(distanceFromBottom > 100)
-          }
-
-          scrollDivEvent.addEventListener('scroll', handleScroll)
-
-          return () => {
-            scrollDivEvent.removeEventListener('scroll', handleScroll)
-          }
-        }
-      }, 500) // Đợi 500ms để đảm bảo phần tử DOM đã được render
-    } else {
-      const handleScroll = () => {
-        const { scrollTop, scrollHeight, clientHeight } = scrollDivEvent
-        console.log({ scrollTop, scrollHeight, clientHeight })
-        const distanceFromBottom = scrollHeight - (scrollTop + clientHeight)
-        setShowScrollToBottom(distanceFromBottom > 100)
-      }
-
-      scrollDivEvent.addEventListener('scroll', handleScroll)
-
-      return () => {
-        scrollDivEvent.removeEventListener('scroll', handleScroll)
-      }
-    }
-  }, [])
-
   const handleAutoSendMessage = async () => {
     if (true) return
     for (let i = 1; i <= 50; i++) {
@@ -339,16 +304,6 @@ const HomePage = () => {
     const scrollTop = e.target.scrollTop // How much the user has scrolled vertically
 
     setShowScrollToBottom(scrollTop < -200)
-  }
-
-  const handleScrollToBottom = () => {
-    const scrollableDiv = document.getElementById('scrollableDiv')
-    if (scrollableDiv) {
-      scrollableDiv.scrollTo({
-        top: scrollableDiv.scrollHeight,
-        behavior: currentPage <= 5 ? 'smooth' : 'instant' // This enables smooth scrolling
-      })
-    }
   }
 
   return (
