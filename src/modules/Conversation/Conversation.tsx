@@ -5,7 +5,7 @@ import { translate } from '@/context/translationProvider'
 import { MessageGroup, TConversationInfo, TInfoTyping } from '@/types'
 import { formatLocalHoursTime, isStringWithoutEmoji } from '@/utils'
 import { Avatar } from '@nextui-org/react'
-import { motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react'
 import useSound from 'use-sound'
 import typingSound from '../../../public/typingSound.mp4'
@@ -72,7 +72,21 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
           textStatus = <p className='text-xs text-primary-gray'>{t?.failed}</p>
           break
         case 'seen':
-          textStatus = <ImageCustom src={avatar} alt={avatar} className={`size-4 max-h-4 max-w-4 rounded-full object-cover ${!!display ? 'opacity-100' : 'hidden'}`} />
+          textStatus = (
+            <AnimatePresence>
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0 }}
+                transition={{
+                  duration: 0.2,
+                  ease: 'easeInOut'
+                }}
+              >
+                <ImageCustom src={avatar} alt={avatar} className={`size-4 max-h-4 max-w-4 rounded-full object-cover ${!!display ? 'opacity-100' : 'hidden'}`} />
+              </motion.div>
+            </AnimatePresence>
+          )
           break
 
         default:
