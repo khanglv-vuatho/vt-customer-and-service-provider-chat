@@ -84,7 +84,7 @@ const HomePage = () => {
         newMessage.attachments = [{ url: URL.createObjectURL(attachment) }] as any
       }
 
-      setConversation((prevConversation) => [newMessage, ...prevConversation])
+      setConversation((prevConversation) => [...prevConversation, newMessage])
 
       try {
         await handleSendMessageApi({ message, messageId: newMessage.id, type, attachment, socket_id: socket.id })
