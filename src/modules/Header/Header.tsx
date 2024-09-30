@@ -97,7 +97,6 @@ const Header: React.FC<THeaderProps> = ({ workerId, conversationInfo }) => {
           </ButtonOnlyIcon>
         )}
       </div>
-      123
       <OrderDetailHeader orderDetail={orderDetail} />
     </motion.header>
   )

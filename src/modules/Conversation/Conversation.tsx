@@ -72,21 +72,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
           textStatus = <p className='text-xs text-primary-gray'>{t?.failed}</p>
           break
         case 'seen':
-          textStatus = (
-            <AnimatePresence>
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                exit={{ scale: 0 }}
-                transition={{
-                  duration: 0.2,
-                  ease: 'easeInOut'
-                }}
-              >
-                <ImageCustom src={avatar} alt={avatar} className={`size-4 max-h-4 max-w-4 rounded-full object-cover ${!!display ? 'opacity-100' : 'hidden'}`} />
-              </motion.div>
-            </AnimatePresence>
-          )
+          textStatus = <ImageCustom src={avatar} alt={avatar} className={`size-4 max-h-4 max-w-4 rounded-full object-cover ${!!display ? 'opacity-100' : 'hidden'}`} />
           break
 
         default:
