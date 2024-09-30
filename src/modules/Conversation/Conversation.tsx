@@ -140,7 +140,8 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
 
     // Lấy tin nhắn cuối cùng đã được seen
     const lastSeenMessage = seenMessages[seenMessages.length - 1]
-    return lastSeenMessage.id === id
+    console.log({ lastSeenMessage })
+    return seenMessages ? lastSeenMessage?.id === id : false
   }
 
   return (
