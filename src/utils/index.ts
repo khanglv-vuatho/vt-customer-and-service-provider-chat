@@ -1,9 +1,8 @@
 import ToastComponent from '@/components/ToastComponent'
+import { typeOfPriceOfOrderDetail } from '@/constants'
 import { Message, MessageGroup, TOrderDetail, TPostMessage } from '@/types'
 import moment from 'moment'
 import React, { useEffect, useRef, useState } from 'react'
-import { motion } from 'framer-motion'
-import { typeOfPriceOfOrderDetail } from '@/constants'
 const useUnfocusItem = (callback: () => void, exclusionRef?: React.RefObject<HTMLElement | null>): React.RefObject<any> => {
   const itemRef = useRef<any>(null)
 
@@ -190,28 +189,6 @@ const groupConsecutiveMessages = (messages: Message[]): MessageGroup[] => {
 
   return groupedMessages
 }
-const getLastSeenMessageId = (data: MessageGroup[]) => {
-  // Duyệt qua tất cả người dùng
-  const seenMessages: any[] = []
-  const cloneData = [...data]
-
-  cloneData.reverse().forEach((user) => {
-    user.messages.forEach((message) => {
-      // Kiểm tra nếu tin nhắn đã được seen
-      if (message.seen) {
-        seenMessages.push(message)
-      }
-    })
-  })
-
-  // Lấy ra message cuối cùng đã được seen
-  if (seenMessages.length > 0) {
-    const lastSeenMessage = seenMessages[seenMessages.length - 1]
-    return lastSeenMessage.id
-  }
-
-  return null // Không có tin nhắn nào được seen
-}
 
 const isStringWithoutEmoji = (value: string) => {
   if (typeof value !== 'string') {
@@ -261,17 +238,16 @@ export {
   formatDDMMYYYY,
   formatLocalHoursTime,
   formatLocalTime,
+  formatTimestamp,
+  getPriceDetails,
   groupConsecutiveMessages,
   handleAddLangInUrl,
   handleToastNoNetwork,
+  haversineDistance,
+  isMobileWithUserAgent,
+  isStringWithoutEmoji,
   objectToFormData,
   postMessageCustom,
   useDebounce,
-  useUnfocusItem,
-  formatTimestamp,
-  getLastSeenMessageId,
-  isStringWithoutEmoji,
-  getPriceDetails,
-  haversineDistance,
-  isMobileWithUserAgent
+  useUnfocusItem
 }

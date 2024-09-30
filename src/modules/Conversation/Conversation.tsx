@@ -3,10 +3,10 @@ import { typeOfMessage, typeOfSocket } from '@/constants'
 import { useSocket } from '@/context/SocketProvider'
 import { translate } from '@/context/translationProvider'
 import { MessageGroup, TConversationInfo, TInfoTyping } from '@/types'
-import { formatLocalHoursTime, getLastSeenMessageId, isStringWithoutEmoji } from '@/utils'
+import { formatLocalHoursTime, isStringWithoutEmoji } from '@/utils'
 import { Avatar } from '@nextui-org/react'
 import { motion } from 'framer-motion'
-import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react'
 import useSound from 'use-sound'
 import typingSound from '../../../public/typingSound.mp4'
 import MessageImage from './MessageImage'
@@ -32,8 +32,6 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
   const lastElementRef = useRef<HTMLDivElement>(null)
   const fristElementRef = useRef<HTMLDivElement>(null)
 
-  const lastSeenMessageId = useMemo(() => getLastSeenMessageId(conversation), [conversation])
-
   const conversationClone = [...conversation]
   const conversationCloneReverse = [...conversationClone].reverse()
 
@@ -56,35 +54,6 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
       }
     }
   }, [])
-
-  // const shouldRenderIconStatus = useCallback(
-  //   (status: 'pending' | 'sent' | 'failed' | 'seen', display: boolean): React.ReactNode => {
-  //     if (conversationInfo === null) return null
-  //     let tickIcon
-  //     const avatar = isClient ? conversationInfo?.worker_picture : conversationInfo?.client_picture
-
-  //     switch (status) {
-  //       case 'pending':
-  //         tickIcon = <div className='size-4 rounded-full ring-1 ring-inset ring-primary-blue transition' />
-  //         break
-  //       case 'sent':
-  //         tickIcon = <TickCircle className='size-4 text-primary-blue transition' />
-  //         break
-  //       case 'failed':
-  //         tickIcon = <AddCircle className='size-4 rotate-45 text-primary-red transition' />
-  //         break
-  //       case 'seen':
-  //         tickIcon = <Avatar src={avatar} alt={avatar} className={`size-4 max-h-4 max-w-4 duration-0 ${display ? 'opacity-100' : 'opacity-0'}`} />
-  //         break
-
-  //       default:
-  //         break
-  //     }
-
-  //     return tickIcon
-  //   },
-  //   [conversationInfo]
-  // )
 
   const shouldRenderTextStatus = useCallback(
     (status: 'pending' | 'sent' | 'failed' | 'seen', display: boolean = true): React.ReactNode => {
@@ -153,11 +122,8 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
   useEffect(() => {
     if (isAnotherUserTyping && infoTyping?.is_typing) {
       play()
-      console.log('play')
     }
   }, [infoTyping])
-
-  console.log({ conversation })
 
   const handleCheckConditionsToShowStatsus = useCallback(
     (id: number) => {

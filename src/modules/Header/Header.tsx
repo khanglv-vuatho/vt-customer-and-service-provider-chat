@@ -4,13 +4,13 @@ import { memo, useCallback, useEffect, useState } from 'react'
 
 import { fetchingDetailOrder } from '@/apis'
 import { ButtonOnlyIcon } from '@/components/Buttons'
-import { keyPossmessage, typeOfGuarante, typeOfSocket } from '@/constants'
+import { keyPossmessage, typeOfSocket } from '@/constants'
 import { useSocket } from '@/context/SocketProvider'
 import { translate } from '@/context/translationProvider'
+import instance from '@/services/axiosConfig'
 import { TConversationInfo, TOrderDetail } from '@/types'
 import { postMessageCustom } from '@/utils'
 import OrderDetailHeader from './OrderDetailHeader'
-import instance from '@/services/axiosConfig'
 
 type THeaderProps = {
   workerId: number

@@ -19,7 +19,6 @@ import { translate } from '@/context/translationProvider'
 import { CircularProgress } from '@nextui-org/react'
 
 const HomePage = () => {
-  const o = translate('Order')
   const m = translate('MessageOfMessageBlock')
 
   const queryParams = new URLSearchParams(location.search)
@@ -47,6 +46,7 @@ const HomePage = () => {
   const groupedMessagesClone = [...groupedMessages]
   const groupedMessagesCloneReverse = [...groupedMessagesClone].reverse()
   const isCanLoadMore = meta ? currentPage < meta?.total_pages : false
+  //@ts-ignore
   const [showScrollToBottom, setShowScrollToBottom] = useState<boolean>(false)
 
   const documentVisible = useVisibilityChange()
@@ -189,6 +189,7 @@ const HomePage = () => {
   } as const
 
   const getMessageByBlockType = (blockType: string): string | undefined => {
+    //@ts-ignore
     const entry = Object.entries(typeOfBlockMessage).find(([key, value]) => value === blockType)
     return entry ? messageOfMessageBlock[entry[0] as keyof typeof messageOfMessageBlock] : undefined
   }
@@ -229,6 +230,7 @@ const HomePage = () => {
       }
     })
 
+    //@ts-ignore
     socket.on(typeOfSocket.SEEN, (data: any) => {
       // setConversation((prevConversation) => prevConversation.map((msg) => (msg.id == data?.data?.messageId ? { ...msg, status: 'seen' } : msg)))
       setConversation((prev) =>
