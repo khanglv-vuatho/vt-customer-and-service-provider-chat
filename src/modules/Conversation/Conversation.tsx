@@ -161,9 +161,12 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
 
   console.log({ conversation })
 
-  const handleCheckConditionsToShowStatsus = useCallback((id: number) => {
-    return lastMessageInLastGroupConversatioReverse?.id === id
-  }, [])
+  const handleCheckConditionsToShowStatsus = useCallback(
+    (id: number) => {
+      return lastMessageInLastGroupConversatioReverse?.id === id
+    },
+    [lastMessageInLastGroupConversatioReverse]
+  )
 
   return (
     <>
