@@ -242,6 +242,7 @@ const HomePage = () => {
           status: 'seen'
         }))
       )
+
       if (fristTime) {
         play()
         fristTime = false
