@@ -135,20 +135,19 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
 
   // show status when last message in last group is seen
   const handleGetLastMessageInLastGroup = (id: number) => {
-    if (conversationCloneReverse.length === 0) return { isCanShow: false, lastSeenMessage: null }
+    if (conversationCloneReverse?.length === 0 || !id) return { isCanShow: false, lastSeenMessage: null }
+    const allMessages = conversationCloneReverse?.flatMap((group) => group?.messages)
 
-    const allMessages = conversationCloneReverse.flatMap((group) => group.messages)
-
-    const lastMessage = allMessages[allMessages.length - 1]
+    const lastMessage = allMessages?.[allMessages?.length - 1]
 
     // Filter out messages that have been seen
     const seenMessages = allMessages.filter((message) => message.status === 'seen')
 
     // Get the last message that has been seen
-    const lastSeenMessage = seenMessages[seenMessages.length - 1]
+    const lastSeenMessage = seenMessages?.[seenMessages?.length - 1]
     console.log({ lastSeenMessage, lastMessage, id })
 
-    if (lastSeenMessage.id === lastMessage.id) return { isCanShow: false, lastSeenMessage, lastMessage }
+    if (lastSeenMessage?.id === lastMessage?.id) return { isCanShow: false, lastSeenMessage, lastMessage }
 
     return { isCanShow: seenMessages?.length > 0 ? lastSeenMessage?.id === id : false, lastSeenMessage, lastMessage }
   }
