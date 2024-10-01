@@ -5,11 +5,12 @@ import { translate } from '@/context/translationProvider'
 import { MessageGroup, TConversationInfo, TInfoTyping } from '@/types'
 import { formatLocalHoursTime, isStringWithoutEmoji } from '@/utils'
 import { Avatar } from '@nextui-org/react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react'
 import useSound from 'use-sound'
 import typingSound from '../../../public/typingSound.mp4'
 import MessageImage from './MessageImage'
+import StatusOfMessage from '@/components/StatusOfMessage'
 
 type ConversationProps = {
   conversation: MessageGroup[]
@@ -81,6 +82,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
 
       return textStatus
     },
+
     [conversationInfo]
   )
 
@@ -98,7 +100,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
     let timer: any
 
     socket.on(typeOfSocket.MESSAGE_TYPING, (data: TInfoTyping) => {
-      if (socket.id === data?.socket_id) return
+      if (socket?.id === data?.socket_id) return
       setInfoTyping(data)
 
       // Xóa timer cũ trước khi đặt timer mới
@@ -125,12 +127,9 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
     }
   }, [infoTyping])
 
-  const handleCheckConditionsToShowStatsus = useCallback(
-    (id: number) => {
-      return lastMessageInLastGroupConversatioReverse?.id === id
-    },
-    [lastMessageInLastGroupConversatioReverse]
-  )
+  const handleCheckConditionsToShowStatsus = (id: number) => {
+    return lastMessageInLastGroupConversatioReverse?.id === id
+  }
 
   const handleGetLastMessageInLastGroup = (id: number) => {
     const allMessages = conversationCloneReverse.flatMap((group) => group.messages)
@@ -229,7 +228,9 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
                         </div>
                       </div>
 
-                      {isMe && (handleCheckConditionsToShowStatsus(item?.id) || handleGetLastMessageInLastGroup(item?.id)) && shouldRenderTextStatus(item?.status)}
+                      {isMe && (handleCheckConditionsToShowStatsus(item?.id) || handleGetLastMessageInLastGroup(item?.id)) && (
+                        <StatusOfMessage status={item?.status} conversationInfo={conversationInfo} isClient={isClient} />
+                      )}
                     </div>
                   )
                 })}

@@ -213,8 +213,15 @@ const HomePage = () => {
 
       // seen all message in conversation when user get message
       if (data.status === 'SEEN MESSAGE') {
+        ToastComponent({
+          type: 'success',
+          message: 'Bạn đã nhận được tin nhắn mới 123'
+        })
         if (data?.socket_id == socket?.id) return
-
+        ToastComponent({
+          type: 'success',
+          message: 'Bạn đã nhận được tin nhắn mới'
+        })
         setConversation((prev) =>
           prev.map((message) => ({
             ...message,
