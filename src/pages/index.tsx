@@ -236,6 +236,7 @@ const HomePage = () => {
     //@ts-ignore
     socket.on(typeOfSocket.SEEN, (data: any) => {
       // setConversation((prevConversation) => prevConversation.map((msg) => (msg.id == data?.data?.messageId ? { ...msg, status: 'seen' } : msg)))
+
       setConversation((prev) =>
         prev.map((message) => ({
           ...message,

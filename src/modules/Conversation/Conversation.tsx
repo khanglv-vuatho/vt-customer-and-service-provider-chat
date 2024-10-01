@@ -145,7 +145,6 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
 
     // Get the last message that has been seen
     const lastSeenMessage = seenMessages?.[seenMessages?.length - 1]
-    console.log({ lastSeenMessage, lastMessage, id })
 
     if (lastSeenMessage?.id === lastMessage?.id) return { isCanShow: false, lastSeenMessage, lastMessage }
 
