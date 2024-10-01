@@ -10,8 +10,10 @@ interface ImageCustomProps extends ImageProps {
   animate?: boolean
 }
 
-const ImageCustom = forwardRef(({ src, alt, className, animate = false, ...props }: ImageCustomProps, ref: Ref<HTMLImageElement>) => {
-  const imageComponent = <Image width={400} height={400} removeWrapper className={twMerge('pointer-events-none select-none rounded-none', className)} ref={ref} src={src} alt={alt} {...props} />
+const ImageCustom = forwardRef(({ src, alt, className, fallback = '/default-avatar.jpg', animate = false, ...props }: ImageCustomProps, ref: Ref<HTMLImageElement>) => {
+  const imageComponent = (
+    <Image width={400} height={400} removeWrapper className={twMerge('pointer-events-none select-none rounded-none', className)} ref={ref} src={src} alt={alt} {...props} fallback={fallback} />
+  )
 
   if (animate) {
     return (
