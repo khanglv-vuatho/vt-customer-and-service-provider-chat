@@ -26,6 +26,7 @@ const HomePage = () => {
   const orderId = Number(queryParams.get('orderId'))
   const currentId = Number(queryParams.get('currentId'))
   const worker_id = Number(queryParams.get('worker_id'))
+  const isAdmin = queryParams.get('isAdmin') === 'true'
 
   //sound
   const [play] = useSound(seenSound)
@@ -392,13 +393,17 @@ const HomePage = () => {
         <p className='z-50 bg-white p-3 text-center text-sm text-primary-gray'>{messageBlock}.</p>
       ) : (
         <Suspense fallback={null}>
-          <FooterInput
-            handleSendMessage={handleSendMessage}
-            onReloadMessage={onReloadMessage}
-            isSendingMessage={isSendingMessage}
-            onFetchingMessage={onFetchingMessage}
-            conversationInfo={conversationInfo}
-          />
+          {isAdmin ? (
+            <></>
+          ) : (
+            <FooterInput
+              handleSendMessage={handleSendMessage}
+              onReloadMessage={onReloadMessage}
+              isSendingMessage={isSendingMessage}
+              onFetchingMessage={onFetchingMessage}
+              conversationInfo={conversationInfo}
+            />
+          )}
         </Suspense>
       )}
     </div>
