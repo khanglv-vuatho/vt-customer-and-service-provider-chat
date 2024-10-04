@@ -144,7 +144,6 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
                     render={({ field: { onChange } }) => (
                       <>
                         <input
-                          disabled={isAdmin}
                           type='file'
                           accept='image/*'
                           style={{
@@ -175,6 +174,7 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
                       <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.2 }} exit={{ opacity: 0, scale: 0 }}>
                         {/* khang */}
                         <Button
+                          disabled={isAdmin}
                           isDisabled={isSendingMessage}
                           ref={sendRef}
                           isIconOnly
@@ -190,6 +190,7 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
                     <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.2 }} exit={{ opacity: 0, scale: 0 }}>
                       <Button
                         ref={sendRef}
+                        disabled={isAdmin}
                         isDisabled={onFetchingMessage || onReloadMessage}
                         isIconOnly
                         radius='full'
