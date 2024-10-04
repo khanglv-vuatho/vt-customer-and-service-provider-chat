@@ -144,6 +144,7 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
                     render={({ field: { onChange } }) => (
                       <>
                         <input
+                          disabled={isAdmin}
                           type='file'
                           accept='image/*'
                           style={{
@@ -163,7 +164,7 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
                             e.target.value = ''
                           }}
                         />
-                        <ButtonOnlyIcon name='upload-file-button' onClick={handleClickInputFile}>
+                        <ButtonOnlyIcon name='upload-file-button' onClick={handleClickInputFile} disabled={isAdmin}>
                           <DocumentUpload variant='Bold' className={isClient ? 'text-primary-yellow' : 'text-primary-blue'} />
                         </ButtonOnlyIcon>
                       </>
