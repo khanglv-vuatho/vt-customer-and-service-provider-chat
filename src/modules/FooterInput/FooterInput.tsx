@@ -33,6 +33,7 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
   const currentId = Number(queryParams.get('currentId'))
   const worker_id = Number(queryParams.get('worker_id'))
   const isClient = !!worker_id
+  const isAdmin = queryParams.get('isAdmin') === 'true'
 
   //sound
   const [play] = useSound(sendSound)
@@ -95,6 +96,7 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
           render={({ field }) => (
             <Textarea
               {...field}
+              disabled={isAdmin}
               onBlur={() =>
                 socket.emit(typeOfSocket.MESSAGE_TYPING, {
                   socketId: socket.id,
