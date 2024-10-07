@@ -239,6 +239,7 @@ const HomePage = () => {
     socket.on(typeOfSocket.SEEN, (data: any) => {
       // setConversation((prevConversation) => prevConversation.map((msg) => (msg.id == data?.data?.messageId ? { ...msg, status: 'seen' } : msg)))
 
+      if (isAdmin) return
       setConversation((prev) =>
         prev.map((message) => ({
           ...message,
@@ -256,6 +257,7 @@ const HomePage = () => {
       if (data?.socket_id == socket?.id) {
       } else {
         setConversation((prevConversation) => [...prevConversation, data?.message])
+        if (isAdmin) return
         socket.emit(typeOfSocket.SEEN, { messageId: data?.message?.id, conversationId: conversationInfo?.conversation_id, orderId: conversationInfo?.order_id, workerId: conversationInfo?.worker_id })
 
         if (isAdmin) return
