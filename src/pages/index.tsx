@@ -17,6 +17,9 @@ const Conversation = lazy(() => import('@/modules/Conversation/Conversation'))
 import { useSocket } from '@/context/SocketProvider'
 import { translate } from '@/context/translationProvider'
 import { CircularProgress } from '@nextui-org/react'
+import { AnimatePresence } from 'framer-motion'
+import { ButtonOnlyIcon } from '@/components/Buttons'
+import { ArrowDown } from 'iconsax-react'
 
 const HomePage = () => {
   const m = translate('MessageOfMessageBlock')
@@ -379,14 +382,20 @@ const HomePage = () => {
               }
               scrollableTarget='scrollableDiv'
             >
-              {/* <AnimatePresence>
+              <AnimatePresence>
                 <ButtonOnlyIcon
-                  onClick={handleScrollToBottom}
-                  className={`absolute bottom-20 left-1/2 flex size-8 max-h-8 min-h-8 min-w-8 max-w-8 flex-shrink-0 -translate-x-1/2 transition-all duration-300 ${showScrollToBottom ? 'translate-y-0 opacity-100' : 'translate-y-[120px]'} rounded-full bg-white p-2 text-primary-black shadow-lg`}
+                  onClick={() => {
+                    const scrollableDiv = document.getElementById('scrollableDiv')
+                    scrollableDiv?.scrollTo({
+                      top: scrollableDiv.scrollHeight,
+                      behavior: 'smooth'
+                    })
+                  }}
+                  className={`absolute bottom-20 left-1/2 flex size-8 max-h-8 min-h-8 min-w-8 max-w-8 flex-shrink-0 -translate-x-1/2 transition-all duration-300 ${showScrollToBottom ? 'z-[100] translate-y-0 opacity-100' : 'translate-y-[120px]'} rounded-full bg-white p-2 text-primary-black shadow-lg`}
                 >
                   <ArrowDown className='size-4' />
                 </ButtonOnlyIcon>
-              </AnimatePresence> */}
+              </AnimatePresence>
               <Conversation conversation={groupedMessagesCloneReverse} conversationInfo={conversationInfo} />
             </InfiniteScroll>
           </div>
