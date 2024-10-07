@@ -92,7 +92,10 @@ const HomePage = () => {
 
       try {
         await handleSendMessageApi({ message, messageId: newMessage.id, type, attachment, socket_id: socket.id })
-        if (type == 1) setOnReloadMessage(true)
+        if (type == 1) {
+          setCurrentPage(1)
+          setOnReloadMessage(true)
+        }
       } catch (error) {
         console.error(error)
       }
@@ -382,7 +385,7 @@ const HomePage = () => {
               }
               scrollableTarget='scrollableDiv'
             >
-              <AnimatePresence>
+              {/* <AnimatePresence>
                 <ButtonOnlyIcon
                   onClick={() => {
                     const scrollableDiv = document.getElementById('scrollableDiv')
@@ -395,7 +398,7 @@ const HomePage = () => {
                 >
                   <ArrowDown className='size-4' />
                 </ButtonOnlyIcon>
-              </AnimatePresence>
+              </AnimatePresence> */}
               <Conversation conversation={groupedMessagesCloneReverse} conversationInfo={conversationInfo} />
             </InfiniteScroll>
           </div>
