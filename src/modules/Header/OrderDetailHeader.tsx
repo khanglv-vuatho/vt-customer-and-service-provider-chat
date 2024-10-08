@@ -9,7 +9,7 @@ import { TOrderDetail } from '@/types'
 import { formatDDMMYYYY, formatLocalTime, getPriceDetails, haversineDistance } from '@/utils'
 
 import { Progress } from '@nextui-org/react'
-import { Add, Clock, CloseCircle, Location, MessageQuestion, ShieldTick } from 'iconsax-react'
+import { Add, ArrowLeft2, Clock, CloseCircle, Location, MessageQuestion, ShieldTick } from 'iconsax-react'
 import React, { memo, useMemo, useState } from 'react'
 
 type TOrderDetailHeader = {
@@ -59,11 +59,15 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail }) => {
 
   return (
     <>
-      <DefaultModal isOpen={isOpenModalVideo} onOpenChange={handleToggleModalVideo} className='mx-4'>
-        <ButtonOnlyIcon className='absolute right-0 top-0' onClick={handleToggleModalVideo}>
-          <CloseCircle variant='Bold' size={32} className='text-primary-black' />
-        </ButtonOnlyIcon>
-        <video controls src={urlVideo} width='100%' height='100%' />
+      <DefaultModal size='full' isOpen={isOpenModalVideo} onOpenChange={handleToggleModalVideo}>
+        <div className='flex flex-col items-center justify-center gap-4'>
+          <header className='flex w-full items-center justify-start'>
+            <ButtonOnlyIcon className='!gap-2' startContent={<ArrowLeft2 size={24} className='w-fit text-primary-black' />} onClick={handleToggleModalVideo}>
+              <p className='text-sm font-bold'> Ảnh/ Video</p>
+            </ButtonOnlyIcon>
+          </header>
+          <video controls src={urlVideo} width='100%' height='100%' className='-mt-2' />
+        </div>
       </DefaultModal>
       <DefaultModal isOpen={isOpen} onOpenChange={handleToggleModal} className='mx-4'>
         <div className='w-full'>
