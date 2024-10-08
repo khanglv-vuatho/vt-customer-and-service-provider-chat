@@ -60,13 +60,15 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail }) => {
   return (
     <>
       <DefaultModal size='full' isOpen={isOpenModalVideo} onOpenChange={handleToggleModalVideo}>
-        <div className='flex flex-col items-center justify-center gap-4'>
+        <div className='flex h-full flex-col items-center justify-center gap-4'>
           <header className='flex w-full items-center justify-start'>
             <ButtonOnlyIcon className='!gap-2' startContent={<ArrowLeft2 size={24} className='w-fit text-primary-black' />} onClick={handleToggleModalVideo}>
-              <p className='text-sm font-bold'> Ảnh/ Video</p>
+              <p className='text-sm font-bold'>Ảnh/ Video</p>
             </ButtonOnlyIcon>
           </header>
-          <video controls src={urlVideo} width='100%' height='100%' className='-mt-2' />
+          <div className='flex size-full items-center justify-center'>
+            <video controls src={urlVideo} width='100%' height='100%' className='-mt-2' />
+          </div>
         </div>
       </DefaultModal>
       <DefaultModal isOpen={isOpen} onOpenChange={handleToggleModal} className='mx-4'>
