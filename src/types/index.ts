@@ -1,4 +1,4 @@
-import { TypeOfRule } from '@/constants'
+import { typeOfAttachment, TypeOfRule } from '@/constants'
 import { SVGProps } from 'react'
 
 export type IconSvgProps = SVGProps<SVGSVGElement> & {
@@ -96,7 +96,7 @@ type TTranslation = {
 type TAttachment = {
   url: string
   storage: string
-  // Define the structure of an attachment if available
+  type: (typeof typeOfAttachment)[keyof typeof typeOfAttachment]
 }
 
 type TProgress = {

@@ -30,3 +30,12 @@ export const Star: React.FC<IconSvgProps> = ({ size = 24, width, height, ...prop
     </svg>
   )
 }
+export const PlayIcon: React.FC<IconSvgProps> = ({ size = 32, width, height, ...props }) => {
+  return (
+    <svg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg' {...props}>
+      <g id='play_x5F_alt'>
+        <path d='M16,0C7.164,0,0,7.164,0,16s7.164,16,16,16s16-7.164,16-16S24.836,0,16,0z M10,24V8l16.008,8L10,24z' fill='currentColor' />
+      </g>
+    </svg>
+  )
+}

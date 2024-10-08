@@ -11,6 +11,9 @@ import useSound from 'use-sound'
 import typingSound from '../../../public/typingSound.mp4'
 import MessageImage from './MessageImage'
 import StatusOfMessage from '@/components/StatusOfMessage'
+import ReactPlayer from 'react-player'
+import { Play, PlayCircle } from 'iconsax-react'
+import { PlayIcon } from '@/components/Icons'
 
 type ConversationProps = {
   conversation: MessageGroup[]
@@ -117,7 +120,6 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
   }, [])
 
   const handleClickMessage = useCallback((id: number | null) => {
-    console.log({ id })
     if (!id) return
     setCurrentMessage((prev) => (prev === id ? 0 : id))
   }, [])

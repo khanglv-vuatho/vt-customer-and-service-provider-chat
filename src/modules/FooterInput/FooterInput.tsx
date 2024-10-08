@@ -11,6 +11,7 @@ import { Controller, useForm } from 'react-hook-form'
 import useSound from 'use-sound'
 import sendSound from '../../../public/sendMessage.mp4'
 import { isMobileWithUserAgent } from '@/utils'
+import instance from '@/services/axiosConfig'
 
 type FooterInputProps = {
   handleSendMessage: ({ message }: THandleSendMessage) => Promise<void>
@@ -87,9 +88,19 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
     }
   }
 
+  //test zone
+  const handleSendMessageRasa = async () => {
+    const payload = {
+      sender: 'test',
+      message: 'Xin chào'
+    }
+    const data = await instance.post('webhooks/rasa/webhook', payload)
+  }
+
   return (
     <motion.footer initial={{ opacity: 0, y: 100 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.2 }} className='sticky bottom-0 left-0 right-0 z-50 flex flex-col gap-2'>
       <form className='w-full'>
+        <div onClick={handleSendMessageRasa}>test</div>
         <Controller
           name='message'
           control={control}

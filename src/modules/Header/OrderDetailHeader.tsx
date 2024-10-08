@@ -1,14 +1,15 @@
 import { ButtonOnlyIcon, PrimaryButton } from '@/components/Buttons'
+import { PlayIcon } from '@/components/Icons'
 import ImageCustom from '@/components/ImageCustom'
 import { DefaultModal } from '@/components/Modal'
-import { typeOfGuarante, typeOfPriceOfOrderDetail } from '@/constants'
+import { typeOfAttachment, typeOfGuarante, typeOfPriceOfOrderDetail } from '@/constants'
 import { translate } from '@/context/translationProvider'
 import RenderFireLottie from '@/lotties'
 import { TOrderDetail } from '@/types'
 import { formatDDMMYYYY, formatLocalTime, getPriceDetails, haversineDistance } from '@/utils'
 
 import { Progress } from '@nextui-org/react'
-import { Add, Clock, Location, MessageQuestion, ShieldTick } from 'iconsax-react'
+import { Add, Clock, CloseCircle, Location, MessageQuestion, ShieldTick } from 'iconsax-react'
 import React, { memo, useMemo, useState } from 'react'
 
 type TOrderDetailHeader = {
@@ -30,6 +31,8 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail }) => {
   const [isOpen, setIsOpen] = useState(false)
   const [isOpenExplainPrice, setIsOpenExplainPrice] = useState(false)
 
+  const [isOpenModalVideo, setIsOpenModalVideo] = useState(false)
+  const [urlVideo, setUrlVideo] = useState('')
   const isHasProcess = orderDetail?.guarantee.status == typeOfGuarante.active
 
   const conditionsShowAddress = useMemo(() => {
@@ -45,8 +48,23 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail }) => {
     setIsOpenExplainPrice(!isOpenExplainPrice)
   }
 
+  const handleToggleModalVideo = () => {
+    setIsOpenModalVideo(!isOpenModalVideo)
+  }
+
+  const handlePlayVideo = (url: string) => {
+    setUrlVideo(url)
+    handleToggleModalVideo()
+  }
+
   return (
     <>
+      <DefaultModal isOpen={isOpenModalVideo} onOpenChange={handleToggleModalVideo} className='mx-4'>
+        <ButtonOnlyIcon className='absolute right-0 top-0' onClick={handleToggleModalVideo}>
+          <CloseCircle variant='Bold' size={32} className='text-primary-black' />
+        </ButtonOnlyIcon>
+        <video controls src={urlVideo} width='100%' height='100%' />
+      </DefaultModal>
       <DefaultModal isOpen={isOpen} onOpenChange={handleToggleModal} className='mx-4'>
         <div className='w-full'>
           <div className='flex w-full items-center justify-between'>
@@ -90,11 +108,22 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail }) => {
             </div>
             {(orderDetail?.problems?.[0]?.attachments?.length as number) > 0 && (
               <div className='flex items-center gap-2'>
-                {orderDetail?.problems?.[0]?.attachments.map((item) => (
-                  <div key={item?.url} className='size-[80px] overflow-hidden rounded-md'>
-                    <ImageCustom src={item?.url} alt={item?.url} className='size-full' />
-                  </div>
-                ))}
+                {orderDetail?.problems?.[0]?.attachments.map((item) =>
+                  item?.type === typeOfAttachment.image ? (
+                    <div key={item?.url} className='size-[80px] overflow-hidden rounded-md'>
+                      <ImageCustom src={item?.url} alt={item?.url} className='size-full' />
+                    </div>
+                  ) : (
+                    <div onClick={() => handlePlayVideo(item?.url)} className='relative size-[80px] overflow-hidden rounded-md'>
+                      <video src={item?.url} width='80px' height='80px' />
+                      <div className='absolute bottom-0 left-0 right-0 top-0 flex items-center justify-center bg-black/20'>
+                        <div className='flex size-[30px] items-center justify-center rounded-full'>
+                          <PlayIcon className='size-6 text-black' />
+                        </div>
+                      </div>
+                    </div>
+                  )
+                )}
               </div>
             )}
             <div className='flex items-center justify-between'>
