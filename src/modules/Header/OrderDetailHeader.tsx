@@ -22,7 +22,10 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail }) => {
   const queryParams = new URLSearchParams(location.search)
   const worker_id = Number(queryParams.get('worker_id'))
   const currentId = Number(queryParams.get('currentId'))
+  const isAdmin = queryParams.get('isAdmin') === 'true'
+
   const isClient = !!worker_id
+
   const coord1 = { lat: Number(orderDetail?.location?.lat), lng: Number(orderDetail?.location?.lng) }
   const coord2: any = orderDetail?.worker_list.find((worker) => worker?.id === (isClient ? worker_id : currentId))?.location
   //caculate km between client and worker
@@ -66,7 +69,7 @@ const OrderDetailHeader: React.FC<TOrderDetailHeader> = ({ orderDetail }) => {
               <p className='text-sm font-bold'>Ảnh/ Video</p>
             </ButtonOnlyIcon>
           </header>
-          <div className='flex size-full items-center justify-center'>
+          <div style={{ padding: isAdmin ? '0 20%' : '' }} className='flex size-full items-center justify-center'>
             <video controls src={urlVideo} width='100%' height='100%' className='-mt-2' />
           </div>
         </div>
