@@ -93,7 +93,7 @@ const HomePage = () => {
       try {
         await handleSendMessageApi({ message, messageId: newMessage.id, type, attachment, socket_id: socket.id })
         if (type == 1) {
-          setCurrentPage(1)
+          // setCurrentPage(1)
           setOnReloadMessage(true)
         }
       } catch (error) {
