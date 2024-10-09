@@ -3,6 +3,7 @@ import { typeOfSocket } from '@/constants'
 import { useSocket } from '@/context/SocketProvider'
 import { translate } from '@/context/translationProvider'
 import { MessageProps, TConversationInfo, THandleSendMessage } from '@/types'
+import { isMobileWithUserAgent } from '@/utils'
 import { Button, Textarea } from '@nextui-org/react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { DocumentUpload, Send2 } from 'iconsax-react'
@@ -10,8 +11,6 @@ import { memo, useEffect, useRef } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import useSound from 'use-sound'
 import sendSound from '../../../public/sendMessage.mp4'
-import { isMobileWithUserAgent } from '@/utils'
-import instance from '@/services/axiosConfig'
 
 type FooterInputProps = {
   handleSendMessage: ({ message }: THandleSendMessage) => Promise<void>

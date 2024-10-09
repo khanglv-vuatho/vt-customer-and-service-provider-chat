@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { Add, Call, Refresh } from 'iconsax-react'
-import { memo, useCallback, useEffect, useState } from 'react'
+import { memo, Suspense, useCallback, useEffect, useState, lazy } from 'react'
 
 import { fetchingDetailOrder } from '@/apis'
 import { ButtonOnlyIcon } from '@/components/Buttons'
@@ -10,8 +10,8 @@ import { translate } from '@/context/translationProvider'
 import instance from '@/services/axiosConfig'
 import { TConversationInfo, TOrderDetail } from '@/types'
 import { postMessageCustom } from '@/utils'
-import OrderDetailHeader from './OrderDetailHeader'
 
+const OrderDetailHeader = lazy(() => import('./OrderDetailHeader'))
 type THeaderProps = {
   workerId: number
   conversationInfo: TConversationInfo | null
@@ -56,12 +56,14 @@ const Header: React.FC<THeaderProps> = ({ workerId, conversationInfo }) => {
       }
     })
   }
-  const handleClearMessage = async () => {
+
+  const handleClearMessage = useCallback(async () => {
     const payload = {
       worker_id: 429
     }
+
     await instance.post(`/webview/conversations/${orderId}/clear-message`, payload)
-  }
+  }, [orderId])
 
   useEffect(() => {
     setIsLoading(true)
@@ -75,7 +77,7 @@ const Header: React.FC<THeaderProps> = ({ workerId, conversationInfo }) => {
     <motion.header initial={{ opacity: 0, y: -100 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.2 }} className='sticky left-0 right-0 top-0 z-50 mb-2 flex flex-col bg-white'>
       <div className='flex items-center justify-between border-b-2 border-[#E4E4E4] px-4 py-2'>
         <div className='flex items-center font-bold'>
-          <ButtonOnlyIcon className='' onClick={handleCloseWebview}>
+          <ButtonOnlyIcon onClick={handleCloseWebview}>
             <Add className='rotate-45' size={32} />
           </ButtonOnlyIcon>
           <p className='text-sm'>{h?.title}</p>
@@ -97,7 +99,9 @@ const Header: React.FC<THeaderProps> = ({ workerId, conversationInfo }) => {
           </ButtonOnlyIcon>
         )}
       </div>
-      <OrderDetailHeader orderDetail={orderDetail} />
+      <Suspense fallback={null}>
+        <OrderDetailHeader orderDetail={orderDetail} />
+      </Suspense>
     </motion.header>
   )
 }

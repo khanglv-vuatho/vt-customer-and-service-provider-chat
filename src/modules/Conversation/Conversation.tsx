@@ -1,7 +1,6 @@
-import ImageCustom from '@/components/ImageCustom'
+import StatusOfMessage from '@/components/StatusOfMessage'
 import { typeOfMessage, typeOfSocket } from '@/constants'
 import { useSocket } from '@/context/SocketProvider'
-import { translate } from '@/context/translationProvider'
 import { MessageGroup, TConversationInfo, TInfoTyping } from '@/types'
 import { formatLocalHoursTime, isStringWithoutEmoji } from '@/utils'
 import { Avatar } from '@nextui-org/react'
@@ -10,10 +9,6 @@ import React, { memo, useCallback, useEffect, useRef, useState } from 'react'
 import useSound from 'use-sound'
 import typingSound from '../../../public/typingSound.mp4'
 import MessageImage from './MessageImage'
-import StatusOfMessage from '@/components/StatusOfMessage'
-import ReactPlayer from 'react-player'
-import { Play, PlayCircle } from 'iconsax-react'
-import { PlayIcon } from '@/components/Icons'
 
 type ConversationProps = {
   conversation: MessageGroup[]
@@ -22,7 +17,6 @@ type ConversationProps = {
 
 const Conversation: React.FC<ConversationProps> = ({ conversation, conversationInfo }) => {
   const socket: any = useSocket()
-  const t = translate('StatsusText')
 
   const queryParams = new URLSearchParams(location.search)
   const currentId: any = Number(queryParams.get('currentId'))
@@ -58,36 +52,6 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
       }
     }
   }, [])
-
-  const shouldRenderTextStatus = useCallback(
-    (status: 'pending' | 'sent' | 'failed' | 'seen', display: boolean = true): React.ReactNode => {
-      if (conversationInfo === null) return null
-      let textStatus
-      const avatar = isClient ? conversationInfo?.worker_picture : conversationInfo?.client_picture
-
-      switch (status) {
-        case 'pending':
-          textStatus = <p className='text-xs text-primary-gray'>{t?.sending}</p>
-          break
-        case 'sent':
-          textStatus = <p className='text-xs text-primary-gray'>{t?.sent}</p>
-          break
-        case 'failed':
-          textStatus = <p className='text-xs text-primary-gray'>{t?.failed}</p>
-          break
-        case 'seen':
-          textStatus = <ImageCustom src={avatar} alt={avatar} className={`size-4 max-h-4 max-w-4 rounded-full object-cover ${!!display ? 'opacity-100' : 'hidden'}`} />
-          break
-
-        default:
-          break
-      }
-
-      return textStatus
-    },
-
-    [conversationInfo]
-  )
 
   useEffect(() => {
     socket.on(typeOfSocket.MESSAGE_TYPING, (data: TInfoTyping) => {
@@ -182,7 +146,6 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
       {conversation?.map((message, index) => {
         // last item in conversation, but has received array conversation so need to get isFirstItemInConversation
         const isMe = message?.userId === currentId
-        const isLastMessageInGroup = message?.messages?.length === 1
         return (
           <div key={`message-${message?.userId}-${index}`} className={`flex ${isMe ? 'justify-end' : 'justify-start'} gap-2`}>
             <div className='flex w-full flex-col gap-3'>

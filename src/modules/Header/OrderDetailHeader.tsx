@@ -9,7 +9,7 @@ import { TOrderDetail } from '@/types'
 import { formatDDMMYYYY, formatLocalTime, getPriceDetails, haversineDistance } from '@/utils'
 
 import { Progress } from '@nextui-org/react'
-import { Add, ArrowLeft2, Clock, CloseCircle, Location, MessageQuestion, ShieldTick } from 'iconsax-react'
+import { Add, ArrowLeft2, Clock, Location, MessageQuestion, ShieldTick } from 'iconsax-react'
 import React, { memo, useMemo, useState } from 'react'
 
 type TOrderDetailHeader = {
