@@ -260,6 +260,7 @@ const HomePage = () => {
       } else {
         setConversation((prevConversation) => [...prevConversation, data?.message])
 
+        //khang
         socket.emit(typeOfSocket.SEEN, { messageId: data?.message?.id, conversationId: conversationInfo?.conversation_id, orderId: conversationInfo?.order_id, workerId: conversationInfo?.worker_id })
 
         socket.emit(typeOfSocket.MESSAGE_SEEN, {
