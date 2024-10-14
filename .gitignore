@@ -23,5 +23,5 @@ z
 *.sln
 *.sw?
 
-.env
+*.env
 .z

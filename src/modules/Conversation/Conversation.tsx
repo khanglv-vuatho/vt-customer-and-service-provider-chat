@@ -157,7 +157,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
               )}
               <div className={`flex flex-col gap-2 ${isMe ? 'items-end' : 'items-start'} `}>
                 {message?.messages?.map((item, indexGroup) => {
-                  const isEmoji = !isStringWithoutEmoji(item?.content) && item?.content.length === 2
+                  const isEmoji = !isStringWithoutEmoji(item?.content) && item?.content?.length === 2
                   const isActiveMessage = currentMessage === item?.id && indexGroup !== 0
                   const isShowStatsus = handleCheckConditionsToShowStatsus(item?.id)
                   const { isCanShow } = handleGetLastMessageInLastGroup(item?.id)

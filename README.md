@@ -50,3 +50,4 @@ After modifying the `.npmrc` file, you need to run `pnpm install` again to ensur
 Licensed under the [MIT license](https://github.com/nextui-org/vite-template/blob/main/LICENSE).
 # mini-app-vuatho-base
 # vt-customer-and-service-provider-chat
+# webview-private-chat-booking

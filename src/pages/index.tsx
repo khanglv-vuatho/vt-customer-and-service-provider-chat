@@ -113,7 +113,7 @@ const HomePage = () => {
       }
 
       setIsSendingMessage(true)
-      await handlePostMessage({ orderId, payload, rule: isClient ? typeOfRule.CLIENT : typeOfRule.WORKER })
+      await handlePostMessage({ orderId, payload })
       clearTimeout(timer)
 
       setIsSendingMessage(false)

@@ -78,7 +78,6 @@ export type TPayloadHandleSendMessageApi = {
 export type THandlePostMessage = {
   orderId: number
   payload: TPayloadHandleSendMessageApi
-  rule: TypeOfRule
 }
 
 export type TImageData = {
