@@ -277,7 +277,6 @@ const HomePage = () => {
     fristTime = true
 
     return () => {
-      socket.emit(typeOfSocket.LEAVE_CONVERSATION_ROOM, { workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
       socket.off(typeOfSocket.MESSAGE_ARRIVE)
       socket.off(typeOfSocket.MESSAGE_SEEN)
       socket.off(typeOfSocket.SEEN)

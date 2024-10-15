@@ -68,6 +68,7 @@ const Header: React.FC<THeaderProps> = ({ workerId, conversationInfo }) => {
 
   useEffect(() => {
     socket.on(typeOfSocket.CHECK_ONLINE_STATUS, (data: any) => {
+      console.log({ data })
       setIsOnline(!!data?.is_online)
     })
 
