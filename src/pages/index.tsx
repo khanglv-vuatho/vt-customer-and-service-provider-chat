@@ -255,8 +255,6 @@ const HomePage = () => {
       }
     })
 
-    //test
-
     socket.on(typeOfSocket.MESSAGE_ARRIVE, (data: any) => {
       if (data?.socket_id == socket?.id) {
       } else {
