@@ -137,7 +137,7 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
                 }
               }}
               endContent={
-                <div className='flex items-center gap-2'>
+                field.value.length === 0 ? (
                   <Controller
                     name='files'
                     control={control}
@@ -164,44 +164,26 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
                           }}
                         />
                         <ButtonOnlyIcon name='upload-file-button' onClick={handleClickInputFile} disabled={isAdmin}>
-                          <DocumentUpload variant='Bold' className={isClient ? 'text-primary-yellow' : 'text-primary-blue'} />
+                          <DocumentUpload className={'text-primary-gray'} />
                         </ButtonOnlyIcon>
                       </>
                     )}
                   />
-                  {field.value.trim() === '' ? (
-                    <AnimatePresence>
-                      <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.2 }} exit={{ opacity: 0, scale: 0 }}>
-                        {/* khang */}
-                        <Button
-                          disabled={isAdmin}
-                          isDisabled={isSendingMessage}
-                          ref={sendRef}
-                          isIconOnly
-                          radius='full'
-                          className='flex items-center justify-center bg-transparent transition'
-                          onClick={handleSubmit(handleSend)}
-                        >
-                          👍
-                        </Button>
-                      </motion.div>
-                    </AnimatePresence>
-                  ) : (
-                    <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.2 }} exit={{ opacity: 0, scale: 0 }}>
-                      <Button
-                        ref={sendRef}
-                        disabled={isAdmin}
-                        isDisabled={onFetchingMessage || onReloadMessage}
-                        isIconOnly
-                        radius='full'
-                        className={`flex items-center justify-center bg-transparent ${isClient ? 'text-primary-yellow' : 'text-primary-blue'} transition`}
-                        onClick={handleSubmit(handleSend)}
-                      >
-                        <Send2 variant='Bold' className='rotate-45 transition' />
-                      </Button>
-                    </motion.div>
-                  )}
-                </div>
+                ) : (
+                  <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.2 }} exit={{ opacity: 0, scale: 0 }}>
+                    <Button
+                      ref={sendRef}
+                      disabled={isAdmin}
+                      isDisabled={onFetchingMessage || onReloadMessage}
+                      isIconOnly
+                      radius='full'
+                      className={`flex items-center justify-center bg-transparent text-primary-green transition`}
+                      onClick={handleSubmit(handleSend)}
+                    >
+                      <Send2 variant='Bold' className='rotate-45 transition' />
+                    </Button>
+                  </motion.div>
+                )
               }
               classNames={{
                 base: 'px-4 border-t-1 border-[#E4E4E4] bg-white',
