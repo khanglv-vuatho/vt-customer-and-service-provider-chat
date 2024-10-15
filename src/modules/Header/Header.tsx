@@ -22,6 +22,7 @@ const Header: React.FC<THeaderProps> = ({ workerId, conversationInfo }) => {
   const queryParams = new URLSearchParams(location.search)
   const orderId = queryParams.get('orderId')
   const [isLoading, setIsLoading] = useState(false)
+  const [isOnline, setIsOnline] = useState(false)
 
   const worker_id = Number(queryParams.get('worker_id'))
   const isClient = !!worker_id
@@ -65,6 +66,16 @@ const Header: React.FC<THeaderProps> = ({ workerId, conversationInfo }) => {
     isLoading && !!workerId && handleFetchingDetail()
   }, [isLoading, workerId])
 
+  useEffect(() => {
+    socket.on(typeOfSocket.CHECK_ONLINE_STATUS, (data: any) => {
+      setIsOnline(!!data?.is_online)
+    })
+
+    return () => {
+      socket.off(typeOfSocket.CHECK_ONLINE_STATUS)
+    }
+  }, [])
+
   return (
     <motion.header
       initial={{ opacity: 0, y: -100 }}
@@ -80,8 +91,8 @@ const Header: React.FC<THeaderProps> = ({ workerId, conversationInfo }) => {
         <div className='flex flex-col gap-0.5'>
           <p className='font-bold text-primary-black'>{conversationInfo?.full_name || ''}</p>
           <div className='flex items-center gap-1'>
-            <div className={`size-1 rounded-full ${conversationInfo?.is_online ? 'bg-primary-green' : 'bg-primary-gray'}`} />
-            <p className='text-sm text-primary-gray'>{conversationInfo?.is_online ? 'Online' : 'Offline'}</p>
+            <div className={`size-1 rounded-full ${isOnline ? 'bg-primary-green' : 'bg-primary-gray'}`} />
+            <p className='text-sm text-primary-gray'>{isOnline ? 'Online' : 'Offline'}</p>
           </div>
         </div>
       </div>

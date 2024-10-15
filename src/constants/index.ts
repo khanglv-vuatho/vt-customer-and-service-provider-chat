@@ -15,7 +15,8 @@ export const typeOfSocket = {
   MESSAGE_TYPING: 'message-typing',
   MESSAGE_SEEN: 'message-seen',
   SEEN: 'seen',
-  MESSAGE_BLOCK: 'message-block'
+  MESSAGE_BLOCK: 'message-block',
+  CHECK_ONLINE_STATUS: 'check-online-status'
 } as const
 
 export type TypeOfRule = (typeof typeOfRule)[keyof typeof typeOfRule]
