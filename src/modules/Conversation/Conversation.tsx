@@ -26,7 +26,6 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
 
   const [infoTyping, setInfoTyping] = useState<TInfoTyping | null>(null)
   //store current message id when user click message
-  const [currentMessage, setCurrentMessage] = useState<number>(0)
 
   const lastElementRef = useRef<HTMLDivElement>(null)
   const fristElementRef = useRef<HTMLDivElement>(null)
@@ -84,11 +83,6 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
     }
   }, [])
 
-  const handleClickMessage = useCallback((id: number | null) => {
-    if (!id) return
-    setCurrentMessage((prev) => (prev === id ? 0 : id))
-  }, [])
-
   useEffect(() => {
     if (isAnotherUserTyping && infoTyping?.is_typing) {
       play()
@@ -117,13 +111,13 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
 
     return { isCanShow: seenMessages?.length > 0 ? lastSeenMessage?.id === id : false, lastSeenMessage, lastMessage }
   }
-
+  console.log({ conversation })
   return (
     <>
       {infoTyping?.is_typing && (
         <div className='flex items-center gap-2'>
           <Avatar size='sm' src={conversationInfo?.profile_picture} />
-          <motion.div className={`-mt-1 flex min-h-10 w-fit items-center gap-1 rounded-lg bg-white px-2 text-primary-black`}>
+          <motion.div className={`-mt-1 flex min-h-10 w-fit items-center gap-1 rounded-2xl bg-white px-2 text-primary-black`}>
             {Array(3)
               .fill(0)
               .map((_, index) => (
@@ -156,31 +150,14 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
                   <Avatar size='sm' src={message?.messages?.[0]?.by?.profile_picture} />
                 </div>
               )}
-              <div className={`flex w-full flex-col gap-2 ${isMe ? 'items-end' : 'items-start'} `}>
+              <div className={`flex w-full flex-col gap-1 ${isMe ? 'items-end' : 'items-start'} `}>
                 {message?.messages?.map((item, indexGroup) => {
                   // const isEmoji = !isStringWithoutEmoji(item?.content) && item?.content?.length === 2
-                  const isActiveMessage = currentMessage === item?.id && indexGroup !== 0
                   const isShowStatsus = handleCheckConditionsToShowStatsus(item?.id)
                   const { isCanShow } = handleGetLastMessageInLastGroup(item?.id)
 
                   return (
                     <div key={item?.id} className={`flex w-full flex-col gap-1 ${isMe ? 'items-end' : 'items-start'}`}>
-                      {isActiveMessage && (
-                        <motion.p
-                          key={item?.created_at}
-                          initial={{ opacity: 0, scaleY: 0 }}
-                          animate={{ opacity: 1, scaleY: 1 }}
-                          exit={{ opacity: 0, scaleY: 0 }}
-                          transition={{
-                            duration: 0.2,
-                            ease: 'easeInOut',
-                            delay: 0.1
-                          }}
-                          className='w-full origin-top overflow-hidden py-2 text-center text-xs text-primary-gray'
-                        >
-                          {formatLocalHoursTime(item?.created_at)}
-                        </motion.p>
-                      )}
                       <div ref={conversation.length === index + 1 ? lastElementRef : undefined} key={`message-${item?.id}`} className='flex w-full items-end justify-between'>
                         <div ref={indexGroup === 0 && index === 0 ? fristElementRef : undefined} className={`flex w-full items-end ${isMe ? 'justify-end' : 'justify-start'} gap-0.5`}>
                           {Number(item?.type) === typeOfMessage.TEXT ? (
@@ -190,8 +167,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
                               animate='animate'
                               transition={{ duration: 0.2 }}
                               viewport={{ once: true }}
-                              className={`max-w-[80%] rounded-lg p-4 text-primary-black ${isMe ? (isClient ? 'bg-primary-yellow text-primary-black' : 'bg-[#2367EC] text-white') : 'bg-white'}`}
-                              onClick={() => handleClickMessage(item?.id)}
+                              className={`max-w-[80%] rounded-2xl p-4 text-primary-black ${isMe ? (isClient ? 'bg-primary-yellow/80 text-primary-black' : 'bg-[#2367EC] text-white') : 'bg-white'}`}
                             >
                               <pre className={`font-inter break-words text-base ${isMe ? 'text-right' : 'text-left'}`} style={{ whiteSpace: 'pre-wrap' }}>
                                 {item?.content}
