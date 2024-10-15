@@ -121,35 +121,36 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
   return (
     <>
       {infoTyping?.is_typing && (
-        <motion.div
-          className={`-mt-1 flex min-h-10 w-fit items-center gap-1 rounded-lg border-1 px-2 ${isAnotherUserTyping ? 'border-transparent bg-primary-light-blue' : 'border-primary-yellow bg-transparent'}`}
-        >
-          {Array(3)
-            .fill(0)
-            .map((_, index) => (
-              <motion.div
-                key={index}
-                className='h-1.5 w-1.5 rounded-full bg-primary-black/40'
-                animate={{
-                  y: [0, -4, 0],
-                  transition: {
-                    delay: index * 0.1,
-                    duration: 0.3,
-                    ease: 'easeInOut',
-                    repeat: Infinity,
-                    repeatDelay: 1
-                  }
-                }}
-              />
-            ))}
-        </motion.div>
+        <div className='flex items-center gap-2'>
+          <Avatar size='sm' src={conversationInfo?.profile_picture} />
+          <motion.div className={`-mt-1 flex min-h-10 w-fit items-center gap-1 rounded-lg bg-white px-2 text-primary-black`}>
+            {Array(3)
+              .fill(0)
+              .map((_, index) => (
+                <motion.div
+                  key={index}
+                  className='h-1.5 w-1.5 rounded-full bg-primary-black/40'
+                  animate={{
+                    y: [0, -4, 0],
+                    transition: {
+                      delay: index * 0.1,
+                      duration: 0.3,
+                      ease: 'easeInOut',
+                      repeat: Infinity,
+                      repeatDelay: 1
+                    }
+                  }}
+                />
+              ))}
+          </motion.div>
+        </div>
       )}
       {conversation?.map((message, index) => {
         // last item in conversation, but has received array conversation so need to get isFirstItemInConversation
         const isMe = message?.userId === currentId
         return (
           <div key={`message-${message?.userId}-${index}`} className={`flex ${isMe ? 'justify-end' : 'justify-start'} gap-2`}>
-            <div className='flex w-full gap-3'>
+            <div className='flex w-full gap-2'>
               {!isMe && (
                 <div className={`flex items-end ${isMe ? 'justify-end' : 'justify-start'} gap-2`}>
                   <Avatar size='sm' src={message?.messages?.[0]?.by?.profile_picture} />
@@ -189,7 +190,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
                               animate='animate'
                               transition={{ duration: 0.2 }}
                               viewport={{ once: true }}
-                              className={`max-w-[80%] rounded-2xl p-4 text-primary-black ${isMe ? (isClient ? 'bg-primary-yellow text-primary-black' : 'bg-[#2367EC] text-white') : 'bg-white'}`}
+                              className={`max-w-[80%] rounded-lg p-4 text-primary-black ${isMe ? (isClient ? 'bg-primary-yellow text-primary-black' : 'bg-[#2367EC] text-white') : 'bg-white'}`}
                               onClick={() => handleClickMessage(item?.id)}
                             >
                               <pre className={`font-inter break-words text-base ${isMe ? 'text-right' : 'text-left'}`} style={{ whiteSpace: 'pre-wrap' }}>
