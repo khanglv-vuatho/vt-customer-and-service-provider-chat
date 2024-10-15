@@ -11,6 +11,7 @@ import { memo, useEffect, useRef } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import useSound from 'use-sound'
 import sendSound from '../../../public/sendMessage.mp4'
+import ToastComponent from '@/components/ToastComponent'
 
 type FooterInputProps = {
   handleSendMessage: ({ message }: THandleSendMessage) => Promise<void>
@@ -152,13 +153,22 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
                           }}
                           ref={uploadRef}
                           onChange={async (e) => {
-                            onChange(e.target.files)
-
-                            if (e?.target?.files && e?.target?.files?.length > 0) {
-                              await handleSendMessage({ message: '', attachment: e.target.files[0], type: 1 })
+                            const file = e.target.files?.[0]
+                            if (file) {
+                              if (file.size > 5 * 1024 * 1024) {
+                                // File size exceeds 5MB
+                                ToastComponent({
+                                  message: 'File size exceeds 5MB limit. Please choose a smaller file.',
+                                  type: 'error'
+                                })
+                                e.target.value = ''
+                                return
+                              }
+                              onChange(e.target.files)
+                              await handleSendMessage({ message: '', attachment: file, type: 1 })
                               if (!socket.connected) {
-                                console.log('Socket bị ngắt kết nối, đang kết nối lại...')
-                                socket.connect() // Thực hiện kết nối lại
+                                console.log('Socket disconnected, reconnecting...')
+                                socket.connect()
                               }
                             }
                             e.target.value = ''
@@ -187,7 +197,7 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
                 )
               }
               classNames={{
-                base: 'px-4 border-t-1 border-[#E4E4E4] bg-white',
+                base: 'px-4 bg-white',
                 innerWrapper: 'items-end',
                 input: 'text-primary-base placeholder:pl-1 pb-1 caret-primary-green placeholder:text-primary-gray placeholder:text-sm text-base',
                 inputWrapper:
