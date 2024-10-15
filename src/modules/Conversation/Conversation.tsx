@@ -155,7 +155,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
                   // const isEmoji = !isStringWithoutEmoji(item?.content) && item?.content?.length === 2
                   const isShowStatsus = handleCheckConditionsToShowStatsus(item?.id)
                   const { isCanShow } = handleGetLastMessageInLastGroup(item?.id)
-
+                  const isLastOrFristMessage = !!item?.first || !!item?.last
                   return (
                     <div key={item?.id} className={`flex w-full flex-col gap-1 ${isMe ? 'items-end' : 'items-start'}`}>
                       <div ref={conversation.length === index + 1 ? lastElementRef : undefined} key={`message-${item?.id}`} className='flex w-full items-end justify-between'>
@@ -168,6 +168,17 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
                               transition={{ duration: 0.2 }}
                               viewport={{ once: true }}
                               className={`max-w-[80%] rounded-2xl p-4 text-primary-black ${isMe ? (isClient ? 'bg-primary-yellow/80 text-primary-black' : 'bg-[#2367EC] text-white') : 'bg-white'}`}
+                              style={
+                                isMe
+                                  ? {
+                                      borderTopRightRadius: item?.first ? '16px' : '4px',
+                                      borderBottomRightRadius: item?.last ? '16px' : '4px'
+                                    }
+                                  : {
+                                      borderTopLeftRadius: item?.first ? '16px' : '4px',
+                                      borderBottomLeftRadius: item?.last ? '16px' : '4px'
+                                    }
+                              }
                             >
                               <pre className={`font-inter break-words text-base ${isMe ? 'text-right' : 'text-left'}`} style={{ whiteSpace: 'pre-wrap' }}>
                                 {item?.content}

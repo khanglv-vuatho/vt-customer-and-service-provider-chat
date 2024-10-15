@@ -110,6 +110,7 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
               }
               onChange={(e) => {
                 field.onChange(e.target.value)
+                if (e.target.value.length > 1) return
                 if (e.target.value.length === 1) {
                   socket.emit(typeOfSocket.MESSAGE_TYPING, {
                     socketId: socket.id,
