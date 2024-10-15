@@ -46,9 +46,10 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
   })
 
   const handleSend = async (data: MessageProps) => {
+    if (data.message.trim() === '') return
     reset({ message: '' })
     play()
-    await handleSendMessage({ message: data.message.trim() === '' ? '👍' : data.message.trim() })
+    await handleSendMessage({ message: data.message.trim() })
   }
 
   useEffect(() => {
