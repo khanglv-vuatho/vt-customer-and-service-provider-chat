@@ -327,23 +327,6 @@ const HomePage = () => {
     <div className={`relative flex h-dvh flex-col`}>
       <Suspense fallback={null}>
         <Header workerId={Number(conversationInfo?.worker_id)} conversationInfo={conversationInfo} />
-        {/* <Button
-          onClick={() => {
-            setIsAutoSendMessage(true)
-            setCondition(!!worker_id)
-          }}
-        >
-          Auto send client
-        </Button>
-        <Button
-          className='mt-4'
-          onClick={() => {
-            setIsAutoSendMessage(true)
-            setCondition(!worker_id)
-          }}
-        >
-          Auto send worker
-        </Button> */}
       </Suspense>
       <Suspense fallback={null}>
         {onFetchingMessage ? (
@@ -355,7 +338,8 @@ const HomePage = () => {
               height: '100%',
               overflow: 'auto',
               display: 'flex',
-              flexDirection: 'column-reverse'
+              flexDirection: 'column-reverse',
+              background: '#F8F8F8'
             }}
           >
             <InfiniteScroll

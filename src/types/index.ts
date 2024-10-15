@@ -215,7 +215,10 @@ export type TConversationInfo = {
   conversation_id: number
   worker_picture: string
   client_picture: string
-}
+  full_name: string
+  profile_picture: string
+  is_online: boolean
+} & TPhoneDetail
 
 export type THandleSendMessageApi = MessageProps & { messageId: number; type: 0 | 1; attachment?: any; socket_id: string }
 

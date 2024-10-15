@@ -2,7 +2,8 @@ import StatusOfMessage from '@/components/StatusOfMessage'
 import { typeOfMessage, typeOfSocket } from '@/constants'
 import { useSocket } from '@/context/SocketProvider'
 import { MessageGroup, TConversationInfo, TInfoTyping } from '@/types'
-import { formatLocalHoursTime, isStringWithoutEmoji } from '@/utils'
+import { formatLocalHoursTime } from '@/utils'
+
 import { Avatar } from '@nextui-org/react'
 import { motion } from 'framer-motion'
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react'
@@ -148,16 +149,15 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
         const isMe = message?.userId === currentId
         return (
           <div key={`message-${message?.userId}-${index}`} className={`flex ${isMe ? 'justify-end' : 'justify-start'} gap-2`}>
-            <div className='flex w-full flex-col gap-3'>
+            <div className='flex w-full gap-3'>
               {!isMe && (
                 <div className={`flex items-end ${isMe ? 'justify-end' : 'justify-start'} gap-2`}>
                   <Avatar size='sm' src={message?.messages?.[0]?.by?.profile_picture} />
-                  <time className='text-xs text-primary-gray'>{formatLocalHoursTime(message?.messages?.[0]?.created_at)}</time>
                 </div>
               )}
-              <div className={`flex flex-col gap-2 ${isMe ? 'items-end' : 'items-start'} `}>
+              <div className={`flex w-full flex-col gap-2 ${isMe ? 'items-end' : 'items-start'} `}>
                 {message?.messages?.map((item, indexGroup) => {
-                  const isEmoji = !isStringWithoutEmoji(item?.content) && item?.content?.length === 2
+                  // const isEmoji = !isStringWithoutEmoji(item?.content) && item?.content?.length === 2
                   const isActiveMessage = currentMessage === item?.id && indexGroup !== 0
                   const isShowStatsus = handleCheckConditionsToShowStatsus(item?.id)
                   const { isCanShow } = handleGetLastMessageInLastGroup(item?.id)
@@ -189,14 +189,15 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
                               animate='animate'
                               transition={{ duration: 0.2 }}
                               viewport={{ once: true }}
-                              className={`max-w-[80%] ${
-                                isEmoji ? 'my-2 p-2 px-3' : `rounded-lg border-1 p-2 px-3 ${isMe ? 'border-transparent bg-primary-light-blue' : 'border-primary-yellow bg-transparent'}`
-                              }`}
+                              className={`max-w-[80%] rounded-2xl p-4 text-primary-black ${isMe ? (isClient ? 'bg-primary-yellow text-primary-black' : 'bg-[#2367EC] text-white') : 'bg-white'}`}
                               onClick={() => handleClickMessage(item?.id)}
                             >
-                              <pre className={`font-inter break-words text-base ${isEmoji ? 'scale-[2.5]' : ''}`} style={{ whiteSpace: 'pre-wrap' }}>
+                              <pre className={`font-inter break-words text-base ${isMe ? 'text-right' : 'text-left'}`} style={{ whiteSpace: 'pre-wrap' }}>
                                 {item?.content}
                               </pre>
+                              <div className={`mt-1 flex ${isMe ? 'justify-end' : 'justify-start'}`}>
+                                <time className={`text-xs ${isMe ? (isClient ? 'text-primary-black' : 'text-white') : 'text-primary-gray'}`}>{formatLocalHoursTime(item?.created_at)}</time>
+                              </div>
                             </motion.div>
                           ) : (
                             <MessageImage key={`message-${item?.attachments?.[0]?.url}`} url={item?.attachments?.[0]?.url as string} />

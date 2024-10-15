@@ -18,9 +18,4 @@ const handlePostMessage = async ({ orderId, payload }: THandlePostMessage) => {
   return response.data
 }
 
-const fetchingDetailOrder = async ({ orderId, worker_id }: { orderId: number; worker_id: number }) => {
-  const response = await instance.get(`/webview/order/${orderId}`, { params: { worker_id } })
-  return response.data
-}
-
-export { fetchingDetailOrder, handlePostMessage, fetchMessage }
+export { handlePostMessage, fetchMessage }
