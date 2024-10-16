@@ -9,14 +9,15 @@ import { translate } from '@/context/translationProvider'
 import instance from '@/services/axiosConfig'
 import { TConversationInfo } from '@/types'
 import { postMessageCustom } from '@/utils'
-import { Avatar } from '@nextui-org/react'
+import { Avatar, Skeleton } from '@nextui-org/react'
 
 type THeaderProps = {
   workerId: number
   conversationInfo: TConversationInfo | null
+  onFetchingMessage: boolean
 }
 
-const Header: React.FC<THeaderProps> = ({ workerId, conversationInfo }) => {
+const Header: React.FC<THeaderProps> = ({ workerId, conversationInfo, onFetchingMessage }) => {
   const h = translate('Header')
   const socket: any = useSocket()
   const queryParams = new URLSearchParams(location.search)
@@ -84,22 +85,35 @@ const Header: React.FC<THeaderProps> = ({ workerId, conversationInfo }) => {
       transition={{ duration: 0.3, delay: 0.2 }}
       className='sticky left-0 right-0 top-0 z-50 flex items-center justify-between bg-white p-2'
     >
-      <div className='flex items-center gap-2'>
-        <ButtonOnlyIcon onClick={handleCloseWebview}>
-          <ArrowLeft2 size={24} />
-        </ButtonOnlyIcon>
-        <Avatar className='size-10' src={conversationInfo?.profile_picture || ''} />
-        <div className='flex flex-col gap-0.5'>
-          <p className='font-bold text-primary-black'>{conversationInfo?.full_name || ''}</p>
-          <div className='flex items-center gap-1'>
-            <div className={`size-1 rounded-full ${isOnline ? 'bg-primary-green' : 'bg-primary-gray'}`} />
-            <p className='text-sm text-primary-gray'>{isOnline ? 'Online' : 'Offline'}</p>
+      {onFetchingMessage ? (
+        <div className='flex items-center gap-2 px-2'>
+          <Skeleton className='size-8 rounded-full' />
+          <Skeleton className='size-10 rounded-full' />
+          <div className='flex flex-col gap-1'>
+            <Skeleton className='h-4 w-[100px] rounded-md' />
+            <Skeleton className='h-2 w-[60px] rounded-md' />
           </div>
         </div>
-      </div>
-      <ButtonOnlyIcon className={`${isClient ? 'bg-[#FFFAEA] text-[#F4B807]' : 'bg-[#F6F9FF] text-primary-blue'}`} onClick={handleCall}>
-        <Call size={24} variant='Bold' />
-      </ButtonOnlyIcon>
+      ) : (
+        <div className='flex items-center gap-2'>
+          <ButtonOnlyIcon onClick={handleCloseWebview}>
+            <ArrowLeft2 size={24} />
+          </ButtonOnlyIcon>
+          <Avatar className='size-10' src={conversationInfo?.profile_picture || ''} />
+          <div className='flex flex-col gap-0.5'>
+            <p className='font-bold text-primary-black'>{conversationInfo?.full_name || ''}</p>
+            <div className='flex items-center gap-1'>
+              <div className={`size-1 rounded-full ${isOnline ? 'bg-primary-green' : 'bg-primary-gray'}`} />
+              <p className='text-sm text-primary-gray'>{isOnline ? 'Online' : 'Offline'}</p>
+            </div>
+          </div>
+        </div>
+      )}
+      {Number(conversationInfo?.status) >= 2 && (
+        <ButtonOnlyIcon className={`${isClient ? 'bg-[#FFFAEA] text-[#F4B807]' : 'bg-[#F6F9FF] text-primary-blue'}`} onClick={handleCall}>
+          <Call size={24} variant='Bold' />
+        </ButtonOnlyIcon>
+      )}
     </motion.header>
   )
 }
