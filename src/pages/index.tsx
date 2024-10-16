@@ -116,6 +116,8 @@ const HomePage = () => {
       await handlePostMessage({ orderId, payload })
       clearTimeout(timer)
 
+      handleScrollToBottom()
+
       setIsSendingMessage(false)
 
       setConversation((prevConversation) => prevConversation.map((msg) => (msg.id === messageId && msg.status !== typeOfSocket.SEEN ? { ...msg, status: 'sent' } : msg)))
@@ -199,6 +201,12 @@ const HomePage = () => {
     const entry = Object.entries(typeOfBlockMessage).find(([key, value]) => value === blockType)
     return entry ? messageOfMessageBlock[entry[0] as keyof typeof messageOfMessageBlock] : undefined
   }
+
+  const handleScrollToBottom = useCallback(() => {
+    const scrollableDiv = document.getElementById('scrollableDiv')
+    if (!scrollableDiv) return
+    scrollableDiv.scrollTop = scrollableDiv.scrollHeight
+  }, [])
 
   // Ví dụ sử dụng
   // const messageBlock = getMessageByBlockType('BLOCKED BY COMPLETED ORDER')
