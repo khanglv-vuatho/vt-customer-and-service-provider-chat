@@ -325,7 +325,7 @@ const HomePage = () => {
   return (
     <div className={`relative flex h-dvh flex-col`}>
       <Suspense fallback={null}>
-        <Header workerId={Number(conversationInfo?.worker_id)} conversationInfo={conversationInfo} />
+        <Header workerId={Number(conversationInfo?.worker_id)} conversationInfo={conversationInfo} onFetchingMessage={onFetchingMessage} />
       </Suspense>
       <Suspense fallback={null}>
         {onFetchingMessage ? (
