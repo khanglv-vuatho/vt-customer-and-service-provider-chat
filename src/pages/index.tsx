@@ -156,8 +156,7 @@ const HomePage = () => {
         setOnFetchingMessage(false)
         setIsLoadMoreMessage(false)
         setOnReloadMessage(false)
-        socket?.emit(typeOfSocket.CHECK_ONLINE_STATUS, { workerId: worker_id, orderId: orderId })
-        console.log('ne')
+        socket?.emit(typeOfSocket.CHECK_ONLINE_STATUS, { workerId: isClient ? worker_id : currentId, orderId: orderId })
       }
     },
     [currentPage, isClient, orderId, worker_id, socket]

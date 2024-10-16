@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { Add, ArrowLeft2, Call, Refresh } from 'iconsax-react'
+import { ArrowLeft2, Call } from 'iconsax-react'
 import { memo, useCallback, useEffect, useState } from 'react'
 
 import { ButtonOnlyIcon } from '@/components/Buttons'

@@ -21,7 +21,6 @@ export const SocketProvider = ({ children, token }: { children: React.ReactNode;
     setSocket(newSocket)
     const handleConnectSocket = () => {
       newSocket.connect()
-      console.log('connect')
     }
 
     document.addEventListener('visibilitychange', () => handleConnectSocket())
