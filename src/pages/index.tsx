@@ -353,7 +353,7 @@ const HomePage = () => {
             <InfiniteScroll
               dataLength={conversation.length}
               next={loadMoreMessages}
-              style={{ display: 'flex', flexDirection: 'column-reverse', padding: '0 8px 10px 8px', gap: 12 }}
+              style={{ display: 'flex', flexDirection: 'column-reverse', padding: '8px 8px 10px 8px', gap: 12 }}
               inverse={true}
               hasMore={isCanLoadMore}
               onScroll={handleScroll}
