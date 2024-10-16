@@ -73,6 +73,7 @@ const Header: React.FC<THeaderProps> = ({ workerId, conversationInfo, onFetching
       setIsOnline(!!data?.is_online)
     })
 
+    console.log('123')
     return () => {
       socket.off(typeOfSocket.CHECK_ONLINE_STATUS)
     }

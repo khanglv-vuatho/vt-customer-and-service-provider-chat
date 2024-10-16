@@ -5,7 +5,7 @@ import ConverstaionsSkeleton from '@/modules/ConversationsSkeleton'
 import { Message, TConversationInfo, THandleSendMessage, THandleSendMessageApi, TMeta, TPayloadHandleSendMessageApi } from '@/types'
 import { groupConsecutiveMessages } from '@/utils'
 import { useNetworkState, useVisibilityChange } from '@uidotdev/usehooks'
-import { lazy, memo, Suspense, useCallback, useEffect, useState } from 'react'
+import { lazy, memo, Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import useSound from 'use-sound'
 import seenSound from '../../public/seen.mp4'
@@ -44,7 +44,7 @@ const HomePage = () => {
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [isLoadMoreMessage, setIsLoadMoreMessage] = useState<boolean>(false)
 
-  const groupedMessages = groupConsecutiveMessages(conversation)
+  const groupedMessages = useMemo(() => groupConsecutiveMessages(conversation), [conversation])
   const groupedMessagesClone = [...groupedMessages]
   const groupedMessagesCloneReverse = [...groupedMessagesClone].reverse()
   const isCanLoadMore = meta ? currentPage < meta?.total_pages : false
@@ -156,9 +156,11 @@ const HomePage = () => {
         setOnFetchingMessage(false)
         setIsLoadMoreMessage(false)
         setOnReloadMessage(false)
+        socket?.emit(typeOfSocket.CHECK_ONLINE_STATUS, { workerId: worker_id, orderId: orderId })
+        console.log('ne')
       }
     },
-    [currentPage, isClient, orderId, worker_id]
+    [currentPage, isClient, orderId, worker_id, socket]
   )
 
   const loadMoreMessages = useCallback(() => {

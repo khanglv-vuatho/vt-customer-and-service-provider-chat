@@ -219,6 +219,7 @@ export type TConversationInfo = {
   profile_picture: string
   is_online: boolean
   status: number
+  user_id: number
 } & TPhoneDetail
 
 export type THandleSendMessageApi = MessageProps & { messageId: number; type: 0 | 1; attachment?: any; socket_id: string }

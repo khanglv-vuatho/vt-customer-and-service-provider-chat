@@ -65,7 +65,6 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
 
   useEffect(() => {
     let timer: any
-
     socket.on(typeOfSocket.MESSAGE_TYPING, (data: TInfoTyping) => {
       if (socket?.id === data?.socket_id) return
       setInfoTyping(data)
@@ -111,7 +110,6 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
 
     return { isCanShow: seenMessages?.length > 0 ? lastSeenMessage?.id === id : false, lastSeenMessage, lastMessage }
   }
-  console.log({ conversation })
   return (
     <>
       {infoTyping?.is_typing && (
