@@ -1,4 +1,3 @@
-import { typeOfRule } from '@/constants'
 import instance from '@/services/axiosConfig'
 import { THandlePostMessage } from '@/types'
 import { objectToFormData } from '@/utils'
@@ -8,7 +7,10 @@ const fetchMessage = async ({ orderId, socket_id, worker_id, page, limit = 10 }:
   const isAdmin = queryParams.get('isAdmin') === 'true'
   const endpoint = `/webview/conversations/${orderId}`
   const params = worker_id ? { worker_id } : {}
+  console.log('get')
+
   const response = await instance.get(endpoint, { params: { ...params, page, limit, socket_id, is_admin: isAdmin } })
+
   return response.data
 }
 

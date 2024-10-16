@@ -182,6 +182,12 @@ const groupConsecutiveMessages = (messages: Message[]): MessageGroup[] => {
 
   // Mark first and last messages in the last group if there are 2 or more messages
   if (currentGroup.length >= 2) {
+    // map all item in currentGroup
+    currentGroup = currentGroup.map((item) => {
+      item.first = false
+      item.last = false
+      return item
+    })
     currentGroup[0].first = true
     currentGroup[currentGroup.length - 1].last = true
   }
