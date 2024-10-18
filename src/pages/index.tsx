@@ -1,6 +1,6 @@
 import { fetchMessage, handlePostMessage } from '@/apis'
 import ToastComponent from '@/components/ToastComponent'
-import { typeOfBlockMessage, typeOfRule, typeOfSocket } from '@/constants'
+import { typeOfBlockMessage, typeOfSocket } from '@/constants'
 import ConverstaionsSkeleton from '@/modules/ConversationsSkeleton'
 import { Message, TConversationInfo, THandleSendMessage, THandleSendMessageApi, TMeta, TPayloadHandleSendMessageApi } from '@/types'
 import { groupConsecutiveMessages } from '@/utils'
@@ -351,7 +351,7 @@ const HomePage = () => {
             }}
           >
             <InfiniteScroll
-              dataLength={conversation.length}
+              dataLength={conversation?.length}
               next={loadMoreMessages}
               style={{ display: 'flex', flexDirection: 'column-reverse', padding: '8px 8px 10px 8px', gap: 12 }}
               inverse={true}

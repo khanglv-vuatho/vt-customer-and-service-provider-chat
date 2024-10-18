@@ -1,9 +1,12 @@
+import Modal from '@/modules/Modal'
+import { Card } from 'iconsax-react'
 import { useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 
 const TestPage = () => {
   const [items, setItems] = useState(Array.from({ length: 20 }))
   const [hasMore, setHasMore] = useState(true)
+  const [isOpen, setIsOpen] = useState(true)
 
   const style = {
     height: 30,
@@ -34,6 +37,26 @@ const TestPage = () => {
         flexDirection: 'column-reverse'
       }}
     >
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={() => setIsOpen(false)}
+        modalTitle={
+          <div className='flex flex-col gap-0.5'>
+            <div className='flex items-start gap-2'>
+              <Card variant='Broken' />
+              <p>Khang dep Trai</p>
+            </div>
+            <div className='flex items-start gap-2'>
+              <Card className='opacity-0' />
+              <p className='text-xs text-gray-600'>
+                In list <span className='font-bold'> #Khang dep Trai</span>
+              </p>
+            </div>
+          </div>
+        }
+      >
+        aqsd
+      </Modal>
       {/* Put the scroll bar always on the bottom */}
       <InfiniteScroll
         dataLength={items.length}

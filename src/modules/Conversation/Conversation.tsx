@@ -153,7 +153,6 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
                   // const isEmoji = !isStringWithoutEmoji(item?.content) && item?.content?.length === 2
                   const isShowStatsus = handleCheckConditionsToShowStatsus(item?.id)
                   const { isCanShow } = handleGetLastMessageInLastGroup(item?.id)
-                  const isLastOrFristMessage = !!item?.first || !!item?.last
                   return (
                     <div key={item?.id} className={`flex w-full flex-col gap-1 ${isMe ? 'items-end' : 'items-start'}`}>
                       <div ref={conversation.length === index + 1 ? lastElementRef : undefined} key={`message-${item?.id}`} className='flex w-full items-end justify-between'>
