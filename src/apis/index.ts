@@ -9,7 +9,7 @@ const fetchMessage = async ({ orderId, socket_id, worker_id, page, limit = 10 }:
   const params = worker_id ? { worker_id } : {}
   console.log('get')
 
-  const response = await instance.get(endpoint, { params: { ...params, page, limit, socket_id, is_admin: isAdmin } })
+  const response = await instance.get(endpoint, { params: { ...params, page, limit, socket_id, is_admin: isAdmin, isAdmin } })
 
   return response.data
 }
