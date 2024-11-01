@@ -6,8 +6,7 @@ const fetchMessage = async ({ orderId, socket_id, worker_id, page, limit = 10 }:
   const queryParams = new URLSearchParams(location.search)
   const isAdmin = queryParams.get('isAdmin') === 'true'
   const endpoint = `/webview/conversations/${orderId}`
-  const params = worker_id ? { worker_id } : {}
-  console.log('get')
+  const params = worker_id || isAdmin ? { worker_id } : {}
 
   const response = await instance.get(endpoint, { params: { ...params, page, limit, socket_id, is_admin: isAdmin, isAdmin } })
 
