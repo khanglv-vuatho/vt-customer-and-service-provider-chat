@@ -18,6 +18,7 @@ const ScrollToBottom = lazy(() => import('@/components/ScrollToBottom'))
 import { useSocket } from '@/context/SocketProvider'
 import { translate } from '@/context/translationProvider'
 import { CircularProgress } from '@nextui-org/react'
+import ModalNotification from '@/components/ModalNotification'
 
 const HomePage = () => {
   const m = translate('MessageOfMessageBlock')
@@ -333,6 +334,7 @@ const HomePage = () => {
 
   return (
     <div className={`relative flex h-dvh flex-col`}>
+      <ModalNotification isClient={isClient} />
       <Suspense fallback={null}>
         <Header workerId={Number(conversationInfo?.worker_id)} conversationInfo={conversationInfo} onFetchingMessage={onFetchingMessage} />
       </Suspense>

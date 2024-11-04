@@ -11,8 +11,11 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => {
   const queryParams = new URLSearchParams(location.search)
   const token = queryParams.get('token')
   const lang = queryParams.get('lang') || 'vi'
+  const isAdmin = queryParams.get('isAdmin') === 'true'
 
   const checkSession = useCallback(async () => {
+    if (isAdmin) return
+
     if (token) {
       dispatch({
         type: ActionTypes.TOKEN,
@@ -26,6 +29,7 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     if (import.meta.env.VITEMODE === 'development') return
+    if (isAdmin) return
 
     if (typeof window !== 'undefined' && typeof navigator !== 'undefined') {
       const ua = navigator.userAgent || navigator.vendor
@@ -38,6 +42,7 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => {
             checkSession()
           } else {
             if (import.meta.env.VITE_MODE === 'local') return
+
             navigate('/invalid')
           }
         } catch (error) {

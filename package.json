@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite --host --mode development",
     "dev:local": "vite --host",
+    "dev:dev": "vite --host --mode development",
     "dev:staging": "vite --host --mode staging",
     "build": "tsc && vite build --mode development",
     "build:local": "tsc && vite build ",

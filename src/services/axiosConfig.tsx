@@ -81,10 +81,12 @@ instance.interceptors.response.use(
           type: 'error'
         })
 
-        if (error?.response?.data?.status === 401) {
-          if (import.meta.env.VITE_MODE === 'local') return
-          window.location.href = '/invalid'
-        }
+        // if (error?.response?.data?.status === 401) {
+        //   if (import.meta.env.VITE_MODE === 'local') return
+        //   if (isAdmin) return
+
+        //   window.location.href = '/invalid'
+        // }
       } else if (error?.request) {
         console.log('====== Timeout =====')
       } else {
