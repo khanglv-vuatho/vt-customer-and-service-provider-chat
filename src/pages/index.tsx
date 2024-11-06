@@ -350,7 +350,8 @@ const HomePage = () => {
               overflow: 'auto',
               display: 'flex',
               flexDirection: 'column-reverse',
-              background: '#F8F8F8'
+              background: '#F8F8F8',
+              justifyContent: 'start'
             }}
           >
             <InfiniteScroll
