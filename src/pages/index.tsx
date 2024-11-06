@@ -15,10 +15,10 @@ const FooterInput = lazy(() => import('@/modules/FooterInput/FooterInput'))
 const Conversation = lazy(() => import('@/modules/Conversation/Conversation'))
 const ScrollToBottom = lazy(() => import('@/components/ScrollToBottom'))
 
+import PinMessage from '@/components/PinMessage'
 import { useSocket } from '@/context/SocketProvider'
 import { translate } from '@/context/translationProvider'
 import { CircularProgress } from '@nextui-org/react'
-import ModalNotification from '@/components/ModalNotification'
 
 const HomePage = () => {
   const m = translate('MessageOfMessageBlock')
@@ -334,10 +334,11 @@ const HomePage = () => {
 
   return (
     <div className={`relative flex h-dvh flex-col`}>
-      <ModalNotification isClient={isClient} />
+      {/* <ModalNotification isClient={isClient} /> */}
       <Suspense fallback={null}>
         <Header workerId={Number(conversationInfo?.worker_id)} conversationInfo={conversationInfo} onFetchingMessage={onFetchingMessage} />
       </Suspense>
+
       <Suspense fallback={null}>
         {onFetchingMessage ? (
           <ConverstaionsSkeleton />
@@ -383,10 +384,10 @@ const HomePage = () => {
               </Suspense>
               <Conversation conversation={groupedMessagesCloneReverse} conversationInfo={conversationInfo} />
             </InfiniteScroll>
+            {!isAdmin && <PinMessage />}
           </div>
         )}
       </Suspense>
-
       {isCancleOrder ? (
         <p className='z-50 bg-white p-3 text-center text-sm text-primary-gray'>{messageBlock}.</p>
       ) : (
