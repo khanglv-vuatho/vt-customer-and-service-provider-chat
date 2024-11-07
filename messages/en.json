@@ -31,5 +31,11 @@
     "sent": "Sent",
     "failed": "Sending failed",
     "seen": "Seen"
+  },
+  "PinMessage": {
+    "title": "For Client",
+    "title1": "For Service Provider",
+    "content": "To ensure the rights and safety of our client, please do not share phone numbers, Zalo accounts, or personal addresses. Vua Thợ does not allow private transactions/transfers, recruitment, sharing personal information, requests for order cancellations, or additions/removals of services outside of the app. All transactions and communications should be carried out through the Vua Thợ app to ensure your rights are protected and to provide prompt support when needed. Vua Thợ will collect and use chat history according to Vua Thợ’s Privacy Policy.",
+    "content1": "To ensure safety and comply with Vua Thợ’s regulations, please do not request phone numbers, Zalo accounts, or addresses from client. All communication and service provision must be conducted through the app. Additionally, Vua Thợ does not permit private transactions/transfers, recruitment, sharing personal information, requests for order cancellations, or additions/removals of services outside of the app. Violations will be addressed in accordance with our policies."
   }
 }
