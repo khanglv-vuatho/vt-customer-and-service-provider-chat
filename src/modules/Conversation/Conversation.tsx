@@ -14,9 +14,10 @@ import MessageImage from './MessageImage'
 type ConversationProps = {
   conversation: MessageGroup[]
   conversationInfo: TConversationInfo | null
+  handleScrollToBottom: () => void
 }
 
-const Conversation: React.FC<ConversationProps> = ({ conversation, conversationInfo }) => {
+const Conversation: React.FC<ConversationProps> = ({ conversation, conversationInfo, handleScrollToBottom }) => {
   const socket: any = useSocket()
 
   const queryParams = new URLSearchParams(location.search)
@@ -33,8 +34,11 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
   const conversationClone = [...conversation]
   const conversationCloneReverse = [...conversationClone].reverse()
 
-  const lastGroupInConversatioReverse = conversationCloneReverse?.[conversationCloneReverse?.length - 1]
-  const lastMessageInLastGroupConversatioReverse = lastGroupInConversatioReverse?.messages?.[lastGroupInConversatioReverse?.messages?.length - 1]
+  const lastGroupInConversation = conversationClone?.[conversationClone?.length - 1]
+  const lastMessageInLastGroupConversation = lastGroupInConversation?.messages?.[lastGroupInConversation?.messages?.length - 1]
+
+  const lastGroupInConversationReverse = conversationCloneReverse?.[conversationCloneReverse?.length - 1]
+  const lastMessageInLastGroupConversatioReverse = lastGroupInConversationReverse?.messages?.[lastGroupInConversationReverse?.messages?.length - 1]
   const [play] = useSound(typingSound)
 
   const isAnotherUserTyping = infoTyping?.user_id === currentId
@@ -57,6 +61,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
     socket.on(typeOfSocket.MESSAGE_TYPING, (data: TInfoTyping) => {
       if (socket.id === data?.socket_id) return
       setInfoTyping(data)
+      handleScrollToBottom()
     })
     return () => {
       socket.off(typeOfSocket.MESSAGE_TYPING)
@@ -68,7 +73,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
     socket.on(typeOfSocket.MESSAGE_TYPING, (data: TInfoTyping) => {
       if (socket?.id === data?.socket_id) return
       setInfoTyping(data)
-
+      handleScrollToBottom()
       // Xóa timer cũ trước khi đặt timer mới
       clearTimeout(timer)
       timer = setTimeout(() => {
@@ -86,11 +91,13 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
     if (isAnotherUserTyping && infoTyping?.is_typing) {
       play()
     }
+    handleScrollToBottom()
   }, [infoTyping])
 
   // show status when last message in last group
   const handleCheckConditionsToShowStatsus = (id: number) => {
-    return lastMessageInLastGroupConversatioReverse?.id === id
+    // return lastMessageInLastGroupConversatioReverse?.id === id
+    return lastMessageInLastGroupConversation?.id === id
   }
 
   // show status when last message in last group is seen
@@ -110,33 +117,9 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
 
     return { isCanShow: seenMessages?.length > 0 ? lastSeenMessage?.id === id : false, lastSeenMessage, lastMessage }
   }
+
   return (
     <>
-      {infoTyping?.is_typing && (
-        <div className='flex items-center gap-2'>
-          <Avatar size='sm' src={conversationInfo?.profile_picture} />
-          <motion.div className={`-mt-1 flex min-h-10 w-fit items-center gap-1 rounded-2xl bg-white px-2 text-primary-black`}>
-            {Array(3)
-              .fill(0)
-              .map((_, index) => (
-                <motion.div
-                  key={index}
-                  className='h-1.5 w-1.5 rounded-full bg-primary-black/40'
-                  animate={{
-                    y: [0, -4, 0],
-                    transition: {
-                      delay: index * 0.1,
-                      duration: 0.3,
-                      ease: 'easeInOut',
-                      repeat: Infinity,
-                      repeatDelay: 1
-                    }
-                  }}
-                />
-              ))}
-          </motion.div>
-        </div>
-      )}
       {conversation?.map((message, index) => {
         // last item in conversation, but has received array conversation so need to get isFirstItemInConversation
         const isMe = message?.userId === currentId
@@ -198,6 +181,31 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
           </div>
         )
       })}
+      {infoTyping?.is_typing && (
+        <div className='mt-2 flex items-center gap-2'>
+          <Avatar size='sm' src={conversationInfo?.profile_picture} />
+          <motion.div className={`-mt-1 flex min-h-10 w-fit items-center gap-1 rounded-2xl bg-white px-2 text-primary-black`}>
+            {Array(3)
+              .fill(0)
+              .map((_, index) => (
+                <motion.div
+                  key={index}
+                  className='h-1.5 w-1.5 rounded-full bg-primary-black/40'
+                  animate={{
+                    y: [0, -4, 0],
+                    transition: {
+                      delay: index * 0.1,
+                      duration: 0.3,
+                      ease: 'easeInOut',
+                      repeat: Infinity,
+                      repeatDelay: 1
+                    }
+                  }}
+                />
+              ))}
+          </motion.div>
+        </div>
+      )}
     </>
   )
 }

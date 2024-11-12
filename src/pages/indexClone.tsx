@@ -114,9 +114,9 @@ const HomePage = () => {
       }
 
       setIsSendingMessage(true)
-
       await handlePostMessage({ orderId, payload })
       clearTimeout(timer)
+
       handleScrollToBottom()
 
       setIsSendingMessage(false)
@@ -343,9 +343,48 @@ const HomePage = () => {
         {onFetchingMessage ? (
           <ConverstaionsSkeleton />
         ) : (
-          <div id='scrollableDiv' className='flex h-full flex-col overflow-auto bg-[#F8F8F8] p-2'>
+          <div
+            id='scrollableDiv'
+            style={{
+              height: '100%',
+              overflow: 'auto',
+              display: 'flex',
+              flexDirection: 'column-reverse',
+              background: '#F8F8F8'
+            }}
+          >
+            <InfiniteScroll
+              dataLength={conversation?.length}
+              next={loadMoreMessages}
+              style={{ display: 'flex', flexDirection: 'column-reverse', padding: '8px 8px 10px 8px', gap: 12 }}
+              inverse={true}
+              hasMore={isCanLoadMore}
+              onScroll={handleScroll}
+              loader={
+                isLoadMoreMessage && (
+                  <div
+                    style={{
+                      display: isLoadMoreMessage ? 'flex' : 'none'
+                    }}
+                    className='flex w-full items-center justify-center py-2'
+                  >
+                    <CircularProgress
+                      size='md'
+                      classNames={{
+                        svg: 'h-6 w-6 text-primary-blue'
+                      }}
+                    />
+                  </div>
+                )
+              }
+              scrollableTarget='scrollableDiv'
+            >
+              <Suspense fallback={null}>
+                <ScrollToBottom showScrollToBottom={showScrollToBottom} />
+              </Suspense>
+              <Conversation conversation={groupedMessagesCloneReverse} conversationInfo={conversationInfo} />
+            </InfiniteScroll>
             {!isAdmin && <PinMessage />}
-            <Conversation conversation={groupedMessages} conversationInfo={conversationInfo} handleScrollToBottom={handleScrollToBottom} />
           </div>
         )}
       </Suspense>

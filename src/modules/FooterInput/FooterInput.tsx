@@ -1,17 +1,17 @@
 import { ButtonOnlyIcon } from '@/components/Buttons'
+import ToastComponent from '@/components/ToastComponent'
 import { typeOfSocket } from '@/constants'
 import { useSocket } from '@/context/SocketProvider'
 import { translate } from '@/context/translationProvider'
 import { MessageProps, TConversationInfo, THandleSendMessage } from '@/types'
 import { isMobileWithUserAgent } from '@/utils'
 import { Button, Textarea } from '@nextui-org/react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { DocumentUpload, Send2 } from 'iconsax-react'
-import { memo, useEffect, useRef } from 'react'
+import { forwardRef, memo, useEffect, useRef } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import useSound from 'use-sound'
 import sendSound from '../../../public/sendMessage.mp4'
-import ToastComponent from '@/components/ToastComponent'
 
 type FooterInputProps = {
   handleSendMessage: ({ message }: THandleSendMessage) => Promise<void>
@@ -21,7 +21,7 @@ type FooterInputProps = {
   onReloadMessage: boolean
 }
 
-const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversationInfo, isSendingMessage, onFetchingMessage, onReloadMessage }) => {
+const FooterInput = forwardRef<HTMLDivElement, FooterInputProps>(({ handleSendMessage, conversationInfo, isSendingMessage, onFetchingMessage, onReloadMessage }, ref) => {
   const f = translate('Footer')
 
   const queryParams = new URLSearchParams(location.search)
@@ -90,7 +90,13 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
   }
 
   return (
-    <motion.footer initial={{ opacity: 0, y: 100 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.2 }} className='sticky bottom-0 left-0 right-0 z-50 flex flex-col gap-2'>
+    <motion.footer
+      ref={ref}
+      initial={{ opacity: 0, y: 100 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, delay: 0.2 }}
+      className='sticky bottom-0 left-0 right-0 z-50 flex flex-col gap-2'
+    >
       <form className='w-full'>
         <Controller
           name='message'
@@ -210,6 +216,8 @@ const FooterInput: React.FC<FooterInputProps> = ({ handleSendMessage, conversati
       </form>
     </motion.footer>
   )
-}
+})
+
+FooterInput.displayName = 'FooterInput'
 
 export default memo(FooterInput)
