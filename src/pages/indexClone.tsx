@@ -382,7 +382,7 @@ const HomePage = () => {
               <Suspense fallback={null}>
                 <ScrollToBottom showScrollToBottom={showScrollToBottom} />
               </Suspense>
-              <Conversation conversation={groupedMessagesCloneReverse} conversationInfo={conversationInfo} />
+              <Conversation conversation={groupedMessagesCloneReverse} conversationInfo={conversationInfo} handleScrollToBottom={handleScrollToBottom} />
             </InfiniteScroll>
             {!isAdmin && <PinMessage />}
           </div>
