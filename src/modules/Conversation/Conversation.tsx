@@ -2,7 +2,7 @@ import StatusOfMessage from '@/components/StatusOfMessage'
 import { typeOfMessage, typeOfSocket } from '@/constants'
 import { useSocket } from '@/context/SocketProvider'
 import { MessageGroup, TConversationInfo, TInfoTyping } from '@/types'
-import { formatLocalHoursTime } from '@/utils'
+import { formatLocalHoursTime, getLastSeenMessage } from '@/utils'
 
 import { Avatar } from '@nextui-org/react'
 import { motion } from 'framer-motion'
@@ -36,6 +36,10 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
 
   const lastGroupInConversation = conversationClone?.[conversationClone?.length - 1]
   const lastMessageInLastGroupConversation = lastGroupInConversation?.messages?.[lastGroupInConversation?.messages?.length - 1]
+
+  const lastMessageByMeInGroup = conversationCloneReverse.find((group) => group?.messages?.some((message) => message?.by?.id === currentId))
+  const lastItemMessageByMeInGroup = lastMessageByMeInGroup?.messages?.[lastMessageByMeInGroup?.messages?.length - 1]
+  const lastSeenMessage = getLastSeenMessage(conversationClone)
 
   const lastGroupInConversationReverse = conversationCloneReverse?.[conversationCloneReverse?.length - 1]
   const lastMessageInLastGroupConversatioReverse = lastGroupInConversationReverse?.messages?.[lastGroupInConversationReverse?.messages?.length - 1]
@@ -95,9 +99,15 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
   }, [infoTyping])
 
   // show status when last message in last group
+
+  console.log({ lastItemMessageByMeInGroup, lastSeenMessage, lastMessageInLastGroupConversation })
   const handleCheckConditionsToShowStatsus = (id: number) => {
     // return lastMessageInLastGroupConversatioReverse?.id === id
-    return lastMessageInLastGroupConversation?.id === id
+    const lastMessageInLastGroupConversationByMe = lastMessageInLastGroupConversation?.by?.id === currentId
+    return (
+      (lastMessageInLastGroupConversation?.id === id || lastItemMessageByMeInGroup?.id === id || (lastSeenMessage?.id === id && lastItemMessageByMeInGroup?.status !== 'seen')) &&
+      lastMessageInLastGroupConversationByMe
+    )
   }
 
   // show status when last message in last group is seen

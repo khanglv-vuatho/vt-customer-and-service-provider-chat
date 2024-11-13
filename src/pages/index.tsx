@@ -338,13 +338,16 @@ const HomePage = () => {
       <Suspense fallback={null}>
         <Header workerId={Number(conversationInfo?.worker_id)} conversationInfo={conversationInfo} onFetchingMessage={onFetchingMessage} />
       </Suspense>
-
+      <Suspense fallback={null}>
+        <ScrollToBottom showScrollToBottom={showScrollToBottom} />
+      </Suspense>
       <Suspense fallback={null}>
         {onFetchingMessage ? (
           <ConverstaionsSkeleton />
         ) : (
-          <div id='scrollableDiv' className='flex h-full flex-col overflow-auto bg-[#F8F8F8] p-2'>
+          <div id='scrollableDiv' className='flex h-full flex-col gap-2 overflow-auto bg-[#F8F8F8] p-2' onScroll={handleScroll}>
             {!isAdmin && <PinMessage />}
+
             <Conversation conversation={groupedMessages} conversationInfo={conversationInfo} handleScrollToBottom={handleScrollToBottom} />
           </div>
         )}

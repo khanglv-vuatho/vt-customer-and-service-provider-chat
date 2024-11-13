@@ -239,6 +239,14 @@ const haversineDistance = (coords1: { lat: number; lng: number }, coords2: { lat
 const isMobileWithUserAgent = () => {
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
 }
+
+const getLastSeenMessage = (conversations: any) => {
+  // Tạo một mảng chứa tất cả các tin nhắn có trạng thái "seen" từ tất cả các cuộc trò chuyện
+  const seenMessages = conversations.flatMap((conversation: any) => conversation.messages.filter((msg: any) => msg.status === 'seen'))
+
+  // Sắp xếp các tin nhắn đã "seen" theo thời gian `seen_at` giảm dần và lấy phần tử đầu tiên
+  return seenMessages.sort((a: any, b: any) => b?.seen?.seen_at - a?.seen?.seen_at)[0] || null
+}
 export {
   capitalizeWords,
   formatDDMMYYYY,
@@ -255,5 +263,6 @@ export {
   objectToFormData,
   postMessageCustom,
   useDebounce,
-  useUnfocusItem
+  useUnfocusItem,
+  getLastSeenMessage
 }
