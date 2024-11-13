@@ -104,6 +104,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
   const handleCheckConditionsToShowStatsus = (id: number) => {
     // return lastMessageInLastGroupConversatioReverse?.id === id
     const lastMessageInLastGroupConversationByMe = lastMessageInLastGroupConversation?.by?.id === currentId
+    return lastMessageInLastGroupConversation?.id === id && lastMessageInLastGroupConversationByMe
     return (
       (lastMessageInLastGroupConversation?.id === id || lastItemMessageByMeInGroup?.id === id || (lastSeenMessage?.id === id && lastItemMessageByMeInGroup?.status !== 'seen')) &&
       lastMessageInLastGroupConversationByMe
