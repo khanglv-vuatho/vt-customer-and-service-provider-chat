@@ -5,7 +5,8 @@ export const keyPossmessage = {
 
 export const typeOfMessage = {
   TEXT: 0,
-  IMAGE: 1
+  IMAGE: 1,
+  WARNING: 2
 }
 
 export const typeOfSocket = {

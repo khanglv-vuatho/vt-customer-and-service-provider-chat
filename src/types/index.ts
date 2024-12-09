@@ -69,7 +69,7 @@ export type TPayloadHandleSendMessageApi = {
   content: string
   worker_id?: number
   attachment?: any
-  type: 0 | 1
+  type: 0 | 1 | 2
   socket_id: string
   conversationId: number
   messageId: number

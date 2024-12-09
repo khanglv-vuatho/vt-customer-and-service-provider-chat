@@ -1,15 +1,18 @@
 import { motion } from 'framer-motion'
-import { ArrowLeft2, Call } from 'iconsax-react'
+import { ArrowLeft2, Call, Warning2 } from 'iconsax-react'
 import { memo, useCallback, useEffect, useState } from 'react'
 
-import { ButtonOnlyIcon } from '@/components/Buttons'
+import { ButtonOnlyIcon, PrimaryButton, PrimaryOutlineButton } from '@/components/Buttons'
 import { keyPossmessage, typeOfSocket } from '@/constants'
 import { useSocket } from '@/context/SocketProvider'
 import { translate } from '@/context/translationProvider'
 import instance from '@/services/axiosConfig'
-import { TConversationInfo } from '@/types'
+import { TConversationInfo, TPayloadHandleSendMessageApi } from '@/types'
 import { postMessageCustom } from '@/utils'
-import { Avatar, Skeleton } from '@nextui-org/react'
+import { Avatar, Skeleton, Textarea } from '@nextui-org/react'
+import ToastComponent from '@/components/ToastComponent'
+import { handlePostMessage } from '@/apis'
+import { DefaultModal } from '@/components/Modal'
 
 type THeaderProps = {
   workerId: number
@@ -22,11 +25,16 @@ const Header: React.FC<THeaderProps> = ({ workerId, conversationInfo, onFetching
   const socket: any = useSocket()
   const queryParams = new URLSearchParams(location.search)
   const orderId = queryParams.get('orderId')
-  const [isLoading, setIsLoading] = useState(false)
-  const [isOnline, setIsOnline] = useState(false)
 
   const worker_id = Number(queryParams.get('worker_id'))
   const isClient = !!worker_id
+  const isAdmin = queryParams.get('isAdmin') === 'true'
+
+  const [isLoading, setIsLoading] = useState(false)
+  const [isOnline, setIsOnline] = useState(false)
+  const [isOpenModalWarning, setIsOpenModalWarning] = useState(false)
+  const [isSendingWarning, setIsSendingWarning] = useState(false)
+  const [message, setMessage] = useState('')
 
   const handleCloseWebview = useCallback(async () => {
     await socket.emit(typeOfSocket.LEAVE_CONVERSATION_ROOM, { workerId: conversationInfo?.worker_id, orderId: conversationInfo?.order_id })
@@ -79,6 +87,47 @@ const Header: React.FC<THeaderProps> = ({ workerId, conversationInfo, onFetching
     }
   }, [])
 
+  const handleWarning = () => {
+    console.log('123')
+    setIsOpenModalWarning(true)
+  }
+
+  const handleSendWarning = () => {
+    setIsSendingWarning(true)
+  }
+
+  const handleSendingWarningApi = async () => {
+    try {
+      if (message.trim() === '') return ToastComponent({ message: 'Vui lòng nhập lý do cảnh báo', type: 'error' })
+      const payload: TPayloadHandleSendMessageApi = {
+        content: message,
+        // 2 is warning
+        type: 2,
+        socket_id: socket.id,
+        conversationId: conversationInfo?.conversation_id as number,
+        messageId: Date.now(),
+        ...(isClient && { worker_id: conversationInfo?.worker_id })
+      }
+
+      console.log({ payload })
+      const data = await handlePostMessage({ orderId: Number(orderId), payload })
+      console.log(data)
+      ToastComponent({ message: 'Cảnh báo thành công', type: 'success' })
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsSendingWarning(false)
+      setMessage('')
+      setIsOpenModalWarning(false)
+    }
+  }
+
+  useEffect(() => {
+    if (isSendingWarning) {
+      handleSendingWarningApi()
+    }
+  }, [isSendingWarning])
+
   return (
     <motion.header
       initial={{ opacity: 0, y: -100 }}
@@ -110,11 +159,32 @@ const Header: React.FC<THeaderProps> = ({ workerId, conversationInfo, onFetching
           </div>
         </div>
       )}
-      {Number(conversationInfo?.status) >= 2 && (
-        <ButtonOnlyIcon className={`${isClient ? 'bg-[#FFFAEA] text-[#F4B807]' : 'bg-[#F6F9FF] text-primary-blue'}`} onClick={handleCall}>
-          <Call size={24} variant='Bold' />
-        </ButtonOnlyIcon>
-      )}
+      <div className='flex items-center gap-2'>
+        {isAdmin && (
+          <ButtonOnlyIcon onClick={handleWarning}>
+            <Warning2 className='text-primary-yellow' size={32} />
+          </ButtonOnlyIcon>
+        )}
+        <DefaultModal isOpen={isOpenModalWarning} onOpenChange={() => setIsOpenModalWarning(false)}>
+          <div className='flex flex-col gap-2'>
+            <p className='font-semibold'>Cảnh báo Thợ!</p>
+            <Textarea value={message} onChange={(e) => setMessage(e.target.value)} minRows={3} placeholder='Nhập lý do cảnh báo' variant='flat' />
+          </div>
+          <div className='flex justify-end gap-2'>
+            <PrimaryOutlineButton className='rounded-xl data-[hover=true]:opacity-100' onClick={() => setIsOpenModalWarning(false)}>
+              Hủy
+            </PrimaryOutlineButton>
+            <PrimaryButton isLoading={isSendingWarning} className='rounded-xl data-[hover=true]:opacity-100' onClick={handleSendWarning}>
+              Cảnh báo
+            </PrimaryButton>
+          </div>
+        </DefaultModal>
+        {Number(conversationInfo?.status) >= 2 && (
+          <ButtonOnlyIcon className={`${isClient ? 'bg-[#FFFAEA] text-[#F4B807]' : 'bg-[#F6F9FF] text-primary-blue'}`} onClick={handleCall}>
+            <Call size={24} variant='Bold' />
+          </ButtonOnlyIcon>
+        )}
+      </div>
     </motion.header>
   )
 }

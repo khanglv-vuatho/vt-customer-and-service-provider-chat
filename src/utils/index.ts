@@ -1,5 +1,5 @@
 import ToastComponent from '@/components/ToastComponent'
-import { typeOfPriceOfOrderDetail } from '@/constants'
+import { typeOfMessage, typeOfPriceOfOrderDetail } from '@/constants'
 import { Message, MessageGroup, TOrderDetail, TPostMessage } from '@/types'
 import moment from 'moment'
 import React, { useEffect, useRef, useState } from 'react'
@@ -159,7 +159,7 @@ const groupConsecutiveMessages = (messages: Message[]): MessageGroup[] => {
     const currentMessageTime = new Date(messages[i].created_at).getTime()
     const timeDifference = (currentMessageTime - lastMessageTime) / (1000 * 60) // difference in minutes
 
-    if (messages[i].by.id === currentUserId && timeDifference <= 1) {
+    if (messages[i].by.id === currentUserId && timeDifference <= 1 && messages[i].type === typeOfMessage.WARNING) {
       currentGroup.push(messages[i])
     } else {
       // Mark first and last messages in the current group if there are 2 or more messages
