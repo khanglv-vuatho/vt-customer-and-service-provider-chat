@@ -172,9 +172,9 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
               <Warning2 variant='Bold' color='#FFC107' />
               <p className='font-bold text-primary-yellow'>Đây là cảnh báo từ hệ thống!</p>
             </div>
-            <div className='text-center'>
-              <p> {item?.content}</p>
-            </div>
+            <pre className={`font-inter break-words text-center text-base`} style={{ whiteSpace: 'pre-wrap' }}>
+              {item?.content}
+            </pre>
           </div>
         )
 
