@@ -43,7 +43,7 @@ export type Message = {
   by: User
   id: number
   seen: TSeen | null
-  type: 0 | 1
+  type: 0 | 1 | 2
   content: string
   created_at: number
   first?: boolean // Added field

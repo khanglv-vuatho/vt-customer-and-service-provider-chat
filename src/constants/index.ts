@@ -7,7 +7,7 @@ export const typeOfMessage = {
   TEXT: 0,
   IMAGE: 1,
   WARNING: 2
-}
+} as const
 
 export const typeOfSocket = {
   JOIN_CONVERSATION_ROOM: 'join-conversation-room',

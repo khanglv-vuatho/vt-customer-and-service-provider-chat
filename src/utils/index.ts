@@ -159,17 +159,35 @@ const groupConsecutiveMessages = (messages: Message[]): MessageGroup[] => {
     const currentMessageTime = new Date(messages?.[i]?.created_at)?.getTime()
     const timeDifference = (currentMessageTime - lastMessageTime) / (1000 * 60) // difference in minutes
 
-    if (messages?.[i]?.by?.id === currentUserId && timeDifference <= 1 && messages?.[i]?.type !== typeOfMessage.WARNING) {
-      currentGroup.push(messages?.[i])
+    if (messages[i].type === typeOfMessage.WARNING) {
+      // Close the current group if it exists
+      if (currentGroup.length > 0) {
+        if (currentGroup.length >= 2) {
+          currentGroup[0].first = true
+          currentGroup[currentGroup.length - 1].last = true
+        }
+        groupedMessages.push({ userId: currentUserId, messages: currentGroup })
+      }
+
+      // Create a new group for the WARNING message
+      groupedMessages.push({ userId: messages[i].by.id, messages: [messages[i]] })
+      currentGroup = [] // Reset current group
+      lastMessageTime = currentMessageTime
+      continue
+    }
+
+    if (messages[i].by.id === currentUserId && timeDifference <= 1) {
+      currentGroup.push(messages[i])
     } else {
       // Mark first and last messages in the current group if there are 2 or more messages
       if (currentGroup.length >= 2) {
         currentGroup[0].first = true
         currentGroup[currentGroup.length - 1].last = true
       }
+
       groupedMessages.push({ userId: currentUserId, messages: currentGroup })
-      currentGroup = [messages?.[i]]
-      currentUserId = messages?.[i]?.by?.id
+      currentGroup = [messages[i]]
+      currentUserId = messages[i].by.id
 
       // Add isOneGroup: true if timeDifference > 1
       if (timeDifference > 1) {
@@ -182,16 +200,13 @@ const groupConsecutiveMessages = (messages: Message[]): MessageGroup[] => {
 
   // Mark first and last messages in the last group if there are 2 or more messages
   if (currentGroup.length >= 2) {
-    // map all item in currentGroup
-    currentGroup = currentGroup.map((item) => {
-      item.first = false
-      item.last = false
-      return item
-    })
     currentGroup[0].first = true
     currentGroup[currentGroup.length - 1].last = true
   }
-  groupedMessages.push({ userId: currentUserId, messages: currentGroup })
+
+  if (currentGroup.length > 0) {
+    groupedMessages.push({ userId: currentUserId, messages: currentGroup })
+  }
 
   return groupedMessages
 }
