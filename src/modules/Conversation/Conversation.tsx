@@ -189,7 +189,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
         // last item in conversation, but has received array conversation so need to get isFirstItemInConversation
         const isMe = message?.userId === currentId
         const isWarning = message.messages.some((item) => item.type === typeOfMessage.WARNING)
-
+        if (message.messages.length === 0) return
         return (
           <div key={`message-${message?.userId}-${index}`} className={`flex ${isMe ? 'justify-end' : 'justify-start'} gap-2`}>
             <div className='flex w-full gap-2'>

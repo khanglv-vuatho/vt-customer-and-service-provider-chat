@@ -12,7 +12,7 @@ const Redirect = () => {
     navigate(
       handleAddLangInUrl({
         lang: 'vi',
-        mainUrl: '/chat?currentId=1783&orderId=12299',
+        mainUrl: '/chat?currentId=1783&orderId=12310',
         token:
           'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTc4MywiZnVsbF9uYW1lIjoiZW1pbHkiLCJwcm9maWxlX3BpY3R1cmUiOiJodHRwczovL2Nkbi1zYW5kYm94LnZ1YXRoby5jb20vaW1hZ2UvOTc0MTI3YWYtZTc1MS00ZTVmLTkwYTEtM2MwNDEyM2IyNGFhXzE3MzM3MTgyODE4MjMuanBnIiwicmVmX2lkIjoxNzgyLCJreWNfc3RhdHVzIjoyLCJ3b3JrZXJfc3RhdHVzIjoyLCJpYXQiOjE3MzM3MTgzMDN9.cdjYH6nE7u0yiFXsaWlbUmpIriAOc7Qvjd8f3jCbeBk'
       })
@@ -29,7 +29,7 @@ const Redirect = () => {
       // })
       handleAddLangInUrl({
         lang: 'vi',
-        mainUrl: '/chat?currentId=1781&orderId=12299&worker_id=1783',
+        mainUrl: '/chat?currentId=1781&orderId=12310&worker_id=1783',
         token:
           'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTc4MSwiZnVsbF9uYW1lIjoiYW5oIG7DqCAiLCJwcm9maWxlX3BpY3R1cmUiOiJodHRwczovL2Nkbi1zYW5kYm94LnZ1YXRoby5jb20vaW1hZ2UvZThmNDY2MzItY2UzYS00OGFlLTg1MmMtNTMyNzIwNDEzYjA5XzE3MzM0NzUxMTgyODcuanBnIiwicmVmX2lkIjoxNzc5LCJreWNfc3RhdHVzIjoyLCJ3b3JrZXJfc3RhdHVzIjoyLCJpYXQiOjE3MzM0NzU0NDd9.5botMAfeLwOoqAr6A66mUgkOzbLzbUvVgV9sx3U74QU'
       })
