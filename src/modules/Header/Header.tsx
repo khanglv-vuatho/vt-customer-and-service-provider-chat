@@ -2,7 +2,10 @@ import { motion } from 'framer-motion'
 import { ArrowLeft2, Call, Warning2 } from 'iconsax-react'
 import { memo, useCallback, useEffect, useState } from 'react'
 
+import { handlePostMessage, handlePostWarning } from '@/apis'
 import { ButtonOnlyIcon, PrimaryButton, PrimaryOutlineButton } from '@/components/Buttons'
+import { DefaultModal } from '@/components/Modal'
+import ToastComponent from '@/components/ToastComponent'
 import { keyPossmessage, typeOfSocket } from '@/constants'
 import { useSocket } from '@/context/SocketProvider'
 import { translate } from '@/context/translationProvider'
@@ -10,9 +13,6 @@ import instance from '@/services/axiosConfig'
 import { TConversationInfo, TPayloadHandleSendMessageApi } from '@/types'
 import { postMessageCustom } from '@/utils'
 import { Avatar, Skeleton, Textarea } from '@nextui-org/react'
-import ToastComponent from '@/components/ToastComponent'
-import { handlePostMessage } from '@/apis'
-import { DefaultModal } from '@/components/Modal'
 
 type THeaderProps = {
   workerId: number
@@ -77,18 +77,15 @@ const Header: React.FC<THeaderProps> = ({ workerId, conversationInfo, onFetching
 
   useEffect(() => {
     socket.on(typeOfSocket.CHECK_ONLINE_STATUS, (data: any) => {
-      console.log({ data })
       setIsOnline(!!data?.is_online)
     })
 
-    console.log('123')
     return () => {
       socket.off(typeOfSocket.CHECK_ONLINE_STATUS)
     }
   }, [])
 
   const handleWarning = () => {
-    console.log('123')
     setIsOpenModalWarning(true)
   }
 
@@ -109,9 +106,7 @@ const Header: React.FC<THeaderProps> = ({ workerId, conversationInfo, onFetching
         ...(isClient && { worker_id: conversationInfo?.worker_id })
       }
 
-      console.log({ payload })
-      const data = await handlePostMessage({ orderId: Number(orderId), payload })
-      console.log(data)
+      const data = await handlePostWarning({ orderId: Number(orderId), payload })
       ToastComponent({ message: 'Cảnh báo thành công', type: 'success' })
     } catch (error) {
       console.log(error)

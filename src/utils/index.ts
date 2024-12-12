@@ -153,14 +153,14 @@ const groupConsecutiveMessages = (messages: Message[]): MessageGroup[] => {
   const groupedMessages: MessageGroup[] = []
   let currentGroup: Message[] = [messages[0]]
   let currentUserId = messages[0].by.id
-  let lastMessageTime = new Date(messages[0].created_at).getTime()
+  let lastMessageTime = new Date(messages?.[0]?.created_at)?.getTime()
 
   for (let i = 1; i < messages.length; i++) {
-    const currentMessageTime = new Date(messages[i].created_at).getTime()
+    const currentMessageTime = new Date(messages?.[i]?.created_at)?.getTime()
     const timeDifference = (currentMessageTime - lastMessageTime) / (1000 * 60) // difference in minutes
 
-    if (messages[i].by.id === currentUserId && timeDifference <= 1 && messages[i].type === typeOfMessage.WARNING) {
-      currentGroup.push(messages[i])
+    if (messages?.[i]?.by?.id === currentUserId && timeDifference <= 1 && messages?.[i]?.type === typeOfMessage.WARNING) {
+      currentGroup.push(messages?.[i])
     } else {
       // Mark first and last messages in the current group if there are 2 or more messages
       if (currentGroup.length >= 2) {
@@ -168,8 +168,8 @@ const groupConsecutiveMessages = (messages: Message[]): MessageGroup[] => {
         currentGroup[currentGroup.length - 1].last = true
       }
       groupedMessages.push({ userId: currentUserId, messages: currentGroup })
-      currentGroup = [messages[i]]
-      currentUserId = messages[i].by.id
+      currentGroup = [messages?.[i]]
+      currentUserId = messages?.[i]?.by?.id
 
       // Add isOneGroup: true if timeDifference > 1
       if (timeDifference > 1) {
@@ -242,7 +242,7 @@ const isMobileWithUserAgent = () => {
 
 const getLastSeenMessage = (conversations: any) => {
   // Tạo một mảng chứa tất cả các tin nhắn có trạng thái "seen" từ tất cả các cuộc trò chuyện
-  const seenMessages = conversations.flatMap((conversation: any) => conversation.messages.filter((msg: any) => msg.status === 'seen'))
+  const seenMessages = conversations.flatMap((conversation: any) => conversation.messages.filter((msg: any) => msg?.status === 'seen'))
 
   // Sắp xếp các tin nhắn đã "seen" theo thời gian `seen_at` giảm dần và lấy phần tử đầu tiên
   return seenMessages.sort((a: any, b: any) => b?.seen?.seen_at - a?.seen?.seen_at)[0] || null

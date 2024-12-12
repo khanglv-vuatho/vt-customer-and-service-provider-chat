@@ -266,10 +266,10 @@ const HomePage = () => {
     })
 
     socket.on(typeOfSocket.MESSAGE_ARRIVE, (data: any) => {
+      console.log({ data })
       if (data?.socket_id == socket?.id) {
       } else {
         setConversation((prevConversation) => [...prevConversation, data?.message])
-
         //khang
         socket.emit(typeOfSocket.SEEN, { messageId: data?.message?.id, conversationId: conversationInfo?.conversation_id, orderId: conversationInfo?.order_id, workerId: conversationInfo?.worker_id })
 

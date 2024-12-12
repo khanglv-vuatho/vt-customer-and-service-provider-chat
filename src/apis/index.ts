@@ -19,4 +19,10 @@ const handlePostMessage = async ({ orderId, payload }: THandlePostMessage) => {
   return response.data
 }
 
-export { handlePostMessage, fetchMessage }
+const handlePostWarning = async ({ orderId, payload }: THandlePostMessage) => {
+  const endpoint = `/webview/warning/${orderId}`
+  const response = await instance.post(endpoint, objectToFormData(payload))
+  return response.data
+}
+
+export { handlePostMessage, fetchMessage, handlePostWarning }

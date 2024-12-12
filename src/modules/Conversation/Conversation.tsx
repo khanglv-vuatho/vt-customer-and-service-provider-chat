@@ -120,7 +120,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, conversationI
     const lastMessage = allMessages?.[allMessages?.length - 1]
 
     // Filter out messages that have been seen
-    const seenMessages = allMessages.filter((message) => message.status === 'seen')
+    const seenMessages = allMessages.filter((message) => message?.status === 'seen')
 
     // Get the last message that has been seen
     const lastSeenMessage = seenMessages?.[seenMessages?.length - 1]
